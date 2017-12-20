@@ -394,6 +394,11 @@ public class MoveManager implements Cloneable {
 
         /**
          * 返回符合标准的相邻坐标集合
+         *
+         * @param checker
+         * @param intersection
+         * @param criterion
+         * @return
          */
         private Set<T> getMatchingNeighbors(CheckIntersection<T> checker, Intersection intersection,
                                             Object criterion) {
