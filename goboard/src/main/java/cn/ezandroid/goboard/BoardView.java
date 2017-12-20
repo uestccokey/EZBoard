@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 /**
- * 棋盘View
+ * 棋盘显示控件
  *
  * @author like
  * @date 2017-12-20
@@ -20,6 +20,8 @@ public class BoardView extends RelativeLayout {
     private Paint mBoardPaint;
 
     private int mBoardSize = 19; // 棋盘大小
+
+    private boolean mIsShowCoordinate = true; // 是否显示坐标
 
     public BoardView(Context context) {
         super(context);
@@ -62,6 +64,24 @@ public class BoardView extends RelativeLayout {
         invalidate();
     }
 
+    public int getBoardSize() {
+        return mBoardSize;
+    }
+
+    /**
+     * 设置是否显示坐标
+     *
+     * @param isShowCoordinate
+     */
+    public void setShowCoordinate(boolean isShowCoordinate) {
+        mIsShowCoordinate = isShowCoordinate;
+        invalidate();
+    }
+
+    public boolean isShowCoordinate() {
+        return mIsShowCoordinate;
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -77,31 +97,34 @@ public class BoardView extends RelativeLayout {
      */
     private void drawBoard(Canvas canvas) {
         int coordinateTextSize = mCubicSize / 2;
-        // 1，绘制棋盘坐标
+
         mBoardPaint.setColor(Color.BLACK);
         mBoardPaint.setTextSize(coordinateTextSize);
 
         canvas.translate(mCubicSize, mCubicSize);
 
-        // 横坐标
-        char c = 'A';
-        for (int i = 0; i < mBoardSize; i++) {
-            char cc = (char) (c + i);
-            String abscissa;
-            float width;
-            if (cc >= 'I') {
-                abscissa = "" + (char) (cc + 1);
-            } else {
-                abscissa = "" + cc;
+        // 1，绘制棋盘坐标
+        if (mIsShowCoordinate) {
+            // 横坐标
+            char c = 'A';
+            for (int i = 0; i < mBoardSize; i++) {
+                char cc = (char) (c + i);
+                String abscissa;
+                float width;
+                if (cc >= 'I') {
+                    abscissa = "" + (char) (cc + 1);
+                } else {
+                    abscissa = "" + cc;
+                }
+                width = mBoardPaint.measureText(abscissa);
+                canvas.drawText(abscissa, i * mCubicSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
             }
-            width = mBoardPaint.measureText(abscissa);
-            canvas.drawText(abscissa, i * mCubicSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
-        }
-        // 纵坐标
-        for (int i = 0; i < mBoardSize; i++) {
-            String ordinate = "" + (i + 1);
-            float width = mBoardPaint.measureText(ordinate);
-            canvas.drawText(ordinate, -mCubicSize / 2 - width / 2, i * mCubicSize + coordinateTextSize / 2, mBoardPaint);
+            // 纵坐标
+            for (int i = 0; i < mBoardSize; i++) {
+                String ordinate = "" + (i + 1);
+                float width = mBoardPaint.measureText(ordinate);
+                canvas.drawText(ordinate, -mCubicSize / 2 - width / 2, i * mCubicSize + coordinateTextSize / 2, mBoardPaint);
+            }
         }
 
         // 2，绘制棋盘线
