@@ -31,7 +31,6 @@ public class Roc57Policy {
     }
 
     public float[][] getOutput(byte[][][] input) {
-//        Log.e("Roc57Policy", Thread.currentThread().getName() + " getOutput enter");
         float[] in = new float[input.length * input[0].length * input[0][0].length];
         float[] output = new float[input.length * BOARD_SIZE * BOARD_SIZE];
         for (int n = 0; n < input.length; n++) {
@@ -53,7 +52,6 @@ public class Roc57Policy {
             mTotalUsedTime += (System.currentTimeMillis() - time);
         }
 
-//        Log.e("Roc57Policy", Thread.currentThread().getName() + " getOutput exit:" + (System.currentTimeMillis() - time));
         float[][] result = new float[input.length][BOARD_SIZE * BOARD_SIZE];
         for (int n = 0; n < input.length; n++) {
             System.arraycopy(output, n * BOARD_SIZE * BOARD_SIZE, result[n], 0, BOARD_SIZE * BOARD_SIZE);

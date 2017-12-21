@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Game mGame;
 
     private Roc57Policy mRoc57Policy;
+    private AQValue mAQValue;
     private FeatureBoard mFeatureBoard;
 
     private StoneColor mCurrentColor = StoneColor.BLACK;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         mGame = new Game(mBoardSize);
 
         mRoc57Policy = new Roc57Policy(this);
+        mAQValue = new AQValue(this);
         mFeatureBoard = new FeatureBoard();
 
         mBoardView = findViewById(R.id.board);
@@ -80,8 +82,12 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         long time = System.currentTimeMillis();
 
-                        byte[][] features = mFeatureBoard.generateFeatures48(); // 生成策略网络需要的特征数组
-                        float[][] policies = mRoc57Policy.getOutput(new byte[][][]{features}); // 使用策略网络生成落子几率数组
+                        byte[][] feature49 = mFeatureBoard.generateFeatures49(); // 生成价值网络需要的特征数组
+                        float[] values = mAQValue.getOutput(new byte[][][]{feature49},
+                                mCurrentColor == StoneColor.BLACK ? 1 : 0); // 使用价值网络生成当前局面胜率
+
+                        byte[][] features48 = mFeatureBoard.generateFeatures48(); // 生成策略网络需要的特征数组
+                        float[][] policies = mRoc57Policy.getOutput(new byte[][][]{features48}); // 使用策略网络生成落子几率数组
                         Debug.printRate(policies[0]);
 
                         float maxRate = -1;
@@ -96,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
                         mIsThinking = false;
 
                         final int pos = maxPos;
+                        Log.e("MainActivity", "Value Rate:" + (1 - values[0]) / 2);
                         Log.e("MainActivity", "Policy"
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")"
                                 + " Rate:" + maxRate
