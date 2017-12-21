@@ -178,11 +178,22 @@ public class Game implements Cloneable {
     }
 
     private boolean addStoneWithHistory(Stone stone, Set<Chain> captured, boolean modifyHistory) {
-        capture(stone, captured);
+        Move lastMove = mHistory.readLatest();
+        // 劫位置检查
+        if (lastMove != null) {
+            Intersection ko = lastMove.getKO();
+            if (ko != null && ko.equals(stone.intersection)) {
+                return false;
+            }
+        }
+
+        int koPos = capture(stone, captured);
         if (!isLikeSuicide(stone)) {
             incorporateIntoChains(stone);
             if (modifyHistory) {
-                mHistory.add(new Move(stone, captured));
+                Move move = new Move(stone, captured);
+                move.setKO(new Intersection(koPos % 19, koPos / 19));
+                mHistory.add(move);
             }
             return true;
         } else {
@@ -210,8 +221,9 @@ public class Game implements Cloneable {
      *
      * @param stone
      * @param captured
+     * @return 如果出现劫，则返回劫的位置，否则返回-1
      */
-    private void capture(Stone stone, Set<Chain> captured) {
+    private int capture(Stone stone, Set<Chain> captured) {
         Set<Chain> opposingChains = getNeighborChains(stone.intersection, stone.color.getOther());
         for (Chain chain : opposingChains) {
             if (chain.isLastLiberty(stone.intersection)) {
@@ -219,6 +231,18 @@ public class Game implements Cloneable {
                 captureChain(chain);
             }
         }
+
+        // 当3面都是敌串，且只提了1子时为劫
+        Set<Chain> friendChains = getNeighborChains(stone.intersection, stone.color);
+        Set<Intersection> liberties = getNeighborLiberties(stone.intersection);
+        if (friendChains.isEmpty() && liberties.size() == 1 && captured.size() == 1) {
+            Chain chain = captured.iterator().next();
+            if (chain.size() == 1) {
+                Stone sto = chain.getStones().iterator().next();
+                return sto.intersection.x + sto.intersection.y * 19;
+            }
+        }
+        return -1;
     }
 
     /**
