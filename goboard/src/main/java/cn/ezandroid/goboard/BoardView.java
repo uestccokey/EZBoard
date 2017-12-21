@@ -64,6 +64,11 @@ public class BoardView extends RelativeLayout {
         invalidate();
     }
 
+    /**
+     * 获取棋盘大小
+     *
+     * @return
+     */
     public int getBoardSize() {
         return mBoardSize;
     }
@@ -78,16 +83,21 @@ public class BoardView extends RelativeLayout {
         invalidate();
     }
 
+    /**
+     * 获取是否显示坐标
+     *
+     * @return
+     */
     public boolean isShowCoordinate() {
         return mIsShowCoordinate;
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
         // 绘制棋盘
         drawBoard(canvas);
+
+        super.onDraw(canvas);
     }
 
     /**
