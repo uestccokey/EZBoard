@@ -19,6 +19,7 @@ import cn.ezandroid.goboard.StoneColor;
 public class MainActivity extends AppCompatActivity {
 
     private BoardView mBoardView;
+    private int mBoardSize = 19;
 
     private Game mGame;
 
@@ -34,13 +35,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGame = new Game(19);
+        mGame = new Game(mBoardSize);
 
         mRoc57Policy = new Roc57Policy(this);
         mFeatureBoard = new FeatureBoard();
 
         mBoardView = findViewById(R.id.board);
-        mBoardView.setBoardSize(19);
+        mBoardView.setBoardSize(mBoardSize);
         mBoardView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -91,13 +92,15 @@ public class MainActivity extends AppCompatActivity {
                                 maxPos = i;
                             }
                         }
-                        Log.e("MainActivity", "Policy Choose:" + maxPos + " " + maxRate);
 
                         mIsThinking = false;
 
                         final int pos = maxPos;
+                        Log.e("MainActivity", "Policy"
+                                + " Choose:(" + pos % 19 + "," + pos / 19 + ")"
+                                + " Rate:" + maxRate
+                                + " UseTime:" + (System.currentTimeMillis() - time));
                         runOnUiThread(() -> putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false));
-                        Log.e("MainActivity", "Policy UseTime:" + (System.currentTimeMillis() - time));
                     }
                 }.start();
             }

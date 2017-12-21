@@ -63,6 +63,14 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
+     * 重置棋盘
+     */
+    public void reset() {
+        mStoneViewMap.clear();
+        removeAllViews();
+    }
+
+    /**
      * 获取格子大小
      *
      * @return
@@ -115,13 +123,17 @@ public class BoardView extends RelativeLayout {
      * @param stone
      */
     public void addStone(Stone stone) {
+        for (StoneView view : mStoneViewMap.values()) {
+            view.setHighlight(false);
+        }
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSquareSize, mSquareSize);
         StoneView stoneView = new StoneView(getContext());
         stoneView.setStone(stone);
         params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
         params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
         stoneView.setLayoutParams(params);
-
+        stoneView.setHighlight(true);
         addView(stoneView);
 
         mStoneViewMap.put(stone, stoneView);

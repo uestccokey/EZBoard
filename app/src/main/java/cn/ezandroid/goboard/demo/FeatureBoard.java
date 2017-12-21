@@ -344,9 +344,6 @@ public class FeatureBoard implements Cloneable {
         mGame.addStone(stone, captured);
         stone.number = mGame.getHistory().getHead();
 
-        if (mKOPos != -1) {
-            mGame.getHistory().readLatest().setKO(new Intersection(mKOPos % 19, mKOPos / 19)); // 记录上一手的劫位置
-        }
         // 劫位置更新
         Intersection intersection = mGame.getHistory().readLatest().getKO();
         if (intersection != null) {
