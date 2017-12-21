@@ -37,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
                 if (intersection != null && !mGame.taken(intersection)) {
-                    mLastColor = mLastColor.getOther();
                     putStone(intersection, mLastColor);
                 }
                 return false;
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             mBoardView.addStone(stone);
+            mLastColor = mLastColor.getOther();
         }
     }
 

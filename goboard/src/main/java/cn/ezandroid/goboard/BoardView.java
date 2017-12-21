@@ -1,11 +1,17 @@
 package cn.ezandroid.goboard;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 棋盘显示控件
@@ -22,6 +28,8 @@ public class BoardView extends RelativeLayout {
     private int mBoardSize = 19; // 棋盘大小
 
     private boolean mIsShowCoordinate = true; // 是否显示坐标
+
+    private Map<Stone, StoneView> mStoneViewMap = new HashMap<>(); // StoneView映射图，用来根据Stone快速查找对应的StoneView
 
     public BoardView(Context context) {
         super(context);
@@ -115,6 +123,8 @@ public class BoardView extends RelativeLayout {
         stoneView.setLayoutParams(params);
 
         addView(stoneView);
+
+        mStoneViewMap.put(stone, stoneView);
     }
 
     /**
@@ -123,7 +133,19 @@ public class BoardView extends RelativeLayout {
      * @param stone
      */
     public void removeStone(Stone stone) {
-
+        StoneView stoneView = mStoneViewMap.get(stone);
+        if (stoneView != null) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(stoneView, "alpha", stoneView.getAlpha(), 0f);
+            animator.setDuration(200);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation, boolean isReverse) {
+                    removeView(stoneView);
+                    mStoneViewMap.remove(stone);
+                }
+            });
+            animator.start();
+        }
     }
 
     /**
