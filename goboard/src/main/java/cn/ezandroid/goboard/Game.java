@@ -55,7 +55,7 @@ public class Game implements Cloneable {
     }
 
     @Override
-    protected Game clone() throws CloneNotSupportedException {
+    public Game clone() throws CloneNotSupportedException {
         Game game = (Game) super.clone();
         game.mChains = new HashSet<>();
         game.mFilled = new HashMap<>();

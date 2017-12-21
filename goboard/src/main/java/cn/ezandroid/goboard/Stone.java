@@ -12,7 +12,7 @@ public class Stone implements Cloneable {
     public int number; // 手数
 
     @Override
-    protected Stone clone() throws CloneNotSupportedException {
+    public Stone clone() throws CloneNotSupportedException {
         Stone clone = (Stone) super.clone();
         clone.color = color;
         clone.intersection = intersection.clone();

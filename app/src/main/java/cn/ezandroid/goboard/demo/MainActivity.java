@@ -2,6 +2,7 @@ package cn.ezandroid.goboard.demo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -21,7 +22,12 @@ public class MainActivity extends AppCompatActivity {
 
     private Game mGame;
 
-    private StoneColor mLastColor = StoneColor.WHITE;
+    private Roc57Policy mRoc57Policy;
+    private FeatureBoard mFeatureBoard;
+
+    private StoneColor mCurrentColor = StoneColor.BLACK;
+
+    private boolean mIsThinking = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
         mGame = new Game(19);
 
+        mRoc57Policy = new Roc57Policy(this);
+        mFeatureBoard = new FeatureBoard();
+
         mBoardView = findViewById(R.id.board);
         mBoardView.setBoardSize(19);
         mBoardView.setOnTouchListener(new View.OnTouchListener() {
@@ -37,14 +46,17 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent event) {
                 Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
                 if (intersection != null && !mGame.taken(intersection)) {
-                    putStone(intersection, mLastColor);
+                    putStone(intersection, mCurrentColor, true);
                 }
                 return false;
             }
         });
     }
 
-    private void putStone(Intersection intersection, StoneColor color) {
+    private void putStone(Intersection intersection, StoneColor color, boolean user) {
+        if (mIsThinking) {
+            return;
+        }
         Set<Chain> captured = new HashSet<>();
         Stone stone = new Stone();
         stone.color = color;
@@ -57,12 +69,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             mBoardView.addStone(stone);
-            mLastColor = mLastColor.getOther();
-        }
-    }
+            mFeatureBoard.playMove(intersection.x, intersection.y,
+                    mCurrentColor == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE);
+            mCurrentColor = mCurrentColor.getOther();
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
+            if (user) {
+                mIsThinking = true;
+                new Thread() {
+                    public void run() {
+                        long time = System.currentTimeMillis();
+
+                        byte[][] features = mFeatureBoard.generateFeatures48(); // 生成策略网络需要的特征数组
+                        float[][] policies = mRoc57Policy.getOutput(new byte[][][]{features}); // 使用策略网络生成落子几率数组
+                        Debug.printRate(policies[0]);
+
+                        float maxRate = -1;
+                        int maxPos = 0;
+                        for (int i = 0; i < policies[0].length; i++) {
+                            if (policies[0][i] > maxRate) {
+                                maxRate = policies[0][i];
+                                maxPos = i;
+                            }
+                        }
+                        Log.e("MainActivity", "Policy Choose:" + maxPos + " " + maxRate);
+
+                        mIsThinking = false;
+
+                        final int pos = maxPos;
+                        runOnUiThread(() -> putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false));
+                        Log.e("MainActivity", "Policy UseTime:" + (System.currentTimeMillis() - time));
+                    }
+                }.start();
+            }
+        }
     }
 }

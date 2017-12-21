@@ -19,7 +19,7 @@ public class History<E> extends ArrayList<E> {
      */
     private int max;
 
-    History() {
+    public History() {
         head = max = -1;
     }
 
@@ -49,6 +49,13 @@ public class History<E> extends ArrayList<E> {
     @Override
     public void clear() {
         head = max = -1;
+    }
+
+    /**
+     * 过去最近事件的索引
+     */
+    public int getHead() {
+        return head;
     }
 
     /**

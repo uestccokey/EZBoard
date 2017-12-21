@@ -14,14 +14,14 @@ public class Chain implements Cloneable {
     private Set<Stone> mStones; // 棋串棋子集合
     private Set<Intersection> mLiberties; // 棋串气点集合
 
-    Chain(StoneColor c) {
+    public Chain(StoneColor c) {
         mStoneColor = c;
         mStones = new HashSet<>();
         mLiberties = new HashSet<>();
     }
 
     @Override
-    protected Chain clone() throws CloneNotSupportedException {
+    public Chain clone() throws CloneNotSupportedException {
         Chain chain = (Chain) super.clone();
         chain.mStoneColor = mStoneColor;
         chain.mStones = new HashSet<>();

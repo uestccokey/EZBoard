@@ -14,13 +14,13 @@ public class Move implements Cloneable {
     private Set<Chain> mCaptured; // 落子后提走的棋串集合
     private Intersection mKO; // 劫的位置
 
-    Move(Stone s, Set<Chain> c) {
+    public Move(Stone s, Set<Chain> c) {
         mStone = s;
         mCaptured = c;
     }
 
     @Override
-    protected Move clone() throws CloneNotSupportedException {
+    public Move clone() throws CloneNotSupportedException {
         Move move = (Move) super.clone();
         move.mStone = mStone.clone();
         move.mCaptured = new HashSet<>();

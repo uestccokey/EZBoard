@@ -14,7 +14,7 @@ public class Intersection implements Cloneable {
     }
 
     @Override
-    protected Intersection clone() throws CloneNotSupportedException {
+    public Intersection clone() throws CloneNotSupportedException {
         return (Intersection) super.clone();
     }
 

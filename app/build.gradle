@@ -52,5 +52,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
+    implementation 'org.tensorflow:tensorflow-android:1.4.0'
+
     implementation project(':goboard')
 }
