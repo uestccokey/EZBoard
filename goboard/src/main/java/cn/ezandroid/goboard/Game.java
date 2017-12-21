@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 落子管理器
+ * 棋局模型
  *
  * @author like
  */
-public class MoveManager implements Cloneable {
+public class Game implements Cloneable {
 
     /**
      * 棋盘上的所有棋串
@@ -33,7 +33,7 @@ public class MoveManager implements Cloneable {
     /**
      * 棋盘大小
      */
-    private int mBoardSize;
+    private int mBoardSize = 19;
 
     /**
      * 白棋提子数
@@ -45,7 +45,7 @@ public class MoveManager implements Cloneable {
      */
     private int mBlacksCaptures;
 
-    MoveManager(int size) {
+    public Game(int size) {
         mChains = new HashSet<>();
         mFilled = new HashMap<>();
         mHistory = new History<>();
@@ -55,20 +55,20 @@ public class MoveManager implements Cloneable {
     }
 
     @Override
-    protected MoveManager clone() throws CloneNotSupportedException {
-        MoveManager moveManager = (MoveManager) super.clone();
-        moveManager.mChains = new HashSet<>();
-        moveManager.mFilled = new HashMap<>();
+    protected Game clone() throws CloneNotSupportedException {
+        Game game = (Game) super.clone();
+        game.mChains = new HashSet<>();
+        game.mFilled = new HashMap<>();
         for (Chain chain : mChains) {
             Chain clone = chain.clone();
-            moveManager.mChains.add(clone);
-            moveManager.updateFilled(clone, clone.getStones());
+            game.mChains.add(clone);
+            game.updateFilled(clone, clone.getStones());
         }
-        moveManager.mHistory = new History<>();
+        game.mHistory = new History<>();
         for (Move move : mHistory) {
-            moveManager.mHistory.add(move.clone());
+            game.mHistory.add(move.clone());
         }
-        return moveManager;
+        return game;
     }
 
     public Set<Chain> getChains() {

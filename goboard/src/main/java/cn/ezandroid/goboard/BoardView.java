@@ -15,7 +15,7 @@ import android.widget.RelativeLayout;
  */
 public class BoardView extends RelativeLayout {
 
-    private int mCubicSize; // 格子尺寸
+    private int mSquareSize; // 格子尺寸
 
     private Paint mBoardPaint;
 
@@ -43,7 +43,7 @@ public class BoardView extends RelativeLayout {
         heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(minSize, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        mCubicSize = Math.round(minSize / (mBoardSize + 1));
+        mSquareSize = Math.round(minSize / (mBoardSize + 1));
     }
 
     private void initBoard() {
@@ -52,6 +52,15 @@ public class BoardView extends RelativeLayout {
         this.mBoardPaint.setStyle(Paint.Style.FILL);
 
         setWillNotDraw(false);
+    }
+
+    /**
+     * 获取格子大小
+     *
+     * @return
+     */
+    public int getSquareSize() {
+        return mSquareSize;
     }
 
     /**
@@ -92,6 +101,48 @@ public class BoardView extends RelativeLayout {
         return mIsShowCoordinate;
     }
 
+    /**
+     * 添加棋子
+     *
+     * @param stone
+     */
+    public void addStone(Stone stone) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSquareSize, mSquareSize);
+        StoneView stoneView = new StoneView(getContext());
+        stoneView.setStone(stone);
+        params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
+        params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
+        stoneView.setLayoutParams(params);
+
+        addView(stoneView);
+    }
+
+    /**
+     * 删除棋子
+     *
+     * @param stone
+     */
+    public void removeStone(Stone stone) {
+
+    }
+
+    /**
+     * 根据传入的坐标查找最近的交叉点
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+    public Intersection getNearestIntersection(float x, float y) {
+        int col = Math.round(x / mSquareSize) - 1;
+        int row = Math.round(y / mSquareSize) - 1;
+        if (col < 0 || col >= mBoardSize
+                || row < 0 || row >= mBoardSize) {
+            return null;
+        }
+        return new Intersection(col, row);
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
         // 绘制棋盘
@@ -106,12 +157,12 @@ public class BoardView extends RelativeLayout {
      * @param canvas
      */
     private void drawBoard(Canvas canvas) {
-        int coordinateTextSize = mCubicSize / 2;
+        int coordinateTextSize = mSquareSize / 2;
 
         mBoardPaint.setColor(Color.BLACK);
         mBoardPaint.setTextSize(coordinateTextSize);
 
-        canvas.translate(mCubicSize, mCubicSize);
+        canvas.translate(mSquareSize, mSquareSize);
 
         // 1，绘制棋盘坐标
         if (mIsShowCoordinate) {
@@ -127,13 +178,13 @@ public class BoardView extends RelativeLayout {
                     abscissa = "" + cc;
                 }
                 width = mBoardPaint.measureText(abscissa);
-                canvas.drawText(abscissa, i * mCubicSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
+                canvas.drawText(abscissa, i * mSquareSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
             }
             // 纵坐标
             for (int i = 0; i < mBoardSize; i++) {
                 String ordinate = "" + (i + 1);
                 float width = mBoardPaint.measureText(ordinate);
-                canvas.drawText(ordinate, -mCubicSize / 2 - width / 2, i * mCubicSize + coordinateTextSize / 2, mBoardPaint);
+                canvas.drawText(ordinate, -mSquareSize / 2 - width / 2, (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
             }
         }
 
@@ -144,10 +195,10 @@ public class BoardView extends RelativeLayout {
             } else {
                 mBoardPaint.setStrokeWidth(1.5f);
             }
-            canvas.drawLine(0, i * mCubicSize, mCubicSize * (mBoardSize - 1),
-                    i * mCubicSize, mBoardPaint);
-            canvas.drawLine(i * mCubicSize, 0, i * mCubicSize,
-                    mCubicSize * (mBoardSize - 1), mBoardPaint);
+            canvas.drawLine(0, i * mSquareSize, mSquareSize * (mBoardSize - 1),
+                    i * mSquareSize, mBoardPaint);
+            canvas.drawLine(i * mSquareSize, 0, i * mSquareSize,
+                    mSquareSize * (mBoardSize - 1), mBoardPaint);
         }
 
         // 3，绘制星位
@@ -156,23 +207,23 @@ public class BoardView extends RelativeLayout {
                 switch (mBoardSize) {
                     case 9:
                         if ((i == 2 || i == 6) && (j == 2 || j == 6) || (i == 4 && j == 4)) {
-                            canvas.drawCircle(i * mCubicSize, j * mCubicSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
                         }
                         break;
                     case 13:
                         if ((i == 3 || i == 9) && (j == 3 || j == 9) || (i == 6 && j == 6)) {
-                            canvas.drawCircle(i * mCubicSize, j * mCubicSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
                         }
                         break;
                     case 19:
                         if ((i == 3 || i == 9 || i == 15) && (j == 3 || j == 9 || j == 15)) {
-                            canvas.drawCircle(i * mCubicSize, j * mCubicSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
                         }
                         break;
                 }
             }
         }
 
-        canvas.translate(-mCubicSize, -mCubicSize);
+        canvas.translate(-mSquareSize, -mSquareSize);
     }
 }

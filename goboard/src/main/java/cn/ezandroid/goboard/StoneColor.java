@@ -9,7 +9,7 @@ public enum StoneColor {
 
     StoneColor() {}
 
-    StoneColor getOther() {
+    public StoneColor getOther() {
         return (this == BLACK) ? WHITE : BLACK;
     }
 }
