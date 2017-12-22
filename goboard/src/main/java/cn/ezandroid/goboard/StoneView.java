@@ -4,8 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * 棋子显示控件
@@ -13,7 +14,7 @@ import android.widget.ImageView;
  * @author like
  * @date 2017-12-21
  */
-public class StoneView extends ImageView {
+public class StoneView extends TextView {
 
     private Paint mStonePaint;
 
@@ -96,6 +97,9 @@ public class StoneView extends ImageView {
         // 绘制棋子
         drawStone(canvas);
 
+        // 绘制手数
+        drawNumber(canvas);
+
         // 绘制高亮状态
         drawHighlight(canvas);
     }
@@ -132,6 +136,38 @@ public class StoneView extends ImageView {
             mStonePaint.setColor(Color.RED);
             mStonePaint.setStyle(Paint.Style.FILL);
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 6, mStonePaint);
+        }
+    }
+
+    /**
+     * 绘制手数
+     *
+     * @param canvas
+     */
+    private void drawNumber(Canvas canvas) {
+        if (mIsHighlight) {
+            return;
+        }
+        float textSize;
+        if (mStone.number < 10) {
+            textSize = getWidth() / 1.5f;
+        } else if (mStone.number < 100) {
+            textSize = getWidth() / 2f;
+        } else {
+            textSize = getWidth() / 2.5f;
+        }
+        mStonePaint.setTextSize(textSize);
+        mStonePaint.setStrokeWidth(0);
+        String number = String.valueOf(mStone.number);
+        float width = mStonePaint.measureText(number);
+        Rect bounds = new Rect();
+        mStonePaint.getTextBounds(number, 0, number.length(), bounds);
+        if (mStone.color == StoneColor.BLACK) {
+            mStonePaint.setColor(Color.WHITE);
+            canvas.drawText(number, (getWidth() - width) / 2f, (getHeight() + bounds.height()) / 2f, mStonePaint);
+        } else {
+            mStonePaint.setColor(Color.BLACK);
+            canvas.drawText(number, (getWidth() - width) / 2f, (getHeight() + bounds.height()) / 2f, mStonePaint);
         }
     }
 }

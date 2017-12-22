@@ -12,6 +12,9 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
  */
 public class AQValue {
 
+    public static final int BLACK = 1;
+    public static final int WHITE = 0;
+
     private static final int FEATURE_LENGTH = 49;
     private static final int BOARD_SIZE = 19;
     private static final String VN_X_NAME = "vn_x";

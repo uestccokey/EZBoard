@@ -31,6 +31,8 @@ public class BoardView extends RelativeLayout {
 
     private Map<Stone, StoneView> mStoneViewMap = new HashMap<>(); // StoneView映射图，用来根据Stone快速查找对应的StoneView
 
+    private Intersection mHighlightIntersection;
+
     public BoardView(Context context) {
         super(context);
         initBoard();
@@ -57,7 +59,6 @@ public class BoardView extends RelativeLayout {
     private void initBoard() {
         this.mBoardPaint = new Paint();
         this.mBoardPaint.setAntiAlias(true);
-        this.mBoardPaint.setStyle(Paint.Style.FILL);
 
         setWillNotDraw(false);
     }
@@ -133,6 +134,25 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
+     * 设置高亮的交叉点
+     *
+     * @param intersection
+     */
+    public void setHighlightIntersection(Intersection intersection) {
+        mHighlightIntersection = intersection;
+        invalidate();
+    }
+
+    /**
+     * 获取高亮的交叉点
+     *
+     * @return
+     */
+    public Intersection getHighlightIntersection() {
+        return mHighlightIntersection;
+    }
+
+    /**
      * 添加棋子
      *
      * @param stone
@@ -193,6 +213,9 @@ public class BoardView extends RelativeLayout {
         // 绘制棋盘
         drawBoard(canvas);
 
+        // 绘制高亮交叉点
+        drawHighlightIntersection(canvas);
+
         super.onDraw(canvas);
     }
 
@@ -205,6 +228,7 @@ public class BoardView extends RelativeLayout {
         int coordinateTextSize = mSquareSize / 2;
 
         mBoardPaint.setColor(Color.BLACK);
+        mBoardPaint.setStyle(Paint.Style.FILL);
         mBoardPaint.setTextSize(coordinateTextSize);
 
         canvas.translate(mSquareSize, mSquareSize);
@@ -270,5 +294,28 @@ public class BoardView extends RelativeLayout {
         }
 
         canvas.translate(-mSquareSize, -mSquareSize);
+    }
+
+    /**
+     * 绘制高亮交叉点
+     *
+     * @param canvas
+     */
+    private void drawHighlightIntersection(Canvas canvas) {
+        if (mHighlightIntersection != null) {
+            mBoardPaint.setColor(Color.RED);
+            mBoardPaint.setStrokeWidth(3);
+            mBoardPaint.setStyle(Paint.Style.STROKE);
+
+            canvas.translate(mSquareSize, mSquareSize);
+
+            int left = Math.round((mHighlightIntersection.x - 0.5f) * mSquareSize);
+            int top = Math.round((mHighlightIntersection.y - 0.5f) * mSquareSize);
+            int right = Math.round((mHighlightIntersection.x + 0.5f) * mSquareSize);
+            int bottom = Math.round((mHighlightIntersection.y + 0.5f) * mSquareSize);
+            canvas.drawRect(left, top, right, bottom, mBoardPaint);
+
+            canvas.translate(-mSquareSize, -mSquareSize);
+        }
     }
 }

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.Button;
 
 import java.util.HashSet;
@@ -51,15 +49,17 @@ public class MainActivity extends AppCompatActivity {
 
         mBoardView = findViewById(R.id.board);
         mBoardView.setBoardSize(mBoardSize);
-        mBoardView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
-                if (intersection != null && !mGame.taken(intersection)) {
+        mBoardView.setOnTouchListener((v, event) -> {
+            Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
+            if (intersection != null && !mGame.taken(intersection)) {
+                Intersection highlight = mBoardView.getHighlightIntersection();
+                if (intersection.equals(highlight)) {
                     putStone(intersection, mCurrentColor, true);
+                } else {
+                    mBoardView.setHighlightIntersection(intersection);
                 }
-                return false;
             }
+            return false;
         });
 
         mCreateButton = findViewById(R.id.create);
@@ -85,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         Pair<Move, Chain> pair = mGame.undo();
 
         if (pair != null) {
+            mBoardView.setHighlightIntersection(null);
+
             Move move = pair.first;
             Set<Chain> captured = move.getCaptured();
 
@@ -138,8 +140,11 @@ public class MainActivity extends AppCompatActivity {
         Stone stone = new Stone();
         stone.color = color;
         stone.intersection = intersection;
+        stone.number = mGame.getHistory().size() + 1;
         boolean add = mGame.addStone(stone, captured);
         if (add) {
+            mBoardView.setHighlightIntersection(null);
+
             for (Chain chain : captured) {
                 for (Stone stone1 : chain.getStones()) {
                     mBoardView.removeStone(stone1);
@@ -159,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                         byte[][] feature49 = mFeatureBoard.generateFeatures49(); // 生成价值网络需要的特征数组
                         float[] values = mAQValue.getOutput(new byte[][][]{feature49},
-                                mCurrentColor == StoneColor.BLACK ? 1 : 0); // 使用价值网络生成当前局面胜率
+                                mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE); // 使用价值网络生成当前局面胜率
 
                         byte[][] features48 = mFeatureBoard.generateFeatures48(); // 生成策略网络需要的特征数组
                         float[][] policies = mRoc57Policy.getOutput(new byte[][][]{features48}); // 使用策略网络生成落子几率数组
