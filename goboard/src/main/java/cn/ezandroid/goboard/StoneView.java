@@ -24,6 +24,8 @@ public class StoneView extends TextView {
 
     private boolean mIsHighlight; // 棋子是否高亮
 
+    private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+
     public StoneView(Context context) {
         super(context);
         initStone();
@@ -37,6 +39,18 @@ public class StoneView extends TextView {
     private void initStone() {
         this.mStonePaint = new Paint();
         this.mStonePaint.setAntiAlias(true);
+    }
+
+    /**
+     * 设置是否绘制棋子手数
+     *
+     * @param drawNumber
+     */
+    public void setDrawNumber(boolean drawNumber) {
+        if (mIsDrawNumber != drawNumber) {
+            mIsDrawNumber = drawNumber;
+            invalidate();
+        }
     }
 
     /**
@@ -145,7 +159,7 @@ public class StoneView extends TextView {
      * @param canvas
      */
     private void drawNumber(Canvas canvas) {
-        if (mIsHighlight) {
+        if (mIsHighlight || !mIsDrawNumber) {
             return;
         }
         float textSize;
