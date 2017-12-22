@@ -10,10 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import cn.ezandroid.goboard.BoardView;
-import cn.ezandroid.goboard.Chain;
-import cn.ezandroid.goboard.Game;
 import cn.ezandroid.goboard.Intersection;
-import cn.ezandroid.goboard.Move;
 import cn.ezandroid.goboard.Stone;
 import cn.ezandroid.goboard.StoneColor;
 

@@ -11,10 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import cn.ezandroid.goboard.Chain;
-import cn.ezandroid.goboard.Game;
 import cn.ezandroid.goboard.Intersection;
-import cn.ezandroid.goboard.Move;
 import cn.ezandroid.goboard.Stone;
 import cn.ezandroid.goboard.StoneColor;
 
