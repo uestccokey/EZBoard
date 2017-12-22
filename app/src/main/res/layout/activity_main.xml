@@ -7,4 +7,35 @@
         android:id="@+id/board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/board"
+        android:layout_centerHorizontal="true">
+
+        <Button
+            android:id="@+id/create"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="新局" />
+
+        <Button
+            android:id="@+id/undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="悔棋" />
+
+        <Button
+            android:id="@+id/pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pass" />
+
+        <Button
+            android:id="@+id/resign"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="认输" />
+    </LinearLayout>
 </RelativeLayout>

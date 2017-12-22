@@ -118,22 +118,32 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
+     * 设置高亮棋子
+     *
+     * @param stone
+     */
+    public void setHighlightStone(Stone stone) {
+        for (StoneView view : mStoneViewMap.values()) {
+            if (view.getStone().equals(stone)) {
+                view.setHighlight(true);
+            } else {
+                view.setHighlight(false);
+            }
+        }
+    }
+
+    /**
      * 添加棋子
      *
      * @param stone
      */
     public void addStone(Stone stone) {
-        for (StoneView view : mStoneViewMap.values()) {
-            view.setHighlight(false);
-        }
-
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSquareSize, mSquareSize);
         StoneView stoneView = new StoneView(getContext());
         stoneView.setStone(stone);
         params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
         params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
         stoneView.setLayoutParams(params);
-        stoneView.setHighlight(true);
         addView(stoneView);
 
         mStoneViewMap.put(stone, stoneView);
@@ -147,6 +157,7 @@ public class BoardView extends RelativeLayout {
     public void removeStone(Stone stone) {
         StoneView stoneView = mStoneViewMap.get(stone);
         if (stoneView != null) {
+            // 棋子消失动画
             ObjectAnimator animator = ObjectAnimator.ofFloat(stoneView, "alpha", stoneView.getAlpha(), 0f);
             animator.setDuration(200);
             animator.addListener(new AnimatorListenerAdapter() {
