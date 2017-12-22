@@ -4,6 +4,7 @@ package cn.ezandroid.goboard;
  * 棋子模型
  *
  * @author like
+ * @date 2017-12-20
  */
 public class Stone implements Cloneable {
 

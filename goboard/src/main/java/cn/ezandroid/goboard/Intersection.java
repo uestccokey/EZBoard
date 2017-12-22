@@ -2,6 +2,9 @@ package cn.ezandroid.goboard;
 
 /**
  * 交叉点模型
+ *
+ * @author like
+ * @date 2017-12-20
  */
 public class Intersection implements Cloneable {
 
