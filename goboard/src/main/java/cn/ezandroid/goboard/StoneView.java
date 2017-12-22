@@ -54,6 +54,15 @@ public class StoneView extends TextView {
     }
 
     /**
+     * 获取是否绘制棋子手数
+     *
+     * @return
+     */
+    public boolean isDrawNumber() {
+        return mIsDrawNumber;
+    }
+
+    /**
      * 设置棋子是否高亮
      *
      * @param highlight
@@ -63,6 +72,15 @@ public class StoneView extends TextView {
             mIsHighlight = highlight;
             invalidate();
         }
+    }
+
+    /**
+     * 获取棋子是否高亮
+     *
+     * @return
+     */
+    public boolean isHighlight() {
+        return mIsHighlight;
     }
 
     /**

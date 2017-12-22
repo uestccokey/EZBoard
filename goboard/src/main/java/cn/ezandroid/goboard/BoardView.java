@@ -105,8 +105,10 @@ public class BoardView extends RelativeLayout {
      * @param isShowCoordinate
      */
     public void setShowCoordinate(boolean isShowCoordinate) {
-        mIsShowCoordinate = isShowCoordinate;
-        invalidate();
+        if (mIsShowCoordinate != isShowCoordinate) {
+            mIsShowCoordinate = isShowCoordinate;
+            invalidate();
+        }
     }
 
     /**
@@ -131,6 +133,20 @@ public class BoardView extends RelativeLayout {
                 view.setHighlight(false);
             }
         }
+    }
+
+    /**
+     * 获取高亮的棋子
+     *
+     * @return
+     */
+    public StoneView getHighlightStone() {
+        for (StoneView view : mStoneViewMap.values()) {
+            if (view.isHighlight()) {
+                return view;
+            }
+        }
+        return null;
     }
 
     /**

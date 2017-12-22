@@ -1,7 +1,11 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.goboard.demo;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import cn.ezandroid.goboard.Intersection;
+import cn.ezandroid.goboard.Stone;
+import cn.ezandroid.goboard.StoneColor;
 
 /**
  * 棋串模型

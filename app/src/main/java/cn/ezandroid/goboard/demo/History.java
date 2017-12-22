@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.goboard.demo;
 
 import java.util.ArrayList;
 
