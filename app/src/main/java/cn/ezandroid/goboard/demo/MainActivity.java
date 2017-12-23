@@ -17,6 +17,8 @@ import cn.ezandroid.goboard.StoneColor;
 public class MainActivity extends AppCompatActivity {
 
     private BoardView mBoardView;
+    private HeatMapView mHeatMapView;
+
     private Button mCreateButton;
     private Button mUndoButton;
     private Button mPassButton;
@@ -25,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Game mGame;
 
-    private Roc57Policy mRoc57Policy;
-    private AQValue mAQValue;
+    private IPolicyNetwork mPolicyNetwork;
+    private IValueNetwork mValueNetwork;
     private FeatureBoard mFeatureBoard;
 
     private StoneColor mCurrentColor = StoneColor.BLACK;
@@ -40,17 +42,17 @@ public class MainActivity extends AppCompatActivity {
 
         mGame = new Game(mBoardSize);
 
-        mRoc57Policy = new Roc57Policy(this);
-        mAQValue = new AQValue(this);
+        mPolicyNetwork = new Roc57Policy(this);
+        mValueNetwork = new AQValue(this);
         mFeatureBoard = new FeatureBoard();
 
         mBoardView = findViewById(R.id.board);
         mBoardView.setBoardSize(mBoardSize);
         mBoardView.setOnTouchListener((v, event) -> {
             Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
-            if (intersection != null && !mGame.taken(intersection)) {
+            if (intersection != null) {
                 Intersection highlight = mBoardView.getHighlightIntersection();
-                if (intersection.equals(highlight)) {
+                if (intersection.equals(highlight) && !mGame.taken(intersection)) {
                     putStone(intersection, mCurrentColor, true);
                 } else {
                     mBoardView.setHighlightIntersection(intersection);
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        mHeatMapView = findViewById(R.id.heat_map);
+        mHeatMapView.setBoardSize(mBoardSize);
 
         mCreateButton = findViewById(R.id.create);
         mCreateButton.setOnClickListener(v -> create());
@@ -82,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         Pair<Move, Chain> pair = mGame.undo();
 
         if (pair != null) {
+            mHeatMapView.setHeatMap(null);
             mBoardView.setHighlightIntersection(null);
 
             Move move = pair.first;
@@ -159,12 +165,12 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         long time = System.currentTimeMillis();
 
-                        byte[][] feature49 = mFeatureBoard.generateFeatures49(); // 生成价值网络需要的特征数组
-                        float[] values = mAQValue.getOutput(new byte[][][]{feature49},
-                                mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE); // 使用价值网络生成当前局面胜率
+                        byte[][] feature49 = mFeatureBoard.generateFeatures49();
+                        byte[][] features48 = mFeatureBoard.generateFeatures48();
 
-                        byte[][] features48 = mFeatureBoard.generateFeatures48(); // 生成策略网络需要的特征数组
-                        float[][] policies = mRoc57Policy.getOutput(new byte[][][]{features48}); // 使用策略网络生成落子几率数组
+                        float[] values = mValueNetwork.getOutput(new byte[][][]{feature49},
+                                mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE);
+                        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
                         Debug.printRate(policies[0]);
 
                         float maxRate = -1;
@@ -184,7 +190,11 @@ public class MainActivity extends AppCompatActivity {
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")"
                                 + " Rate:" + maxRate
                                 + " UseTime:" + (System.currentTimeMillis() - time));
-                        runOnUiThread(() -> putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false));
+                        runOnUiThread(() -> {
+                            mHeatMapView.setHeatMap(policies[0]);
+
+                            putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false);
+                        });
                     }
                 }.start();
             }

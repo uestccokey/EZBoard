@@ -10,7 +10,7 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
  * @author like
  * @date 2017-11-02
  */
-public class Roc57Policy {
+public class Roc57Policy implements IPolicyNetwork {
 
     private static final int FEATURE_LENGTH = 48;
     private static final int BOARD_SIZE = 19;

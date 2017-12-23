@@ -10,7 +10,7 @@ import org.tensorflow.contrib.android.TensorFlowInferenceInterface;
  * @author like
  * @date 2017-10-31
  */
-public class AQValue {
+public class AQValue implements IValueNetwork {
 
     public static final int BLACK = 1;
     public static final int WHITE = 0;

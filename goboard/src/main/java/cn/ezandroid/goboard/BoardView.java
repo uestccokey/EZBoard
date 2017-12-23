@@ -57,8 +57,8 @@ public class BoardView extends RelativeLayout {
     }
 
     private void initBoard() {
-        this.mBoardPaint = new Paint();
-        this.mBoardPaint.setAntiAlias(true);
+        mBoardPaint = new Paint();
+        mBoardPaint.setAntiAlias(true);
 
         setWillNotDraw(false);
     }
@@ -86,8 +86,10 @@ public class BoardView extends RelativeLayout {
      * @param boardSize
      */
     public void setBoardSize(int boardSize) {
-        mBoardSize = boardSize;
-        invalidate();
+        if (mBoardSize != boardSize) {
+            mBoardSize = boardSize;
+            invalidate();
+        }
     }
 
     /**
@@ -226,13 +228,13 @@ public class BoardView extends RelativeLayout {
 
     @Override
     public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
         // 绘制棋盘
         drawBoard(canvas);
 
         // 绘制高亮交叉点
         drawHighlightIntersection(canvas);
-
-        super.onDraw(canvas);
     }
 
     /**
