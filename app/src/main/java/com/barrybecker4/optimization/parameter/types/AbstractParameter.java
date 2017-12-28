@@ -77,7 +77,6 @@ public abstract class AbstractParameter implements Parameter {
 
     @Override
     public String toString() {
-
         StringBuilder sa = new StringBuilder(getName());
         sa.append(" = ");
         sa.append(FormatUtil.formatNumber(getValue()));
@@ -121,7 +120,6 @@ public abstract class AbstractParameter implements Parameter {
         validateRange(value);
         return value;
     }
-
 
     public double getMinValue() {
         return minValue_;
@@ -178,5 +176,4 @@ public abstract class AbstractParameter implements Parameter {
         result = 31 * result + (integerOnly_ ? 1 : 0);
         return result;
     }
-
 }

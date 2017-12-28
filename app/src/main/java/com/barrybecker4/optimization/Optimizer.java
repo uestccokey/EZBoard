@@ -38,7 +38,6 @@ public class Optimizer {
 
     protected OptimizationListener listener_;
 
-
     /**
      * Constructor
      * No log file specified in this constructor. (use this version if running in unsigned applet).
@@ -74,7 +73,6 @@ public class Optimizer {
      */
     public ParameterArray doOptimization(OptimizationStrategyType optimizationType,
                                          ParameterArray params, double fitnessRange) {
-
         OptimizationStrategy optStrategy = optimizationType.getStrategy(optimizee_, fitnessRange);
         if (logger_ != null) {
             logger_.initialize(params);

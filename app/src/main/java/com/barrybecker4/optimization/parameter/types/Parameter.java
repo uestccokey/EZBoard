@@ -6,9 +6,6 @@ import com.barrybecker4.optimization.parameter.redistribution.RedistributionFunc
 
 import java.util.Random;
 
-//import com.barrybecker4.optimization.parameter.ParameterChangeListener;
-//import com.barrybecker4.optimization.parameter.ui.ParameterWidget;
-
 /**
  * Interface to represent a general parameter of some type to an algorithm.
  *
@@ -109,11 +106,4 @@ public interface Parameter {
      * @return new copy of the parameter
      */
     Parameter copy();
-
-//    /**
-//     * A UI control of some type for changing the parameter.
-//     * @param listener parameter change listener.
-//     * @return new parameter widget
-//     */
-//    ParameterWidget createWidget(ParameterChangeListener listener);
 }

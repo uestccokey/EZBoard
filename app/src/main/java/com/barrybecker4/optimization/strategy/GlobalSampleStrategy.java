@@ -6,7 +6,6 @@ import com.barrybecker4.optimization.parameter.ParameterArray;
 
 import java.util.Iterator;
 
-
 /**
  * Global sampling optimization strategy.
  *
@@ -20,7 +19,6 @@ public class GlobalSampleStrategy extends OptimizationStrategy {
     /** the user should set this explicitly. */
     int numSample;
 
-
     /**
      * Constructor
      * No log file specified in this constructor. (use this version if running in unsigned applet).
@@ -28,7 +26,6 @@ public class GlobalSampleStrategy extends OptimizationStrategy {
      * @param optimizee the thing to be optimized.
      */
     public GlobalSampleStrategy(Optimizee optimizee) {
-
         super(optimizee);
         numSample = DEFAULT_NUM_SAMPLES;
     }
@@ -37,7 +34,6 @@ public class GlobalSampleStrategy extends OptimizationStrategy {
      * @param samplingRate the rate at which to sample along each dimension when trying guesses globally.
      */
     public void setSamplingRate(int samplingRate) {
-
         assert samplingRate > 0;
         numSample = samplingRate;
     }
@@ -61,7 +57,6 @@ public class GlobalSampleStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         Iterator<? extends ParameterArray> samples = params.findGlobalSamples(numSample);
         double bestFitness = Double.MAX_VALUE;
         ParameterArray bestParams = params.copy();

@@ -6,7 +6,6 @@ import com.barrybecker4.optimization.parameter.ParameterArray;
 
 import java.util.Iterator;
 
-
 /**
  * A strategy which naively tries all possibilities.
  * This will not be practical for problems with real valued parameters where the search space is infinite.
@@ -34,7 +33,6 @@ public class BruteForceStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         Iterator<? extends ParameterArray> samples = params.findGlobalSamples(Long.MAX_VALUE);
         double bestFitness = Double.MAX_VALUE;
         ParameterArray bestParams = params.copy();

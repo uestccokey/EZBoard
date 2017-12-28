@@ -3,7 +3,6 @@ package com.barrybecker4.optimization.optimizee;
 
 import com.barrybecker4.optimization.parameter.ParameterArray;
 
-
 /**
  * This interface needs to be implemented for any object you wish to have optimized.
  * Optimization of an Optimizee is done by the Optimizer class.

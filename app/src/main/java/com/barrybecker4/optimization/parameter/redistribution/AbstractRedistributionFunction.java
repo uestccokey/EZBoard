@@ -47,6 +47,4 @@ public abstract class AbstractRedistributionFunction implements RedistributionFu
     protected static void verifyInRange(double value) {
         assert (value >= 0) && (value <= 1.0) : "value, " + value + ", was outside the range 0 to 1.";
     }
-
-
 }

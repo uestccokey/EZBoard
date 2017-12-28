@@ -26,6 +26,4 @@ public class BooleanRedistribution extends DiscreteRedistribution {
         probs[1] = 1.0 - percentTrue;
         return probs;
     }
-
-
 }

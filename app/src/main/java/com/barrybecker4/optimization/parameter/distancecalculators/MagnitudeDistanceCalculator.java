@@ -19,7 +19,6 @@ public class MagnitudeDistanceCalculator implements DistanceCalculator {
      * @return the distance between this parameter array and another.
      */
     public double calculateDistance(ParameterArray pa1, ParameterArray pa2) {
-
         int thisLength = pa1.size();
         int thatLength = pa2.size();
 
@@ -34,5 +33,4 @@ public class MagnitudeDistanceCalculator implements DistanceCalculator {
 
         return Math.abs(sum1 - sum2);
     }
-
 }

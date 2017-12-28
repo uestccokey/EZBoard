@@ -20,8 +20,7 @@ public class HillClimbingStrategy extends OptimizationStrategy {
 
     /** continue optimization iteration until the improvement in fitness is less than this. */
     private static final double FITNESS_EPS_PERCENT = 0.0000001;
-    protected static final double JUMP_SIZE_EPS = 0.000000001;
-
+    private static final double JUMP_SIZE_EPS = 0.000000001;
 
     /**
      * Constructor
@@ -47,7 +46,6 @@ public class HillClimbingStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         ParameterArray currentParams = params.copy();
 
         double jumpSize = INITIAL_JUMP_SIZE;
@@ -90,5 +88,4 @@ public class HillClimbingStrategy extends OptimizationStrategy {
         System.out.println("Last improvement = " + improvement + " jumpSize=" + jumpSize + " improved=" + improved);
         return currentParams;
     }
-
 }

@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common.search.strategy;
 
-import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.twoplayer.common.TwoPlayerBoard;
 import com.barrybecker4.game.twoplayer.common.TwoPlayerMove;
 import com.barrybecker4.game.twoplayer.common.search.SearchAttribute;
@@ -88,7 +87,6 @@ public enum SearchStrategyType {
         }
     };
 
-
     private String labelKey_;
     private List<SearchAttribute> attributes_;
 
@@ -100,20 +98,6 @@ public enum SearchStrategyType {
     SearchStrategyType(String labelKey, SearchAttribute[] attributes) {
         labelKey_ = labelKey;
         attributes_ = Arrays.asList(attributes);
-    }
-
-    /**
-     * @return localized description.
-     */
-    public String getLabel() {
-        return GameContext.getLabel(labelKey_);
-    }
-
-    /**
-     * @return localized description.
-     */
-    public String getTooltip() {
-        return GameContext.getLabel(labelKey_ + "_TIP");  // NON-NLS
     }
 
     /**

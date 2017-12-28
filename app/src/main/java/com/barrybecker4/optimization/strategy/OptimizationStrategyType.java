@@ -80,7 +80,6 @@ public enum OptimizationStrategyType {
         }
     };
 
-
     private String description_;
 
     /**
@@ -104,6 +103,5 @@ public enum OptimizationStrategyType {
      * @return an instance of the strategy to use.
      */
     public abstract OptimizationStrategy getStrategy(Optimizee optimizee, double fitnessRange);
-
 }
 

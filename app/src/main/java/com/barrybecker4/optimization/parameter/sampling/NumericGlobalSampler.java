@@ -21,7 +21,6 @@ public class NumericGlobalSampler extends AbstractGlobalSampler<NumericParameter
 
     private MultiDimensionalIndexer samples;
 
-
     /**
      * Constructor
      *
@@ -62,10 +61,8 @@ public class NumericGlobalSampler extends AbstractGlobalSampler<NumericParameter
         return nextSample;
     }
 
-
     private int determineSamplingRate(long requestedNumSamples) {
         int numDims = params.size();
         return (int) Math.pow((double) requestedNumSamples, 1.0 / numDims);
     }
-
 }

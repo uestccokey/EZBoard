@@ -32,7 +32,6 @@ public class PermutedGlobalSampler extends AbstractGlobalSampler<PermutedParamet
     /** becomes true if the requestedNumSamples is close to the total number of permutations in the space */
     private boolean useExhaustiveSearch;
 
-
     /**
      * Constructor
      *
@@ -75,7 +74,6 @@ public class PermutedGlobalSampler extends AbstractGlobalSampler<PermutedParamet
      * @return the next random sample.
      */
     private PermutedParameterArray getNextRandomSample() {
-
         PermutedParameterArray nextSample = null;
         while (globalSamples.size() < counter) {
 
@@ -93,7 +91,6 @@ public class PermutedGlobalSampler extends AbstractGlobalSampler<PermutedParamet
      * @return the next exhaustive sample.
      */
     private PermutedParameterArray getNextExhaustiveSample() {
-
         PermutedParameterArray pParams = (PermutedParameterArray) params.copy();
         pParams.setPermutation(permuter.next());
 

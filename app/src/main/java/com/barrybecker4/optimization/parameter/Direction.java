@@ -18,7 +18,6 @@ public enum Direction {
         }
     };
 
-
     /** plus or minus one depending on which direction we are headed */
     public abstract int getMultiplier();
 }

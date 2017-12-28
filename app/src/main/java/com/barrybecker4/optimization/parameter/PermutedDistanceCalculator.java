@@ -97,7 +97,6 @@ public class PermutedDistanceCalculator {
      * @return the approximate distance between two permutations.
      */
     private double calcDistance(ParameterArray pa1, List<Integer> runLengths) {
-
         // careful this could overflow if the run is really long.
         // If it does we may need to switch to BigInteger.
         double max = Math.pow(2, pa1.size());

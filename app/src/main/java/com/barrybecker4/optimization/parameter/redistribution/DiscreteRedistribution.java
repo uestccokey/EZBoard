@@ -19,7 +19,6 @@ public class DiscreteRedistribution extends UniformRedistribution {
      */
     public DiscreteRedistribution(int numValues, int[] discreteSpecialValues, double[]
             discreteSpecialValueProbabilities) {
-
         int len = discreteSpecialValues.length;
         specialValues = new double[len];
         specialValueProbabilities = new double[len];
@@ -33,5 +32,4 @@ public class DiscreteRedistribution extends UniformRedistribution {
 
         initializeFunction();
     }
-
 }

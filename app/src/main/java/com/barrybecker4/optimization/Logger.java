@@ -14,9 +14,8 @@ import java.io.IOException;
  */
 public class Logger {
 
-    protected String sLogFile_;
-    public static final String SEPARATOR = ",\t";
-
+    private String sLogFile_;
+    private static final String SEPARATOR = ",\t";
 
     /**
      * Constructor

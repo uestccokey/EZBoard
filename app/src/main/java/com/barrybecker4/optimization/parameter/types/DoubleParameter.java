@@ -4,8 +4,6 @@ package com.barrybecker4.optimization.parameter.types;
 import com.barrybecker4.optimization.parameter.Direction;
 import com.barrybecker4.optimization.parameter.redistribution.GaussianRedistribution;
 import com.barrybecker4.optimization.parameter.redistribution.UniformRedistribution;
-//import com.barrybecker4.optimization.parameter.ui.DoubleParameterWidget;
-//import com.barrybecker4.optimization.parameter.ui.ParameterWidget;
 
 /**
  * represents a double (i.e. floating point) parameter to an algorithm
@@ -87,8 +85,4 @@ public class DoubleParameter extends AbstractParameter {
     public Class getType() {
         return float.class;
     }
-
-//    public ParameterWidget createWidget(ParameterChangeListener listener) {
-//        return new DoubleParameterWidget(this, listener);
-//    }
 }

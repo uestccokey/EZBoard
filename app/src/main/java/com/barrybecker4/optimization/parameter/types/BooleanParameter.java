@@ -2,8 +2,6 @@
 package com.barrybecker4.optimization.parameter.types;
 
 import com.barrybecker4.optimization.parameter.redistribution.BooleanRedistribution;
-//import com.barrybecker4.optimization.parameter.ui.BooleanParameterWidget;
-//import com.barrybecker4.optimization.parameter.ui.ParameterWidget;
 
 /**
  * Represents a boolean parameter to an algorithm.
@@ -47,9 +45,4 @@ public class BooleanParameter extends IntegerParameter {
     public Class getType() {
         return boolean.class;
     }
-
-//    @Override
-//    public ParameterWidget createWidget(ParameterChangeListener listener) {
-//        return new BooleanParameterWidget(this, listener);
-//    }
 }

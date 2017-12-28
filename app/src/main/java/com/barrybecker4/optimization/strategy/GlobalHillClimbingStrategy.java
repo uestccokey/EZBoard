@@ -35,7 +35,6 @@ public class GlobalHillClimbingStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         GlobalSampleStrategy gsStrategy = new GlobalSampleStrategy(optimizee_);
         gsStrategy.setListener(listener_);
         // 3 sample points along each dimension

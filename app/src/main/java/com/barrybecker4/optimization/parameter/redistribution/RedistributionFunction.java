@@ -29,5 +29,4 @@ public interface RedistributionFunction extends Function {
      * @return x for specified y
      */
     double getInverseFunctionValue(double value);
-
 }

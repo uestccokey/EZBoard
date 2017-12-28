@@ -7,7 +7,6 @@ import com.barrybecker4.optimization.parameter.ParameterArray;
 
 import java.util.Set;
 
-
 /**
  * A step in the Hill climbing optimization strategy.
  * Hopefully heads in the right direction.
@@ -33,7 +32,6 @@ public class ImprovementStep {
 
     public static final double JUMP_SIZE_INC_FACTOR = 1.3;
     public static final double JUMP_SIZE_DEC_FACTOR = 0.7;
-
 
     /**
      * Constructor
@@ -66,7 +64,6 @@ public class ImprovementStep {
      * @return the parameters to try next.
      */
     public NumericParameterArray findNextParams(NumericParameterArray params) {
-
         NumericParameterArray currentParams = params;
         int maxTries = 100;
         int numTries = 0;

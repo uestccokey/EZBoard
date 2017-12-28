@@ -55,7 +55,6 @@ public class VariableLengthIntArray extends AbstractParameterArray {
         return new VariableLengthIntArray(params, fullSet, distanceCalculator);
     }
 
-
     /** @return the maximum length of the variable length array */
     public int getMaxLength() {
         return fullSet.size();
@@ -91,7 +90,6 @@ public class VariableLengthIntArray extends AbstractParameterArray {
      * @return the random nbr.
      */
     public VariableLengthIntArray getRandomNeighbor(double radius) {
-
         if (size() <= 1) return this;
 
         double probAddRemove = 1.0 / (1.0 + radius);
@@ -159,7 +157,6 @@ public class VariableLengthIntArray extends AbstractParameterArray {
      * @return get a completely random solution in the parameter space.
      */
     public ParameterArray getRandomSample() {
-
         List<Integer> marked = new LinkedList<>();
         for (int i = 0; i < getMaxLength(); i++) {
             if (MathUtil.RANDOM.nextDouble() > 0.5) {
@@ -206,7 +203,6 @@ public class VariableLengthIntArray extends AbstractParameterArray {
     }
 
     private void addRandomParam(VariableLengthIntArray nbr) {
-
         List<Integer> freeNodes = getFreeNodes(nbr);
         int newSize = nbr.size() + 1;
         assert newSize <= getMaxLength();

@@ -4,7 +4,6 @@ package com.barrybecker4.optimization.parameter.improvement;
 import com.barrybecker4.common.math.Vector;
 import com.barrybecker4.optimization.parameter.ParameterArray;
 
-
 /**
  * Represents an incremental improvement for a ParameterArray.
  * (unless the improvement is 0 or negative that is)

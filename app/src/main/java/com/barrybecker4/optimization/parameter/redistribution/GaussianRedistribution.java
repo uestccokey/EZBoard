@@ -23,7 +23,6 @@ public class GaussianRedistribution extends AbstractRedistributionFunction {
 
     private Function errorFunction;
 
-
     public GaussianRedistribution(double mean, double standardDeviation) {
         verifyInRange(mean);
         errorFunction = new ErrorFunction();
@@ -77,15 +76,9 @@ public class GaussianRedistribution extends AbstractRedistributionFunction {
      * @return cdf cumulative distribution function value
      */
     private double cdf(double x) {
-
         double denom = SQRT2 * stdDeviation;
         double xx = (Math.min(1.0, x) - mean) / denom;
         double erf = errorFunction.getValue(xx);
         return 0.5 * (1.0 + erf);
     }
-
-    public static void main(String[] args) {
-        new GaussianRedistribution(0.5, 10.0);
-    }
-
 }

@@ -31,7 +31,6 @@ public class VariableLengthGlobalSampler extends AbstractGlobalSampler<VariableL
     /** becomes true if the requestedNumSamples is close to the total number of permutations in the space */
     private boolean useExhaustiveSearch;
 
-
     /**
      * Constructor
      *
@@ -75,7 +74,6 @@ public class VariableLengthGlobalSampler extends AbstractGlobalSampler<VariableL
      * @return the next random sample.
      */
     private VariableLengthIntArray getNextRandomSample() {
-
         VariableLengthIntArray nextSample = null;
         while (globalSamples.size() < counter) {
 
@@ -93,7 +91,6 @@ public class VariableLengthGlobalSampler extends AbstractGlobalSampler<VariableL
      * @return the next exhaustive sample.
      */
     private VariableLengthIntArray getNextExhaustiveSample() {
-
         VariableLengthIntArray vlParams = (VariableLengthIntArray) params.copy();
 
         vlParams.setCombination(combinater.next());

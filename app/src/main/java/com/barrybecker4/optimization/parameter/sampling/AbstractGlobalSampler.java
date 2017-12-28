@@ -24,7 +24,6 @@ public abstract class AbstractGlobalSampler<E> implements Iterator<E> {
      */
     protected long numSamples;
 
-
     /**
      * Globally sample the parameter space.
      *

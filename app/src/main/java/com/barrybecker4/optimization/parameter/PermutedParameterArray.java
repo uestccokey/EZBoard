@@ -99,7 +99,6 @@ public class PermutedParameterArray extends AbstractParameterArray {
      * @return the random nbr.
      */
     public PermutedParameterArray getRandomNeighbor(double radius) {
-
         if (size() <= 1) return this;
 
         int numToSwap = Math.max(1, (int) (10.0 * radius * size() / 100.0));
@@ -144,7 +143,6 @@ public class PermutedParameterArray extends AbstractParameterArray {
      * @return get a completely random solution in the parameter space.
      */
     public ParameterArray getRandomSample() {
-
         List<Parameter> theParams = new ArrayList<>(params_);
         Collections.shuffle(theParams, MathUtil.RANDOM);
 

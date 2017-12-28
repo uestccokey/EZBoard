@@ -25,7 +25,6 @@ public class SimulatedAnnealingStrategy extends OptimizationStrategy {
     private static final double DEFAULT_TEMP_MAX = 1000;
     private double tempMax = DEFAULT_TEMP_MAX;
 
-
     /**
      * Constructor.
      * use a hardcoded static data interface to initialize.
@@ -68,7 +67,6 @@ public class SimulatedAnnealingStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         int ct = 0;
         double temperature = tempMax;
         double tempMin = tempMax / Math.pow(2.0, NUM_TEMP_ITERATIONS);
@@ -119,7 +117,6 @@ public class SimulatedAnnealingStrategy extends OptimizationStrategy {
      * @return neighboring point that is hopefully better than params.
      */
     private ParameterArray findNeighbor(ParameterArray params, int ct, double temperature) {
-
         //double r = (tempMax/5.0+temperature) / (8.0*(N/5.0+ct)*tempMax);
         double r = temperature / ((N + ct) * tempMax);
         ParameterArray newParams = params.getRandomNeighbor(r);
@@ -152,5 +149,4 @@ public class SimulatedAnnealingStrategy extends OptimizationStrategy {
         log(ct, params.getFitness(), r, dist, params, FormatUtil.formatNumber(temperature));
         return params;
     }
-
 }

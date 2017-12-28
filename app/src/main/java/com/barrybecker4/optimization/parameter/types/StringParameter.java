@@ -1,10 +1,6 @@
 // Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT
 package com.barrybecker4.optimization.parameter.types;
 
-//import com.barrybecker4.optimization.parameter.ParameterChangeListener;
-//import com.barrybecker4.optimization.parameter.ui.ParameterWidget;
-//import com.barrybecker4.optimization.parameter.ui.StringParameterWidget;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +10,7 @@ import java.util.List;
  * @author Barry Becker
  */
 public class StringParameter extends IntegerParameter {
+
     private List<String> values_;
 
     public StringParameter(int index, List<String> values, String paramName) {
@@ -56,9 +53,4 @@ public class StringParameter extends IntegerParameter {
     public Class getType() {
         return String.class;
     }
-
-//   @Override
-//   public ParameterWidget createWidget(ParameterChangeListener listener) {
-//        return new StringParameterWidget(this, listener);
-//    }
 }

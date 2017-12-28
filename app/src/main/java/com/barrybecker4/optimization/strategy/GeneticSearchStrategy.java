@@ -28,7 +28,6 @@ public class GeneticSearchStrategy extends OptimizationStrategy {
     private static final double NBR_RADIUS_SOFTENER = 5.0;
     private static final double INITIAL_RADIUS = 1.0;
 
-
     /** this prevents us from running forever. */
     private static final int MAX_ITERATIONS = 100;
 
@@ -49,7 +48,6 @@ public class GeneticSearchStrategy extends OptimizationStrategy {
 
     /** if we don't improve by at least this amount between iterations, terminate. */
     protected double improvementEpsilon = DEFAULT_IMPROVEMENT_EPS;
-
 
     /**
      * Constructor
@@ -85,7 +83,6 @@ public class GeneticSearchStrategy extends OptimizationStrategy {
      */
     @Override
     public ParameterArray doOptimization(ParameterArray params, double fitnessRange) {
-
         ParameterArray lastBest;
         desiredPopulationSize = params.getSamplePopulationSize();
 
@@ -178,7 +175,6 @@ public class GeneticSearchStrategy extends OptimizationStrategy {
      * @return the number of members that were retained.
      */
     private int cullPopulation(List<ParameterArray> population) {
-
         // sort the population according to the fitness of members.
         Collections.sort(population);
 
@@ -201,7 +197,6 @@ public class GeneticSearchStrategy extends OptimizationStrategy {
      * @param keepSize   the number that were kept
      */
     private void replaceCulledWithKeeperVariants(List<ParameterArray> population, int keepSize) {
-
         int k = keepSize;
         while (k < desiredPopulationSize) {
 

@@ -82,7 +82,6 @@ public class UniformRedistribution extends AbstractRedistributionFunction {
         redistributionFunction = new PiecewiseFunction(xValues, yValues);
     }
 
-
     private double getSpecialProbTotal() {
         int len = specialValues.length;
         double specialProbabilityTotal = 0;
@@ -97,5 +96,4 @@ public class UniformRedistribution extends AbstractRedistributionFunction {
         verifyInRange(specialProbabilityTotal);
         return specialProbabilityTotal;
     }
-
 }

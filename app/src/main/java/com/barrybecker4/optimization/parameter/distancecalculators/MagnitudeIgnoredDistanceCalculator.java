@@ -23,7 +23,6 @@ public class MagnitudeIgnoredDistanceCalculator implements DistanceCalculator {
      * @return the distance between this parameter array and another.
      */
     public double calculateDistance(ParameterArray pa1, ParameterArray pa2) {
-
         int thisLength = pa1.size();
         int thatLength = pa2.size();
 
@@ -57,7 +56,6 @@ public class MagnitudeIgnoredDistanceCalculator implements DistanceCalculator {
      * It will return 0 if the two lists are the same.
      */
     private int calcValueDifferences(List<Integer> theseValues, List<Integer> thoseValues) {
-
         int thisLen = theseValues.size();
         int thatLen = thoseValues.size();
         int thisCounter = 0;

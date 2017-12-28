@@ -7,10 +7,6 @@ import com.barrybecker4.optimization.parameter.redistribution.DiscreteRedistribu
 
 import java.util.Random;
 
-//import com.barrybecker4.optimization.parameter.ParameterChangeListener;
-//import com.barrybecker4.optimization.parameter.ui.DoubleParameterWidget;
-//import com.barrybecker4.optimization.parameter.ui.ParameterWidget;
-
 /**
  * represents an integer parameter in an algorithm
  *
@@ -68,7 +64,6 @@ public class IntegerParameter extends AbstractParameter {
      * @return the size of the increment taken
      */
     public double incrementByEps(Direction direction) {
-
         double increment = direction.getMultiplier();
         value_ = getValue() + increment;
         return increment;
@@ -76,7 +71,6 @@ public class IntegerParameter extends AbstractParameter {
 
     @Override
     public void setValue(double value) {
-
         this.value_ = value;
         // if there is a redistribution function, we need to apply its inverse.
         if (redistributionFunction_ != null) {
@@ -110,8 +104,4 @@ public class IntegerParameter extends AbstractParameter {
     public Class getType() {
         return int.class;
     }
-
-//    public ParameterWidget createWidget(ParameterChangeListener listener) {
-//        return new DoubleParameterWidget(this, listener);
-//    }
 }

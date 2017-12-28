@@ -33,7 +33,6 @@ public class NumericParameterArray extends AbstractParameterArray {
     /** If the dot product of the new gradient with the old is greater than this, then increase the jump size. */
     private static final double MAX_DOT_PRODUCT = 0.98;
 
-
     /** Default constructor */
     protected NumericParameterArray() {}
 
@@ -148,7 +147,6 @@ public class NumericParameterArray extends AbstractParameterArray {
      * @return the new jump size - which is usually the same as the old one.
      */
     private double findNewJumpSize(double jumpSize, double dotProduct) {
-
         double newJumpSize = jumpSize;
         if (dotProduct > MAX_DOT_PRODUCT) {
             newJumpSize *= ImprovementStep.JUMP_SIZE_INC_FACTOR;
@@ -179,7 +177,6 @@ public class NumericParameterArray extends AbstractParameterArray {
      * @param vec must be the same size as the parameter list.
      */
     public void add(Vector vec) {
-
         assert (vec.size() == size()) : "Parameter vec has magnitude " + vec.size() + ", expecting " + size();
         for (int i = 0; i < size(); i++) {
             Parameter param = get(i);

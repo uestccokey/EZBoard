@@ -3,7 +3,6 @@ package com.barrybecker4.optimization;
 
 import com.barrybecker4.optimization.parameter.ParameterArray;
 
-
 /**
  * Called whenever the optimizer has improved its optimization of the optimizee.
  *
