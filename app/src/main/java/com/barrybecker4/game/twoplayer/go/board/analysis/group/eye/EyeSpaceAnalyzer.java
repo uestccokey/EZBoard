@@ -35,7 +35,6 @@ class EyeSpaceAnalyzer {
     private NeighborAnalyzer nbrAnalyzer_;
     private GroupAnalyzerMap analyzerMap_;
 
-
     /**
      * Constructor.
      */
@@ -56,7 +55,6 @@ class EyeSpaceAnalyzer {
      * @return the set of eyes that are in this group.
      */
     public GoEyeSet determineEyes() {
-
         assert (board_ != null) : "The board must be set before determining eyes.";
         GoBoardPositionLists excludedSpaceLists = createExcludedLists();
         return findEyesFromCandidates(excludedSpaceLists);
@@ -72,7 +70,6 @@ class EyeSpaceAnalyzer {
      * @return list of lists of eye space spaces find real eye from (and to unvisit at the end)
      */
     private GoBoardPositionLists createExcludedLists() {
-
         GoBoardPositionLists lists = new GoBoardPositionLists();
         boolean ownedByPlayer1 = group_.isOwnedByPlayer1();
 
@@ -183,7 +180,6 @@ class EyeSpaceAnalyzer {
         }
     }
 
-
     /**
      * Mark as visited all the non-friend (empty or enemy) spaces connected to the specified seed.
      *
@@ -231,7 +227,6 @@ class EyeSpaceAnalyzer {
      * @return true if the list of stones is an eye
      */
     private boolean confirmEye(GoBoardPositionList eyeList) {
-
         if (eyeList == null)
             return false;
 

@@ -31,7 +31,6 @@ public class EyeTypeAnalyzer {
     private NeighborAnalyzer nbrAnalyzer_;
     private GroupAnalyzer groupAnalyzer_;
 
-
     public EyeTypeAnalyzer(IGoEye eye, GoBoard board, GroupAnalyzer analyzer) {
         eye_ = eye;
         board_ = board;

@@ -11,6 +11,7 @@ import com.barrybecker4.game.twoplayer.go.board.elements.eye.IGoEye;
  * @author Barry Becker
  */
 public class E5Information extends AbstractEyeSubtypeInformation {
+
     /** Different sorts of eye with 5 spaces. */
     public enum Eye5Type {
         E11222, E11123, E11114, E12223
@@ -59,7 +60,6 @@ public class E5Information extends AbstractEyeSubtypeInformation {
         }
         return EyeStatus.NAKADE; // never reached
     }
-
 
     @Override
     public String getTypeName() {

@@ -3,7 +3,6 @@ package com.barrybecker4.game.twoplayer.go.board.elements;
 
 import java.util.Set;
 
-
 /**
  * A GoSet is an abstract class representing a set of go entities
  * (stones, strings, groups, or armies)
@@ -48,5 +47,4 @@ public abstract class GoSet implements IGoSet {
      * Some initialization of the set members.
      */
     protected abstract void initializeMembers();
-
 }

@@ -37,7 +37,6 @@ public final class GoBoardPosition extends BoardPosition
     /** the amount this position contributes to the overall score. */
     private double scoreContribution_ = 0.0;
 
-
     /**
      * create a new go stone.
      *
@@ -120,7 +119,6 @@ public final class GoBoardPosition extends BoardPosition
     public boolean isInAtari(GoBoard b) {
         return (getString() != null && getString().getNumLiberties(b) == 1);
     }
-
 
     public void setVisited(boolean visited) {
         visited_ = visited;

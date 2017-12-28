@@ -90,7 +90,6 @@ public class WorthCalculator {
      * @return statically evaluated value of the board.
      */
     private double calculateWorth(GoBoard board, Move lastMove, ParameterArray weights) {
-
         // adjust for board size - so worth will be comparable regardless of board size.
         double scaleFactor = 361.0 / Math.pow(board.getNumRows(), 2);
 

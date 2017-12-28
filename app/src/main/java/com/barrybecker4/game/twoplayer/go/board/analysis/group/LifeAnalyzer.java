@@ -82,7 +82,6 @@ public class LifeAnalyzer {
      * first find the neighbor string sets for each true eye in the group.
      */
     private void findNeighborStringSetsForEyes(GoEyeSet eyes) {
-
         for (IGoEye eye : eyes) {
             List<IGoString> stringNbrs = findNeighborStringsForEye(eye);
             eyeStringNbrMap.put(eye, stringNbrs);
@@ -145,7 +144,6 @@ public class LifeAnalyzer {
      * @param eye update the string neighbors of this eye
      */
     private void updateVitalEyesForStringNeighbors(IGoEye eye) {
-
         for (IGoString str : eyeStringNbrMap.get(eye)) {
             // only add the eye if every unoccupied position in the eye is adjacent to the string
             GoEyeList vitalEyes;
@@ -192,7 +190,6 @@ public class LifeAnalyzer {
      * @return true if any of the candidateStrings are unconditionally alive (i.e. pass alive).
      */
     private boolean determineUnconditionalLife() {
-
         GoStringSet livingStrings = findPassAliveStrings();
         return !livingStrings.isEmpty();
     }
@@ -201,17 +198,14 @@ public class LifeAnalyzer {
      * @return the set of strings in the group that are unconditionally alive.
      */
     private GoStringSet findPassAliveStrings() {
-
         GoStringSet candidateStrings = new GoStringSet(group_.getMembers());
         boolean done;
-
         do {
             initializeEyeLife();
             Iterator<IGoString> it = candidateStrings.iterator();
 
             done = true;
             while (it.hasNext()) {
-
                 IGoString str = it.next();
                 int numLivingAdjacentEyes = findNumLivingAdjacentEyes(str);
                 if (numLivingAdjacentEyes < 2) {

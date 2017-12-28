@@ -83,7 +83,6 @@ public class CandidateMoveAnalyzer {
         determineAdjacentCandidates();
     }
 
-
     /**
      * this method splats a footprint of trues around the current moves.
      * later we look for empty spots that are true for candidate moves

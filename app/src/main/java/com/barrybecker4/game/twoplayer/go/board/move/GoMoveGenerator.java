@@ -36,7 +36,6 @@ public final class GoMoveGenerator {
      * @return all reasonably good next moves with statically evaluated scores.
      */
     public final MoveList<GoMove> generateEvaluatedMoves(GoMove lastMove, ParameterArray weights) {
-
         GoProfiler prof = GoProfiler.getInstance();
         prof.startGenerateMoves();
 
@@ -59,7 +58,6 @@ public final class GoMoveGenerator {
      * is difficult without static evaluation. At least no illegal moves will be returned.
      */
     final MoveList<GoMove> generatePossibleMoves(GoMove lastMove) {
-
         GoBoard board = searchable_.getBoard();
         MoveList<GoMove> moveList = new MoveList<>();
         int nCols = board.getNumCols();
@@ -108,7 +106,6 @@ public final class GoMoveGenerator {
      * (which just uses the value of the current move) then we should pass.
      */
     private void addPassingMoveIfNeeded(TwoPlayerMove lastMove, MoveList<GoMove> moveList) {
-
         Board b = searchable_.getBoard();
         if (searchable_.getNumMoves() > (b.getNumCols() + b.getNumRows())) {
             GoMove passMove = GoMove.createPassMove(lastMove.getValue(), !lastMove.isPlayer1());
@@ -123,7 +120,6 @@ public final class GoMoveGenerator {
      * @return true of this is an immediate take-back (not allowed in go - see "rule of ko")
      */
     public static boolean isTakeBack(int row, int col, GoMove lastMove, GoBoard board) {
-
         if (lastMove == null) return false;
 
         CaptureList captures = lastMove.getCaptures();

@@ -12,6 +12,7 @@ import java.util.Arrays;
  * @author Barry Becker
  */
 public abstract class AbstractEyeInformation implements EyeInformation {
+
     @Override
     public boolean hasLifeProperty() {
         return false;

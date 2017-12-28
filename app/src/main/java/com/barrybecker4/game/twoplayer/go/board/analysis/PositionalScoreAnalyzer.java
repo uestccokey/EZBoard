@@ -41,7 +41,6 @@ public final class PositionalScoreAnalyzer {
      * @return accumulated totalScore so far.
      */
     public PositionalScore determineScoreForPosition(int row, int col, ParameterArray weights) {
-
         GoBoardPosition position = (GoBoardPosition) board.getPosition(row, col);
         double positionalScore = positionalScores_.getValue(row, col);
         PositionalScore score =
@@ -74,7 +73,6 @@ public final class PositionalScoreAnalyzer {
      * A dead enemy stone in the eye counts twice.
      */
     private PositionalScore createEyePointScore(GoBoardPosition position) {
-
         float scoreForPosition = position.getEye().isOwnedByPlayer1() ? 1.0f : -1.0f;
         float deadStoneScore = 0;
         float eyeSpaceScore = 0;
@@ -92,7 +90,6 @@ public final class PositionalScoreAnalyzer {
      */
     private PositionalScore createNormalizedOccupiedScore(
             GoBoardPosition position, ParameterArray weights, double positionalScore) {
-
         GoStone stone = (GoStone) position.getPiece();
 
         int side = position.getPiece().isOwnedByPlayer1() ? 1 : -1;
@@ -101,7 +98,6 @@ public final class PositionalScoreAnalyzer {
         double healthWt = weights.get(GoWeights.HEALTH_WEIGHT_INDEX).getValue();
         double totalWeight = badShapeWt + positionalWt + healthWt;
         StringShapeAnalyzer shapeAnalyzer = new StringShapeAnalyzer(board);
-
 
         // penalize bad shape like empty triangles
         double badShapeScore =

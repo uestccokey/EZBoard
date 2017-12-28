@@ -86,7 +86,6 @@ public class StringShapeAnalyzer {
         return severityScore;
     }
 
-
     private static int getBadShapeAux(BoardPosition nearbySpace, boolean player1) {
         if (nearbySpace.isUnoccupied()) {
             return EMPTY_TRIANGLE_PENALTY;

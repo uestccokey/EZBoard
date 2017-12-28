@@ -29,6 +29,7 @@ import com.barrybecker4.game.twoplayer.go.board.elements.eye.GoEye;
  * XXX
  */
 public enum EyeType {
+
     /** False eye always have the potential to become no eyes */
     FalseEye(0) {
         @Override
@@ -71,7 +72,6 @@ public enum EyeType {
     };
 
     private byte size;
-
 
     /**
      * constructor

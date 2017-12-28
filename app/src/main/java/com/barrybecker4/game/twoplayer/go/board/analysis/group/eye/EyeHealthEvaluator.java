@@ -5,7 +5,6 @@ import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.twoplayer.go.board.GoProfiler;
 import com.barrybecker4.game.twoplayer.go.board.analysis.group.LifeAnalyzer;
 
-
 /**
  * Evaluate the health of a group based on the status of its eye(s).
  *

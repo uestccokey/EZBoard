@@ -30,7 +30,6 @@ public class GoStone extends GamePiece implements IGoMember {
     /** This structure is used to store a detailed breakdown of this stones score. (for debugging only). */
     private PositionalScore positionalScore_ = null;
 
-
     /**
      * create a new go stone.
      *
@@ -67,7 +66,6 @@ public class GoStone extends GamePiece implements IGoMember {
         super(player1, REGULAR_PIECE);
         health_ = health;
     }
-
 
     public void setPositionalScore(PositionalScore s) {
         positionalScore_ = s;

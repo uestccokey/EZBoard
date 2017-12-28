@@ -3,7 +3,6 @@ package com.barrybecker4.game.twoplayer.go.board.analysis;
 
 import com.barrybecker4.game.common.board.BoardPosition;
 
-
 /**
  * Used to check to see if a position is in the corner of the board.
  *
@@ -58,6 +57,4 @@ public final class CornerChecker {
                 (position.getRow() == numRows - 1 && position.getCol() == numCols) ||
                 (position.getRow() == numRows && position.getCol() == numCols - 1));
     }
-
-
 }

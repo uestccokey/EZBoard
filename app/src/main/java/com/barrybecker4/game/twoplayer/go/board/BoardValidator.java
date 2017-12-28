@@ -12,7 +12,6 @@ import com.barrybecker4.game.twoplayer.go.board.elements.position.GoBoardPositio
 
 import java.util.Iterator;
 
-
 /**
  * Assert certain things are true about the board.
  * Helpful for debugging.
@@ -45,12 +44,10 @@ public class BoardValidator {
         }
     }
 
-
     /**
      * verify that all the stones on the board are in the boards member list of groups.
      */
     public void confirmStonesInValidGroups() {
-
         GoGroupSet groups = board_.getGroups();
         for (int i = 1; i <= board_.getNumRows(); i++) {
             for (int j = 1; j <= board_.getNumCols(); j++) {
@@ -62,17 +59,14 @@ public class BoardValidator {
         }
     }
 
-
     /**
      * verify that all the stones are marked unvisited.
      */
     public void confirmAllUnvisited() {
-
         GoBoardPosition stone = areAllUnvisited();
         if (stone != null)
             assert false : stone + " is marked visited";
     }
-
 
     /**
      * verify that all the stones are marked unvisited.
@@ -80,7 +74,6 @@ public class BoardValidator {
      * @return position that is still marked visited if any, else null.
      */
     private GoBoardPosition areAllUnvisited() {
-
         for (int i = 1; i <= board_.getNumRows(); i++) {
             for (int j = 1; j <= board_.getNumCols(); j++) {
                 GoBoardPosition stone = (GoBoardPosition) board_.getPosition(i, j);
@@ -91,7 +84,6 @@ public class BoardValidator {
         return null;
     }
 
-
     /**
      * For every stone in every group specified in groups, verify that the group determined from using that stone as a
      * seed matches the group that is claims by ancestry.
@@ -100,7 +92,6 @@ public class BoardValidator {
      * @param groups we will check each stone in each of these groups.
      */
     public void confirmAllStonesInGroupsClaimed(GoGroupSet groups) {
-
         NeighborAnalyzer na = new NeighborAnalyzer(board_);
 
         for (IGoGroup parentGroup : groups) {
@@ -141,5 +132,4 @@ public class BoardValidator {
             assert false : "Group contains an empty position: " + group.toString();
         }
     }
-
 }

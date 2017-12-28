@@ -54,7 +54,6 @@ public class TerritoryUpdater {
      * A large positive number indicates black is winning, while a negative number indicates that white has the edge.
      */
     public float updateTerritory(boolean isEndOfGame) {
-
         clearScores();
 
         GoProfiler prof = GoProfiler.getInstance();
@@ -82,7 +81,6 @@ public class TerritoryUpdater {
      * Clear whatever cached score state we might have before recomputing.
      */
     private void clearScores() {
-
         for (int i = 1; i <= board_.getNumRows(); i++) {
             for (int j = 1; j <= board_.getNumCols(); j++) {
                 GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);

@@ -83,7 +83,6 @@ public class StringLibertyAnalyzer {
      * @param libertySpace the position of the liberty to add.
      */
     private void addLiberty(BoardPosition libertySpace) {
-
         if (libertySpace.isUnoccupied())
             liberties_.add((GoBoardPosition) libertySpace);
     }

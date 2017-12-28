@@ -12,7 +12,6 @@ final class DeadStones {
     private int numDeadBlackStonesOnBoard_ = 0;
     private int numDeadWhiteStonesOnBoard_ = 0;
 
-
     /**
      * Constructor.
      */
@@ -49,5 +48,4 @@ final class DeadStones {
         return "Dead black stones: " + numDeadBlackStonesOnBoard_
                 + "\nDead white stones: " + numDeadWhiteStonesOnBoard_;
     }
-
 }

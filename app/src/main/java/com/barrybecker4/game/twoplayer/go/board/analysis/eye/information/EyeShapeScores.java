@@ -8,6 +8,7 @@ package com.barrybecker4.game.twoplayer.go.board.analysis.eye.information;
  * @author Barry Becker
  */
 final class EyeShapeScores {
+
     /** any shape that have a false eye point. */
     public static final float FALSE_EYE = 0.19f;
 
@@ -19,7 +20,6 @@ final class EyeShapeScores {
 
     /** We are guaranteed to have 2 eyes. */
     public static final float GUARANTEED_TWO_EYES = 2.0f;
-
 
     private EyeShapeScores() {}
 }

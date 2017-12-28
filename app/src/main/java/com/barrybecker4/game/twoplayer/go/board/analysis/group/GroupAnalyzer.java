@@ -67,7 +67,6 @@ public class GroupAnalyzer implements GroupChangeListener {
      * @return health score independent of neighboring groups.
      */
     public float getAbsoluteHealth() {
-
         return absoluteHealth_;
     }
 
@@ -186,7 +185,6 @@ public class GroupAnalyzer implements GroupChangeListener {
         return clone;
     }
 
-
     /**
      * @return true if the stone is much weaker than the group
      */
@@ -198,7 +196,6 @@ public class GroupAnalyzer implements GroupChangeListener {
      * @return string form.
      */
     public String toString() {
-
         String newline = "\n";
         StringBuilder sb = new StringBuilder();
 

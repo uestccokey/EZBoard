@@ -21,7 +21,6 @@ class RunPotentialAnalyzer {
     private GoBoard board_;
     private GroupAnalyzerMap analyzerMap_;
 
-
     /**
      * Constructor.
      */

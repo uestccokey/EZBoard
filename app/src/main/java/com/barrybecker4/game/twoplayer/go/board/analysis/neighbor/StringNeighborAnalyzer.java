@@ -85,7 +85,6 @@ class StringNeighborAnalyzer {
      */
     int pushStringNeighbors(GoBoardPosition s, boolean friendIsPlayer1, GoBoardPositionList stack,
                             boolean samePlayerOnly) {
-
         return pushStringNeighbors(s, friendIsPlayer1, stack, samePlayerOnly, NeighborType.OCCUPIED,
                 new Box(1, 1, board_.getNumRows(), board_.getNumCols()));
     }
@@ -126,7 +125,6 @@ class StringNeighborAnalyzer {
                               boolean friendOwnedByPlayer1, GoBoardPositionList stack,
                               boolean samePlayerOnly, NeighborType type,
                               Box bbox) {
-
         GoBoardPosition nbr = (GoBoardPosition) board_.getPosition(r + rowOffset, c + colOffset);
         if (bbox.contains(nbr.getLocation())) {
             return checkNeighbor(r, c, rowOffset, colOffset, friendOwnedByPlayer1, stack, samePlayerOnly, type);
@@ -152,7 +150,6 @@ class StringNeighborAnalyzer {
     private int checkNeighbor(int r, int c, int rowOffset, int colOffset,
                               boolean friendOwnedByPlayer1, GoBoardPositionList stack,
                               boolean samePlayerOnly, NeighborType type) {
-
         GoBoardPosition nbr = (GoBoardPosition) board_.getPosition(r + rowOffset, c + colOffset);
 
         switch (type) {

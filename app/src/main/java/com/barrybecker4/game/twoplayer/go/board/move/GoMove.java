@@ -140,7 +140,6 @@ public class GoMove extends TwoPlayerMove {
      * @return true if this move is part of a ko fight sequence.
      */
     public boolean isKo(GoBoard board) {
-
         if (getNumCaptures() == 1) {
             //GoBoardPosition capture = (GoBoardPosition) getCaptures().getFirst();
             GoBoardPosition pos = (GoBoardPosition) board.getPosition(getToLocation());

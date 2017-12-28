@@ -287,7 +287,6 @@ public class GoString extends GoSet
         sb.append(')');
         return sb.toString();
     }
-
 }
 
 

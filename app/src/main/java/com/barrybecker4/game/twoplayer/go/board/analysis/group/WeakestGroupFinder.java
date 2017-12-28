@@ -25,7 +25,6 @@ class WeakestGroupFinder {
      * Constructor
      */
     public WeakestGroupFinder(GoBoard board, GroupAnalyzerMap analyzerMap) {
-
         this.board = board;
         this.analyzerMap = analyzerMap;
     }
@@ -38,7 +37,6 @@ class WeakestGroupFinder {
      * @return the weakest bordering enemy group. Returns null if no group found.
      */
     public GoGroup findWeakestGroup(GoBoardPositionSet groupStones) {
-
         boolean isPlayer1 = groupStones.getOneMember().getPiece().isOwnedByPlayer1();
         Set enemyNbrGroups = getEnemyGroupNeighbors(groupStones, isPlayer1);
 
@@ -91,7 +89,6 @@ class WeakestGroupFinder {
      */
     private void addEnemyNeighborsForStone(GoGroupSet enemyNbrs, GoBoardPosition stone,
                                            GoBoardPositionSet nbrs, boolean isPlayer1) {
-
         for (GoBoardPosition possibleEnemy : nbrs) {
             if (possibleEnemy.getPiece() != null
                     && possibleEnemy.getPiece().isOwnedByPlayer1() != isPlayer1

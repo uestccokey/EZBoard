@@ -62,7 +62,6 @@ public final class PositionalScoreArray {
      * @return lookup of position scores.
      */
     private float[][] createPositionalScoreArray(int size) {
-
         int row, col, rowmin, colmin;
         float[][] positionalScore = new float[size][size];
 
@@ -100,5 +99,4 @@ public final class PositionalScoreArray {
         }
         return bldr.toString();
     }
-
 }

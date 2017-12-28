@@ -31,7 +31,6 @@ public final class BoardEvaluator {
      * Constructor.
      */
     public BoardEvaluator(GoBoard board, ScoreCache cache) {
-
         board_ = board;
         analyzerMap_ = new GroupAnalyzerMap();
         worthCalculator_ = new WorthCalculator(board, analyzerMap_);
@@ -42,7 +41,6 @@ public final class BoardEvaluator {
      * @return the worth of the board from player1's perspective
      */
     public int worth(Move lastMove, ParameterArray weights, HashKey hashKey) {
-
         if (USE_SCORE_CACHING) {
             return cachedWorth(lastMove, weights, hashKey);
         } else {
@@ -58,7 +56,6 @@ public final class BoardEvaluator {
      * @return statically evaluated value for the board.
      */
     private int cachedWorth(Move lastMove, ParameterArray weights, HashKey key) {
-
         // uncomment this to do caching.
         ScoreEntry cachedScore = scoreCache_.get(key);
         ///////// comment this to do debugging

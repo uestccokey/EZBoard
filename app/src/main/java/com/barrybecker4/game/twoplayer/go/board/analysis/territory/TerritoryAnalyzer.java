@@ -55,7 +55,6 @@ public class TerritoryAnalyzer {
      */
     private float getTerritoryEstimateForPosition(GoBoardPosition pos, boolean forPlayer1,
                                                   boolean isEndOfGame) {
-
         double val = isEndOfGame ? (forPlayer1 ? 1.0 : -1.0) : pos.getScoreContribution();
         float territoryEstimate = 0;
 

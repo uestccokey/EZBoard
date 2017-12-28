@@ -66,7 +66,6 @@ public class E6Information extends AbstractEyeSubtypeInformation {
         }
     }
 
-
     /**
      * @return eye status for E6 types.
      */

@@ -13,7 +13,6 @@ public class CaptureCounts {
     private int numWhiteStonesCaptured_ = 0;
     private int numBlackStonesCaptured_ = 0;
 
-
     public CaptureCounts copy() {
         CaptureCounts countsCopy = new CaptureCounts();
         countsCopy.numBlackStonesCaptured_ = this.numBlackStonesCaptured_;
@@ -30,7 +29,6 @@ public class CaptureCounts {
      * @param increment if true then add to number of captures, else subtract.
      */
     public void updateCaptures(GoMove move, boolean increment) {
-
         int numCaptures = move.getNumCaptures();
         int num = increment ? move.getNumCaptures() : -move.getNumCaptures();
 
@@ -46,5 +44,4 @@ public class CaptureCounts {
             }
         }
     }
-
 }

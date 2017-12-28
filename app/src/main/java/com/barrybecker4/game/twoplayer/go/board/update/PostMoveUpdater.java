@@ -36,7 +36,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      */
     @Override
     public void update(GoMove move) {
-
         clearEyes();
         GoBoardPosition stone = (GoBoardPosition) (getBoard().getPosition(move.getToLocation()));
 
@@ -62,7 +61,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @return list of captured stones.  Empty if no captures.
      */
     private GoCaptureList determineCaptures(GoBoardPosition stone) {
-
         profiler_.startFindCaptures();
         assert (stone != null);
         GoBoardPositionSet nbrs = nbrAnalyzer_.getNobiNeighbors(stone, NeighborType.ENEMY);
@@ -99,7 +97,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @param stone the stone that was just placed on the board.
      */
     private void updateStringsAfterMove(GoBoardPosition stone) {
-
         profiler_.startUpdateStringsAfterMove();
 
         GoBoardPositionSet nbrs = nbrAnalyzer_.getNobiNeighbors(stone, NeighborType.FRIEND);
@@ -121,7 +118,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @param nbrs  neighbors
      */
     private void updateNeighborStringsAfterMove(GoBoardPosition stone, GoBoardPositionSet nbrs) {
-
         GoBoardPosition nbrStone = nbrs.getOneMember();
         GoString str = (GoString) nbrStone.getString();
         str.addMember(stone, getBoard());
@@ -137,7 +133,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * We will not, for example, if we are completing a clump of four.
      */
     private void mergeStringsIfNeeded(GoString str, GoBoardPositionSet nbrs) {
-
         for (GoBoardPosition nbrStone : nbrs) {
             // if its the same string then there is nothing to merge
             IGoString nbrString = nbrStone.getString();
@@ -155,7 +150,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @param pos the stone that was just placed on the board.
      */
     private void updateGroupsAfterMove(GoBoardPosition pos) {
-
         profiler_.startUpdateGroupsAfterMove();
 
         if (GameContext.getDebugMode() > 1) {

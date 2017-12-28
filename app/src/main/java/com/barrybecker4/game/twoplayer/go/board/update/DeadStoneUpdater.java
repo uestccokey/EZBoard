@@ -26,7 +26,6 @@ public final class DeadStoneUpdater {
         deadStones_ = new DeadStones();
     }
 
-
     public int getNumDeadStonesOnBoard(boolean forPlayer1) {
         return deadStones_.getNumberOnBoard(forPlayer1);
     }
@@ -37,7 +36,6 @@ public final class DeadStoneUpdater {
      * The first can update the health of groups and perhaps remove obviously dead stones.
      */
     public void determineDeadStones() {
-
         deadStones_.clear();
 
         for (int row = 1; row <= board_.getNumRows(); row++) {

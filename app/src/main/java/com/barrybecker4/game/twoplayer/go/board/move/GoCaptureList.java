@@ -34,7 +34,6 @@ public class GoCaptureList extends CaptureList {
      * copy constructor
      */
     public GoCaptureList(CaptureList captureList) {
-
         super(captureList);
     }
 
@@ -43,7 +42,6 @@ public class GoCaptureList extends CaptureList {
      */
     @Override
     public GoCaptureList copy() {
-
         return new GoCaptureList(this);
     }
 
@@ -55,7 +53,6 @@ public class GoCaptureList extends CaptureList {
      * @return true if set is not null or 0 sized.
      */
     public boolean addCaptures(GoBoardPositionSet set) {
-
         if (set == null) {
             return false;
         }
@@ -104,7 +101,6 @@ public class GoCaptureList extends CaptureList {
                 + this + " the list of strings was " + strings;
         goBoard.getGroups().add(group);
     }
-
 
     /**
      * Update the liberties of the surrounding strings.

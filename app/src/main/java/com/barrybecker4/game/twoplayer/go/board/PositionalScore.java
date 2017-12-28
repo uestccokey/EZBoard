@@ -62,7 +62,6 @@ public class PositionalScore {
 
     public double getHealthScore() { return healthScore; }
 
-
     public void incrementBy(PositionalScore score) {
         positionScore_ += score.getPositionScore();
         deadStoneScore += score.deadStoneScore;

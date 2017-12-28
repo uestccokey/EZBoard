@@ -49,7 +49,6 @@ public class EyePotentialAnalyzer {
      * (0 - 2; 2 meaning it already has 2 guaranteed eyes or can easily get them).
      */
     public float calculateEyePotential() {
-
         int numRows = board_.getNumRows();
         int numCols = board_.getNumCols();
         assert board_ != null : "The board must be set before calculating potential";

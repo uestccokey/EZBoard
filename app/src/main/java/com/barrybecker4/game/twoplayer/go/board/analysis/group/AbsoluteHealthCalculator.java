@@ -92,7 +92,6 @@ class AbsoluteHealthCalculator {
      * @return the overall health of the group independent of nbr groups.
      */
     public float calculateAbsoluteHealth(GoBoard board) {
-
         if (eyeCache_.isValid()) {
             GameContext.log(1, "cache valid. Returning health=" + absoluteHealth_);
             return absoluteHealth_;

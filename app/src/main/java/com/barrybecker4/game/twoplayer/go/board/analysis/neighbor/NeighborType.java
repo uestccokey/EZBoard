@@ -8,6 +8,7 @@ package com.barrybecker4.game.twoplayer.go.board.analysis.neighbor;
  * @author Barry Becker
  */
 public enum NeighborType {
+
     /** Has a stone in the space */
     OCCUPIED,
 

@@ -3,7 +3,6 @@ package com.barrybecker4.game.twoplayer.go.board;
 
 import com.barrybecker4.game.common.AbstractGameProfiler;
 
-
 /**
  * Keep track of how much time is spent in each time critical part of the
  * computer move processing.   Singleton.
@@ -66,7 +65,6 @@ public final class GoProfiler extends AbstractGameProfiler {
         add(FIND_STRINGS);
         add(COPY_BOARD);
     }
-
 
     public void startUpdateStringsAfterRemove() {
         this.start(UPDATE_STRINGS_AFTER_REMOVE);

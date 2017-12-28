@@ -21,7 +21,6 @@ public class E3Information extends AbstractEyeSubtypeInformation {
      */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
-
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);
         return handleVitalPointCases(nbrMap, eye, 1);
     }

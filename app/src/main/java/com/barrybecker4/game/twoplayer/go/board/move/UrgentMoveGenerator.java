@@ -36,7 +36,6 @@ public final class UrgentMoveGenerator {
      * @return urgent moves from this position.
      */
     public final MoveList<GoMove> generateUrgentMoves(MoveList<GoMove> moves, TwoPlayerMove lastMove) {
-
         GoMove lastMovePlayed = (GoMove) lastMove;
 
         // just keep the moves that take captures

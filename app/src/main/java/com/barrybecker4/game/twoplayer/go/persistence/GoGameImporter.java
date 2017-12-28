@@ -89,10 +89,8 @@ public class GoGameImporter extends TwoPlayerGameImporter {
         ((IRectangularBoard) gc.getBoard()).setSize(size, size);
     }
 
-
     @Override
     protected boolean processToken(SGFToken token, MoveList moveList) {
-
         boolean found = false;
         if (token instanceof MoveToken) {
             moveList.add(createMoveFromToken(token));
@@ -128,7 +126,6 @@ public class GoGameImporter extends TwoPlayerGameImporter {
      * @param token game token
      */
     private static void addMoves(PlacementListToken token, MoveList moveList) {
-
         Iterator<Point> points = token.getPoints();
         // System.out.println("num points ="+token.getPoints2().size());
         boolean player1 = token instanceof AddBlackToken;

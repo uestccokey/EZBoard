@@ -15,6 +15,7 @@ import java.util.Arrays;
  * @author Barry Becker
  */
 public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformation {
+
     private boolean life;
     private byte size;
     private float[] vitalPoints;
@@ -50,7 +51,6 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
         initialize(life, eyeSize, vitalPts, EMPTY_POINTS);
     }
 
-
     @SuppressWarnings({"AssignmentToCollectionOrArrayFieldFromParameter"})
     void initialize(boolean life, int eyeSize,
                     final float[] vitalPts, final float[] endPts) {
@@ -60,14 +60,12 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
         this.endPoints = endPts;
     }
 
-
     /**
      * @return the number of spaces in they eye (maybe be filled with some enemy stones).
      */
     public byte getSize() {
         return size;
     }
-
 
     @Override
     public boolean hasLifeProperty() {
@@ -117,7 +115,6 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
             return EyeStatus.UNSETTLED;
         } else return EyeStatus.ALIVE;
     }
-
 
     /**
      * I suppose, in very rare cases, there could be a same side stone among the enemy filled spaces in the eye.

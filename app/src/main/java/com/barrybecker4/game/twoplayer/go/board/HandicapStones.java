@@ -28,7 +28,6 @@ class HandicapStones {
     /** typically there are at most 9 handicap stones in an uneven game */
     private GoBoardPositionList starPoints_ = null;
 
-
     /**
      * Constructor
      * You cannot change the number of handicap stones after construction.

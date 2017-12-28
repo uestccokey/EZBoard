@@ -29,5 +29,4 @@ public class EyeSerializer {
         bldr.append(" num members=").append(eye.size());
         return bldr.toString();
     }
-
 }

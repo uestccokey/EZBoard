@@ -26,7 +26,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
 
     private BoardEvaluator boardEvaluator_;
 
-
     /**
      * Constructor.
      */
@@ -80,7 +79,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      */
     @Override
     public final boolean done(GoMove move, boolean recordWin) {
-
         boolean gameOver = false;
 
         if (move == null) {
@@ -113,7 +111,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      * Include this in calcWorth because we call updateTerritory which is under calcWorth for timing.
      */
     private void doFinalBookKeeping() {
-
         getProfiler().startCalcWorth();
         boardEvaluator_.updateTerritoryAtEndOfGame();
 
@@ -137,7 +134,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      */
     @Override
     public int worth(GoMove lastMove, ParameterArray weights) {
-
         return boardEvaluator_.worth(lastMove, weights, getHashKey());
     }
 
@@ -156,7 +152,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      */
     @Override
     public void makeInternalMove(GoMove move) {
-
         super.makeInternalMove(move);
         updateHashIfCaptures(move);
     }
@@ -168,7 +163,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      */
     @Override
     public void undoInternalMove(GoMove move) {
-
         super.undoInternalMove(move);
         updateHashIfCaptures(move);
     }
@@ -177,7 +171,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      * Whether we are removing captures from the board or adding them back, the operation is the same: XOR.
      */
     private void updateHashIfCaptures(GoMove goMove) {
-
         if (goMove.getNumCaptures() > 0) {
             for (BoardPosition pos : goMove.getCaptures()) {
                 hash.applyMove(pos.getLocation(), getBoard().getStateIndex(pos));
@@ -194,7 +187,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      * @return true if last two moves were passing moves.
      */
     private boolean twoPasses(GoMove move) {
-
         if (move.isPassingMove() && moveList_.size() > 2) {
             GoMove secondToLast = moveList_.get(moveList_.size() - 2);
             if (secondToLast.isPassingMove()) {
@@ -280,7 +272,6 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
      */
     @Override
     public final MoveList<GoMove> generateUrgentMoves(GoMove lastMove, ParameterArray weights) {
-
         UrgentMoveGenerator generator = new UrgentMoveGenerator(getBoard());
         return generator.generateUrgentMoves(generateMoves(lastMove, weights), lastMove);
     }

@@ -45,7 +45,6 @@ public class StoneInGroupAnalyzer {
      * @return return true of the stone is greater than threshold weaker than the group.
      */
     private boolean isStoneWeakerThanGroup(GoStone stone, float threshold, float groupHealth) {
-
         float constrainedGroupHealth = getConstrainedGroupHealth(groupHealth);
 
         float stoneHealth = stone.getHealth();

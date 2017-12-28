@@ -43,7 +43,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      * @param numHandicapStones number of black handicap stones to initialize with.
      */
     public GoBoard(int size, int numHandicapStones) {
-
         setSize(size, size);
         setHandicap(numHandicapStones);
 
@@ -66,7 +65,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
 
     @Override
     public synchronized GoBoard copy() {
-
         getProfiler().startCopyBoard();
         GoBoard b = new GoBoard(this);
         getProfiler().stopCopyBoard();
@@ -83,7 +81,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      */
     @Override
     public void reset() {
-
         super.reset();
         groups_ = new GoGroupSet();
 
@@ -161,11 +158,9 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         return groups_;
     }
 
-
     public void setGroups(GoGroupSet groups) {
         groups_ = groups;
     }
-
 
     /**
      * Adjust the liberties on the strings (both black and white) that we touch.
@@ -173,7 +168,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      * @param liberty either occupied or not depending on if we are placing the stone or removing it.
      */
     public void adjustLiberties(GoBoardPosition liberty) {
-
         NeighborAnalyzer na = new NeighborAnalyzer(this);
         GoStringSet stringNbrs = na.findStringNeighbors(liberty);
         for (IGoString sn : stringNbrs) {
@@ -229,7 +223,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      */
     @Override
     protected void undoInternalMove(GoMove move) {
-
         getProfiler().startUndoMove();
 
         // there is nothing to do if it is a pass
@@ -241,7 +234,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         boardUpdater_.updateAfterRemove(move);
         getProfiler().stopUndoMove();
     }
-
 
     public int getNumCaptures(boolean player1StonesCaptured) {
         return boardUpdater_.getNumCaptures(player1StonesCaptured);

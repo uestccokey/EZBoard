@@ -39,14 +39,12 @@ public final class GoGroup extends GoSet
     /** listeners to notify in the event that we change. */
     private List<GroupChangeListener> changeListeners;
 
-
     /**
      * Constructor. Create a new group containing the specified string.
      *
      * @param string make the group from this string.
      */
     public GoGroup(IGoString string) {
-
         ownedByPlayer1_ = string.isOwnedByPlayer1();
 
         getMembers().add(string);
@@ -63,7 +61,6 @@ public final class GoGroup extends GoSet
      * @param stones list of stones to create a group from.
      */
     public GoGroup(GoBoardPositionList stones) {
-
         ownedByPlayer1_ = (stones.getFirst()).getPiece().isOwnedByPlayer1();
         for (GoBoardPosition stone : stones) {
             assimilateStone(stones, stone);
@@ -83,7 +80,6 @@ public final class GoGroup extends GoSet
     public void removeChangeListener(GroupChangeListener listener) {
         changeListeners.remove(listener);
     }
-
 
     /**
      * @return true if the piece is an enemy of the set owner.
@@ -149,7 +145,6 @@ public final class GoGroup extends GoSet
      */
     @Override
     public void addMember(IGoString string) {
-
         assert (string.isOwnedByPlayer1() == ownedByPlayer1_) :
                 "strings added to a group must have like ownership. String=" + string
                         + ". Group we are trying to add it to: " + this;
@@ -195,7 +190,6 @@ public final class GoGroup extends GoSet
      */
     @Override
     public GoBoardPositionSet getLiberties(GoBoard board) {
-
         if (board == null) {
             return cachedLiberties_;
         }

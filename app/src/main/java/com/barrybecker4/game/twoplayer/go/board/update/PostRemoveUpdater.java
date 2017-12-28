@@ -33,7 +33,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
      */
     @Override
     public void update(GoMove move) {
-
         profiler_.startUpdateGroupsAfterRemove();
 
         // first make sure that there are no references to obsolete groups.
@@ -87,7 +86,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
      * @param string that the stone belonged to.
      */
     private void splitStringsIfNeeded(GoBoardPosition stone, IGoString string) {
-
         IGoGroup group = string.getGroup();
         GoBoardPositionSet nbrs =
                 nbrAnalyzer_.getNobiNeighbors(stone, group.isOwnedByPlayer1(), NeighborType.FRIEND);
@@ -115,7 +113,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
      * @param captures list of captures to remove.
      */
     private void restoreCaptures(GoCaptureList captures) {
-
         if (captures == null || captures.isEmpty()) return;
 
         captures.restoreOnBoard(board_);

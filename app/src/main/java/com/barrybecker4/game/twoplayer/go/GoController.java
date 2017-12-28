@@ -80,14 +80,9 @@ public final class GoController extends TwoPlayerController<GoMove, GoBoard> {
     @Override
     protected PlayerList createPlayers() {
         PlayerList players = new PlayerList();
-//        players.add(new Player(createPlayerOptions(GameContext.getLabel("BLACK"),
-//                GoStoneRenderer.DEFAULT_PLAYER1_COLOR), true));
-//        players.add(new Player(createPlayerOptions(GameContext.getLabel("WHITE"),
-//                GoStoneRenderer.DEFAULT_PLAYER1_COLOR), false));
-        players.add(new Player(createPlayerOptions("Black",
-                Color.BLACK), true));
-        players.add(new Player(createPlayerOptions("WHITE",
-                Color.WHITE), false));
+        players.add(new Player(createPlayerOptions("Black", Color.BLACK), true));
+        players.add(new Player(createPlayerOptions("WHITE", Color.WHITE), false));
+
         return players;
     }
 

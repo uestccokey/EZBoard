@@ -51,7 +51,6 @@ class RelativeHealthCalculator {
      * @return relative health
      */
     private float boostRelativeHealthBasedOnWeakNbr(GoBoard board, float absoluteHealth) {
-
         // the default if there is no weakest group.
         float relativeHealth = absoluteHealth;
         GoBoardPositionSet groupStones = group_.getStones();
@@ -82,7 +81,6 @@ class RelativeHealthCalculator {
      * @return proportion of our group stones with enemy neighbors.
      */
     private double findProportionWithEnemyNbrs(GoBoardPositionSet groupStones) {
-
         int numWithEnemyNbrs = 0;
         for (Object p : groupStones) {
             GoBoardPosition stone = (GoBoardPosition) p;

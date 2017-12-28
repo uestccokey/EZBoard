@@ -61,7 +61,6 @@ public class GroupNeighborAnalyzer {
         return stones;
     }
 
-
     /**
      * @return all the groups on the board for both sides.
      */
@@ -187,7 +186,6 @@ public class GroupNeighborAnalyzer {
      */
     private int checkDiagonalNeighbors(int r, int c, boolean friendPlayer1, boolean sameSideOnly,
                                        GoBoardPositionList stack) {
-
         int numRows = board_.getNumRows();
         int numCols = board_.getNumCols();
         int numPushed = 0;
@@ -230,7 +228,6 @@ public class GroupNeighborAnalyzer {
      */
     private int checkKogeimaNeighbors(int r, int c, boolean friendPlayer1, boolean sameSideOnly,
                                       GoBoardPositionList stack) {
-
         int numRows = board_.getNumRows();
         int numCols = board_.getNumCols();
         int numPushed = 0;
@@ -256,7 +253,6 @@ public class GroupNeighborAnalyzer {
             numPushed += checkKogeimaNeighbor(r, c, 1, 2, friendPlayer1, sameSideOnly, stack);
         return numPushed;
     }
-
 
     /**
      * We allow these connections as long as the diagonal has not been fully cut.

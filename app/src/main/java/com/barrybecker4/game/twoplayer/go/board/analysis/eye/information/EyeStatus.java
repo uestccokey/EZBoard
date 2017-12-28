@@ -70,7 +70,6 @@ public enum EyeStatus {
     private String description_;
     private float score_;
 
-
     /**
      * constructor.
      *

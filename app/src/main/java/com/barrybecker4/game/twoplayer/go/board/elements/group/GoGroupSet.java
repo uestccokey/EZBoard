@@ -55,7 +55,6 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
      * @return String containing the current groups
      */
     String toString(boolean showBlack, boolean showWhite) {
-
         StringBuilder groupText = new StringBuilder("");
         StringBuilder blackGroupsText = new StringBuilder(showBlack ? "The black groups are :\n" : "");
         StringBuilder whiteGroupsText =
@@ -168,9 +167,7 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
      * @param group group that contains all the stones in the string.
      */
     private void confirmStoneInStringAlsoInGroup(IGoString str, IGoGroup group) {
-
         for (GoBoardPosition pos : str.getMembers()) {
-
             if (pos.getGroup() != null && !group.equals(pos.getGroup())) {
                 this.debugPrint(0, "Confirm stones in one group failed. Groups are:", true, true);
                 assert false : pos + " does not just belong to " + pos.getGroup()

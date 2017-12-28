@@ -6,7 +6,6 @@ import com.barrybecker4.game.twoplayer.go.board.elements.group.IGoGroup;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-
 /**
  * Maintains a map from groups to GroupAnalyzers.
  * If we request an analyzer for a group that is not in the map, we add it.

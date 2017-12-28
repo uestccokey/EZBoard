@@ -38,7 +38,6 @@ public class BoardUpdater {
         postRemoveUpdater_ = new PostRemoveUpdater(board, captureCounts_);
     }
 
-
     /**
      * @param player1StonesCaptured if true then get the black stones captured
      * @return the captured stones of the specified color
@@ -53,7 +52,6 @@ public class BoardUpdater {
      * @param move the move that was just made
      */
     public void updateAfterMove(GoMove move) {
-
         postMoveUpdater_.update(move);
     }
 
@@ -63,8 +61,6 @@ public class BoardUpdater {
      * @param move the move that was just undone
      */
     public void updateAfterRemove(GoMove move) {
-
         postRemoveUpdater_.update(move);
     }
-
 }

@@ -255,5 +255,4 @@ class GoSGFLoader extends SGFLoader {
 
         return token;
     }
-
 }
