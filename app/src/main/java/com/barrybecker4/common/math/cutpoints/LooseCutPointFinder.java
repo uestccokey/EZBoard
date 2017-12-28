@@ -14,11 +14,9 @@ public class LooseCutPointFinder extends AbstractCutPointFinder {
 
     @Override
     protected void addPoints(List<Double> positions, Range roundedRange, Range finalRange, double d) {
-
         double stop = roundedRange.getMax() + 0.5 * d;
         for (double x = roundedRange.getMin(); x < stop; x += d) {
             positions.add(checkSmallNumber(x));
         }
     }
-
 }

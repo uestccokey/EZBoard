@@ -35,7 +35,6 @@ public class Combinater implements Iterator<List<Integer>> {
      * @param num the number of integer elements to permute.
      */
     public Combinater(int num) {
-
         this.num = num;
         numCombinations = (long) Math.pow(2, num) - 1;
 
@@ -57,7 +56,6 @@ public class Combinater implements Iterator<List<Integer>> {
      */
     @Override
     public List<Integer> next() {
-
         counter++;
         if (!hasMore) {
             throw new NoSuchElementException("There are no more combinations");

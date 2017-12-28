@@ -10,7 +10,6 @@ import com.barrybecker4.common.math.MathUtil;
  */
 public final class Rounder {
 
-
     /**
      * Find a "nice" number approximately equal to the numberToRound (rounding up).
      * Corresponds to the "nicenum" method in graphics gems (page 659).
@@ -19,7 +18,6 @@ public final class Rounder {
      * @return nice rounded number. Something that has a final significant digit of 1, 2, or 5 x10^j
      */
     public static double roundUp(double numberToRound) {
-
         return round(numberToRound, false);
     }
 
@@ -31,7 +29,6 @@ public final class Rounder {
      * @return nice rounded number. Something that has a final significant digit of 1, 2, or 5 x10^j
      */
     public static double roundDown(double numberToRound) {
-
         return round(numberToRound, true);
     }
 
@@ -45,7 +42,6 @@ public final class Rounder {
      * @return nice rounded number. Something that has a final significant digit of 1, 2, or 5 x10^j
      */
     private static double round(double numberToRound, boolean roundDown) {
-
         int exp = (int) Math.floor(MathUtil.log10(numberToRound));
 
         double normalizedNumber = numberToRound / MathUtil.exp10(exp);

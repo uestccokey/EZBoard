@@ -14,7 +14,6 @@ public final class FormatUtil {
 
     private FormatUtil() {}
 
-
     /**
      * Show a reasonable number of significant digits.
      *

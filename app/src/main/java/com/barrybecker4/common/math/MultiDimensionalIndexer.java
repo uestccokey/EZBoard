@@ -21,7 +21,6 @@ public class MultiDimensionalIndexer {
     /** the size of each dimension in the multi-dim array. */
     private final int dims_[];
 
-
     /**
      * Constructor
      */

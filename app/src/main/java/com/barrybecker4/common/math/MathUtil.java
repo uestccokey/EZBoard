@@ -4,9 +4,6 @@ package com.barrybecker4.common.math;
 import java.math.BigInteger;
 import java.util.Random;
 
-//import javax.vecmath.Point2d;
-
-
 /**
  * Some supplemental mathematics routines.
  * Static util class.
@@ -29,7 +26,6 @@ public final class MathUtil {
 
     /** private constructor for static util class */
     private MathUtil() {}
-
 
     /**
      * @param val the value to find log base 10 of.
@@ -71,7 +67,6 @@ public final class MathUtil {
     public static long lcm(long a, long b) {
         return Math.abs(a * b) / gcd(a, b);
     }
-
 
     /**
      * Find the least common multiple of specified values.
@@ -190,11 +185,4 @@ public final class MathUtil {
         }
         return f;
     }
-
-//    public static double getDirectionTo(Point2d fromPoint, Point2d toPoint) {
-//        double xDiff = toPoint.x - fromPoint.x;
-//        double yDiff = toPoint.y - fromPoint.y;
-//
-//        return Math.atan2(yDiff, xDiff);
-//    }
 }

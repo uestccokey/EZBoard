@@ -7,7 +7,6 @@ import com.barrybecker4.common.format.FormatUtil;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
  * Represents the timing numbers for a named region of the code.
  *

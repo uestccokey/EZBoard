@@ -21,7 +21,6 @@ public class HermiteInterpolator extends AbstractSmoothInterpolator {
 
     @Override
     protected double smoothInterpolate(double y0, double y1, double y2, double y3, double mu) {
-
         double m0, m1;
         double a0, a1, a2, a3;
 

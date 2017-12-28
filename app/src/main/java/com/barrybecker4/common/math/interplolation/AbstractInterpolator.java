@@ -13,5 +13,4 @@ abstract class AbstractInterpolator implements Interpolator {
     AbstractInterpolator(double[] function) {
         this.function = function;
     }
-
 }

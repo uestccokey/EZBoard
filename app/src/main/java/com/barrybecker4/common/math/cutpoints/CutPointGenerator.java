@@ -50,7 +50,6 @@ public class CutPointGenerator {
      * @return the cut points
      */
     public double[] getCutPoints(Range range, int maxNumTicks) {
-
         return cutPointFinder.getCutPoints(range, maxNumTicks);
     }
 
@@ -62,7 +61,6 @@ public class CutPointGenerator {
      * @return cut point labels
      */
     public String[] getCutPointLabels(Range range, int maxTicks) {
-
         double[] cutPoints = cutPointFinder.getCutPoints(range, maxTicks);
         int maxFracDigits = getNumberOfFractionDigits(range, maxTicks);
         boolean useTight = cutPointFinder instanceof TightCutPointFinder;
@@ -86,7 +84,6 @@ public class CutPointGenerator {
      * @return Recommended number of fractional digits to display. The cut points: eg. 0, 1, 2, etc.
      */
     int getNumberOfFractionDigits(Range range, int maxNumTicks) {
-
         double max1 = range.getMax();
         if (range.getExtent() <= MIN_RANGE) {
             max1 = range.getMin() + MIN_RANGE;

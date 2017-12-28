@@ -1,12 +1,10 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.common.math.interplolation;
 
-
 /**
  * @author Barry Becker
  */
 public class LinearInterpolator extends AbstractInterpolator {
-
 
     public LinearInterpolator(double[] function) {
         super(function);
@@ -14,7 +12,6 @@ public class LinearInterpolator extends AbstractInterpolator {
 
     @Override
     public double interpolate(double value) {
-
         if (value < 0 || value > 1.0) {
             throw new IllegalArgumentException("value out of range [0, 1] :" + value);
         }
@@ -44,5 +41,4 @@ public class LinearInterpolator extends AbstractInterpolator {
         // + " f["+index0+"]="+ function[ index0 ]  +" f["+index1+"]="+function[ index1 ] );
         return (1.0 - xdiff) * function[index0] + xdiff * function[index1];
     }
-
 }

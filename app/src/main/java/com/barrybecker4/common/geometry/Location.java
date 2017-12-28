@@ -1,8 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.common.geometry;
 
-//import java.awt.geom.Point2D;
-
 import java.io.Serializable;
 
 /**
@@ -53,16 +51,6 @@ public abstract class Location implements Serializable {
         float yDif = Math.abs(getRow() - loc.getRow());
         return Math.sqrt(xDif * xDif + yDif * yDif);
     }
-
-//    /**
-//     * @param loc another arbitrary floating point location to measure distance from.
-//     * @return the euclidean distance from this location to another.
-//     */
-//    public double getDistanceFrom(Point2D loc) {
-//        double xDif = Math.abs(getRow() - loc.getX());
-//        double yDif = Math.abs(getCol() - loc.getY());
-//        return Math.sqrt(xDif * xDif + yDif * yDif);
-//    }
 
     /**
      * @return an immutable copy of the original incremented by the amount specified.

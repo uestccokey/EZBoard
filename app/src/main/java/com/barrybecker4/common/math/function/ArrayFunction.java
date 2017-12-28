@@ -22,7 +22,6 @@ public class ArrayFunction implements InvertibleFunction {
     private Interpolator interpolator;
     private Interpolator inverseInterpolator;
 
-
     /**
      * Constructor.
      *
@@ -75,7 +74,6 @@ public class ArrayFunction implements InvertibleFunction {
      */
     @Override
     public double getValue(double value) {
-
         return interpolator.interpolate(value);
     }
 
@@ -92,7 +90,6 @@ public class ArrayFunction implements InvertibleFunction {
      */
     @Override
     public double getInverseValue(double value) {
-
         return inverseInterpolator.interpolate(value);
     }
 

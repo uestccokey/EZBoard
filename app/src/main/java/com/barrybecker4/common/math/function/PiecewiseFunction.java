@@ -3,7 +3,6 @@ package com.barrybecker4.common.math.function;
 
 import com.barrybecker4.common.math.Range;
 
-
 /**
  * Piecewise linear function representation.
  *
@@ -29,7 +28,6 @@ public class PiecewiseFunction implements InvertibleFunction {
 
     @Override
     public double getValue(double value) {
-
         return getInterpolatedValue(value);
     }
 
@@ -39,7 +37,6 @@ public class PiecewiseFunction implements InvertibleFunction {
      */
     @Override
     public double getInverseValue(double value) {
-
         return getInterpolatedValue(value);
     }
 
@@ -48,13 +45,11 @@ public class PiecewiseFunction implements InvertibleFunction {
         return new Range(xValues[0], xValues[xValues.length - 1]);
     }
 
-
     /**
      * @param value x value to get interpolated y for.
      * @return the interpolated y value based on the key points in the arrays.
      */
     private double getInterpolatedValue(double value) {
-
         // first find the x value
         int i = 0;
         while (value > xValues[i]) {

@@ -54,7 +54,6 @@ public class AbstractParallelizer<T> {
         return numThreads;
     }
 
-
     /**
      * Invoke all the workers at once and block until they are all done
      * Once all the separate threads have completed their assigned work, you may want to commit the results.
@@ -63,7 +62,6 @@ public class AbstractParallelizer<T> {
      * @return list of Future tasks.
      */
     public List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables) {
-
         List<Future<T>> futures = null;
         try {
             futures = executor.invokeAll(callables);
@@ -72,5 +70,4 @@ public class AbstractParallelizer<T> {
         }
         return futures;
     }
-
 }

@@ -28,7 +28,6 @@ public class Permuter implements Iterator<List<Integer>> {
      * @param num the number of integer elements to permute.
      */
     public Permuter(int num) {
-
         long numPermutations = MathUtil.factorial(num);
         if (numPermutations < 0) {
             throw new IllegalArgumentException("The number of permutations is greater than " + Long.MAX_VALUE);

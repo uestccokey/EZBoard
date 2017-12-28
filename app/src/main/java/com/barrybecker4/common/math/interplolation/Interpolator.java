@@ -16,5 +16,4 @@ public interface Interpolator {
      * @return the interpolated value.
      */
     double interpolate(double value);
-
 }

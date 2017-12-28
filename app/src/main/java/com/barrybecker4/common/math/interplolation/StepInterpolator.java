@@ -17,5 +17,4 @@ public class StepInterpolator extends AbstractInterpolator {
 
         return function[(int) (value * function.length)];
     }
-
 }

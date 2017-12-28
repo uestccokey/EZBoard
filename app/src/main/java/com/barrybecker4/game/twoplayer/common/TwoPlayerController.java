@@ -24,11 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-//import com.barrybecker4.game.twoplayer.common.ui.OptimizationDoneHandler;
-//import com.barrybecker4.game.twoplayer.common.ui.TwoPlayerPieceRenderer;
-
-//import javax.swing.JOptionPane;
-
 /**
  * This is an abstract base class for a two player Game Controller.
  * It contains the key logic for 2 player zero sum games with perfect information.
@@ -60,7 +55,6 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
 
     /** Capable of searching for the best next move */
     private Searchable<M, B> searchable_;
-
 
     /**
      * Construct the game controller.

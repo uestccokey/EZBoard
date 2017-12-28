@@ -5,6 +5,7 @@ package com.barrybecker4.common.math.interplolation;
  * @author Barry Becker
  */
 public enum InterpolationMethod {
+
     STEP {
         @Override
         public Interpolator createInterpolator(double[] function) {
@@ -36,7 +37,6 @@ public enum InterpolationMethod {
         }
     };
 
-
     /**
      * Factory method for creating the search strategy to use.
      * Do not call the constructor directly.
@@ -44,5 +44,4 @@ public enum InterpolationMethod {
      * @return the search method to use
      */
     public abstract Interpolator createInterpolator(double[] function);
-
 }

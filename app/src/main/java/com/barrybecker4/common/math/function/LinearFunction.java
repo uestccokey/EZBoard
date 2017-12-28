@@ -15,7 +15,6 @@ public class LinearFunction implements InvertibleFunction {
     private double scale;
     private double offset;
 
-
     /**
      * Constructor.
      */
@@ -66,7 +65,6 @@ public class LinearFunction implements InvertibleFunction {
     public double getInverseValue(double value) {
         return (value - offset) / scale;
     }
-
 
     @Override
     public Range getDomain() {

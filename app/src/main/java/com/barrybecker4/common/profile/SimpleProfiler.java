@@ -18,7 +18,6 @@ public class SimpleProfiler extends Profiler {
         super.add(ROOT);
     }
 
-
     public void start() {
         start(ROOT);
     }

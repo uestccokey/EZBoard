@@ -56,7 +56,6 @@ public class ComplexNumberRange {
         return getPoint1() + " to " + this.getPoint2(); //NON-NLS
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -76,5 +75,4 @@ public class ComplexNumberRange {
         result = 31 * result + (point2_ != null ? point2_.hashCode() : 0);
         return result;
     }
-
 }

@@ -40,7 +40,6 @@ public class CountFunction implements Function {
     }
 
     public void addValue(double x, double y) {
-
         if (xValues.size() > maxXValues) {
             xValues.remove(0);
             yValues.remove(0);
@@ -71,7 +70,6 @@ public class CountFunction implements Function {
      */
     @Override
     public double getValue(double xValue) {
-
         return getValue(xValue, xValues, yValues);
     }
 
@@ -82,7 +80,6 @@ public class CountFunction implements Function {
      * @return y value
      */
     private double getValue(double xValue, List<Double> xVals, List<Double> yVals) {
-
         // first find the x value
         int i = 0;
         while (i < xVals.size() && xValue > xVals.get(i)) {

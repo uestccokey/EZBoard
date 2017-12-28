@@ -38,7 +38,6 @@ public class ErrorFunction implements InvertibleFunction {
             0.99999999999845, 0.9999999999988, 0.99999999999945, 0.9999999999996, 0.999999999999806, 0.9999999999996, 0.99999999999994
     };
 
-
     /** for values of x  = 0.0, 0.1, ... 1.0 */
     private static final double[] INVERSE_ERROR_FUNCTION = {
             0.0, 0.089, 0.18, 0.28, 0.379, 0.479, 0.596, 0.738, 0.91, 1.161, 3.28
@@ -46,7 +45,6 @@ public class ErrorFunction implements InvertibleFunction {
 
     private Interpolator interpolator;
     private Interpolator inverseInterpolator;
-
 
     /**
      * Constructor.
@@ -99,5 +97,4 @@ public class ErrorFunction implements InvertibleFunction {
     public Range getDomain() {
         return new Range(-5.0, 5.0);
     }
-
 }

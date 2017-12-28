@@ -15,10 +15,8 @@ public class TightCutPointFinder extends AbstractCutPointFinder {
     /** Labels should not get closer to each other than this. */
     private static final double MIN_LABEL_SEPARATION = 0.2;
 
-
     @Override
     protected void addPoints(List<Double> positions, Range roundedRange, Range finalRange, double d) {
-
         positions.add(checkSmallNumber(finalRange.getMin()));
 
         double initialInc = d;

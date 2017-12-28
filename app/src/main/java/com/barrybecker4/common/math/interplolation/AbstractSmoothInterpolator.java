@@ -12,7 +12,6 @@ public abstract class AbstractSmoothInterpolator extends AbstractInterpolator {
 
     @Override
     public double interpolate(double value) {
-
         if (value < 0 || value > 1.0)
             throw new IllegalArgumentException("value out of range [0, 1] :" + value);
 

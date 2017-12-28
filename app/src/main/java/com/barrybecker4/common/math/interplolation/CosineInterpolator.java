@@ -18,7 +18,6 @@ public class CosineInterpolator extends AbstractSmoothInterpolator {
      */
     @Override
     public double interpolate(double value) {
-
         if (value < 0 || value > 1.0)
             throw new IllegalArgumentException("value out of range [0, 1] :" + value);
         int len = function.length - 1;
@@ -36,7 +35,6 @@ public class CosineInterpolator extends AbstractSmoothInterpolator {
 
     @Override
     protected double smoothInterpolate(double mu, double y0, double y1, double y2, double y3) {
-
         double mu2 = (1.0 - Math.cos(mu * Math.PI)) / 2.0;
         return (y0 * (1.0 - mu2) + y1 * mu2);
     }

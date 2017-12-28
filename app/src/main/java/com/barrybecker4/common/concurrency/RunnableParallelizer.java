@@ -38,7 +38,6 @@ public class RunnableParallelizer extends AbstractParallelizer<Object> {
      * @param workers list of workers to execute in parallel.
      */
     public void invokeAllRunnables(List<Runnable> workers) {
-
         // convert the runnables to callables so the invokeAll api works
         List<Callable<Object>> callables = new ArrayList<>(workers.size());
         for (Runnable r : workers) {

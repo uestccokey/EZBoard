@@ -24,13 +24,11 @@ public abstract class Worker {
     /** worker thread under separate synchronization control. */
     private final ThreadVar threadVar;
 
-
     /**
      * Constructor.
      * Start a thread that will call the {@code construct} method and then exit.
      */
     public Worker() {
-
         Runnable doConstruct = new Runnable() {
 
             @Override

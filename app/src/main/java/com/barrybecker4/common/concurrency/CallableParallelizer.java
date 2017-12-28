@@ -37,7 +37,6 @@ public class CallableParallelizer<T> extends AbstractParallelizer<T> {
      * @param doneHandler gets called for each task as it finishes.
      */
     public void invokeAllWithCallback(List<Callable<T>> callables, DoneHandler<T> doneHandler) {
-
         List<Future<T>> futures = invokeAll(callables);
         ExecutorCompletionService<T> completionService = new ExecutorCompletionService<>(executor);
 

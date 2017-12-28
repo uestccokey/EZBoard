@@ -25,8 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-//import com.barrybecker4.game.twoplayer.go.ui.rendering.GoStoneRenderer;
-
 /**
  * Defines everything the computer needs to know to play Go.
  *

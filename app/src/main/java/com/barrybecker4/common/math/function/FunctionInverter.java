@@ -37,7 +37,6 @@ public class FunctionInverter {
      * @return inverse error function for specified range
      */
     public double[] createInverseFunction(Range xRange) {
-
         double[] invFunc = new double[length];
         int j = 0;
         double xMax = xRange.getMax();

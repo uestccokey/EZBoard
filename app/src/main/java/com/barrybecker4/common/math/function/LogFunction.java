@@ -55,7 +55,6 @@ public class LogFunction implements InvertibleFunction {
         return scale * logValue / baseConverter;
     }
 
-
     @Override
     public double getInverseValue(double value) {
 

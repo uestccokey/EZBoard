@@ -16,7 +16,6 @@ abstract class AbstractCutPointFinder {
     /** The range should not get smaller than this. */
     static final double MIN_RANGE = 1.0E-10;
 
-
     /**
      * Retrieve the cut point values.
      * If its a really small range include both min and max to avoid having just one label.
@@ -26,7 +25,6 @@ abstract class AbstractCutPointFinder {
      * @return the cut points
      */
     public double[] getCutPoints(Range range, int maxNumTicks) {
-
         validateArguments(range);
         Range finalRange = new Range(range);
         if (range.getExtent() <= MIN_RANGE) {
@@ -50,7 +48,6 @@ abstract class AbstractCutPointFinder {
     }
 
     private void determineCutPoints(int maxTicks, Range finalRange, List<Double> positions) {
-
         double extent = Rounder.roundUp(finalRange.getExtent());
         double d = Rounder.roundDown(extent / (maxTicks - 1));
         Range roundedRange =

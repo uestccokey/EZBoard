@@ -10,7 +10,6 @@ public class CubicInterpolator extends AbstractSmoothInterpolator {
         super(function);
     }
 
-
     @Override
     protected double smoothInterpolate(double y0, double y1, double y2, double y3, double mu) {
         double mu2 = mu * mu;

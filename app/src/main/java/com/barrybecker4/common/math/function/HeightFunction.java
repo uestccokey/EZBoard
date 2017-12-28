@@ -18,7 +18,6 @@ public class HeightFunction implements Function {
     private LinearFunction domainToBinFunc;
     Interpolator interpolator;
 
-
     /**
      * Constructor.
      *
