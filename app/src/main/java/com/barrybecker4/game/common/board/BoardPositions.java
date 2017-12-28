@@ -21,7 +21,6 @@ public class BoardPositions {
     private int numCols_;
     private int rowsTimesCols_;
 
-
     /**
      * Constructor
      */
@@ -196,7 +195,6 @@ public class BoardPositions {
      * @return true if the specified BoardPosition is on the corder of the board
      */
     public boolean isInCorner(BoardPosition position) {
-
         return ((position.getRow() == 1 && position.getCol() == 1) ||
                 (position.getRow() == getNumRows() && position.getCol() == getNumCols()) ||
                 (position.getRow() == getNumRows() && position.getCol() == 1) ||
@@ -210,7 +208,6 @@ public class BoardPositions {
      * @return true if the specified BoardPosition is on the edge of the board
      */
     public boolean isOnEdge(BoardPosition position) {
-
         return (position.getRow() == 1 || position.getRow() == getNumRows()
                 || position.getCol() == 1 || position.getCol() == getNumCols());
     }

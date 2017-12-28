@@ -29,7 +29,6 @@ public class ComputerMoveRequester implements SearchProgress {
      * @return true if done. Always returns false unless auto optimizing
      */
     public boolean requestComputerMove(boolean isPlayer1) {
-
         // this will spawn the worker thread and return immediately (unless autoOptimize on)
         return controller_.requestComputerMove(isPlayer1);
     }

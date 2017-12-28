@@ -35,7 +35,6 @@ public abstract class TwoPlayerBoard<M extends TwoPlayerMove> extends Board<M> {
      */
     @Override
     protected boolean makeInternalMove(M move) {
-
         if (!move.isPassOrResignation()) {
             BoardPosition pos = getPosition(move.getToLocation());
             assert (move.getPiece() != null) : "move's piece was null :" + move;

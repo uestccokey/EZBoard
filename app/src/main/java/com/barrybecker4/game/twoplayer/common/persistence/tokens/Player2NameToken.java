@@ -8,6 +8,7 @@ import com.barrybecker4.ca.dj.jigo.sgf.tokens.NameToken;
  * Player 2's name.
  */
 public class Player2NameToken extends NameToken implements InfoToken {
-    public Player2NameToken() { }
+
+    public Player2NameToken() {}
 }
 

@@ -16,11 +16,9 @@ import com.barrybecker4.game.twoplayer.common.persistence.TwoPlayerGameImporter;
 import com.barrybecker4.game.twoplayer.common.search.Searchable;
 import com.barrybecker4.game.twoplayer.common.search.strategy.SearchStrategy;
 import com.barrybecker4.game.twoplayer.common.search.tree.IGameTreeViewable;
-import com.barrybecker4.optimization.optimizee.Optimizee;
 import com.barrybecker4.optimization.parameter.ParameterArray;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -77,7 +75,6 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
      */
     protected abstract TwoPlayerOptions createOptions();
 
-
     public TwoPlayerViewModel<M, B> getViewer() {
         return (TwoPlayerViewModel) viewer_;
     }
@@ -110,27 +107,13 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
 
     @Override
     public void restoreFromFile(String fileName) {
-
         try {
             FileInputStream iStream = new FileInputStream(fileName);
             GameContext.log(2, "opening " + fileName);
 
             restoreFromStream(iStream);
-
-        } catch (FileNotFoundException fnfe) {
-//            JOptionPane.showMessageDialog(null,
-//                    "file " + fileName + " was not found." + fnfe.getMessage());
-            fnfe.printStackTrace();
-        } catch (IOException ioe) {
-//            JOptionPane.showMessageDialog(null,
-//                    "IOException occurred while reading " +
-//                            fileName + " :" + ioe.getMessage());
-            ioe.printStackTrace();
-        } catch (SGFException sgfe) {
-//            JOptionPane.showMessageDialog(null,
-//                    "file " + fileName + " had an SGF error while loading: " +
-//                            sgfe.getMessage());
-            sgfe.printStackTrace();
+        } catch (SGFException | IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -157,15 +140,8 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
     protected PlayerList createPlayers() {
         PlayerList players = new PlayerList();
 
-//        PlayerOptions p1Opts =
-//                createPlayerOptions(GameContext.getLabel("PLAYER1"), TwoPlayerPieceRenderer.DEFAULT_PLAYER1_COLOR);
-//        PlayerOptions p2Opts =
-//                createPlayerOptions(GameContext.getLabel("PLAYER2"), TwoPlayerPieceRenderer.DEFAULT_PLAYER2_COLOR);
-
-        PlayerOptions p1Opts =
-                createPlayerOptions("PLAYER1", Color.BLACK);
-        PlayerOptions p2Opts =
-                createPlayerOptions("PLAYER2", Color.WHITE);
+        PlayerOptions p1Opts = createPlayerOptions("PLAYER1", Color.BLACK);
+        PlayerOptions p2Opts = createPlayerOptions("PLAYER2", Color.WHITE);
 
         players.add(new Player(p1Opts, true));
         players.add(new Player(p2Opts, false));
@@ -234,16 +210,6 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
             player1sTurn = lastMove.isPlayer1();
         }
         return lastMove;
-    }
-
-    /**
-     * Currently online play not available for 2 player games - coming soon!
-     *
-     * @return false
-     */
-    @Override
-    public boolean isOnlinePlayAvailable() {
-        return false;
     }
 
     /**
@@ -331,20 +297,6 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
         return worker_.requestComputerMove(player1ToMove, synchronous);
     }
 
-//    /**
-//     * Let the computer play against itself for a long time as it optimizes its parameters.
-//     * @param handler will be called when the optimization is done processing.
-//     */
-//    public void runOptimization(final OptimizationDoneHandler handler) {
-//
-//        final Optimizer optimizer =
-//                new Optimizer(this.getOptimizee(), getOptions().getAutoOptimizeFile());
-//
-//        ParameterArray weights = getComputerWeights().getDefaultWeights();
-//
-//        new TwoPlayerOptimizationWorker(optimizer, weights, handler).execute();
-//    }
-
     /**
      * @return true if the viewer is currently processing (i.e. searching)
      */
@@ -389,10 +341,6 @@ public abstract class TwoPlayerController<M extends TwoPlayerMove, B extends Two
     public boolean isDone() {
         M lastMove = getLastMove();
         return getSearchable().done(lastMove, false);
-    }
-
-    final Optimizee getOptimizee() {
-        return new TwoPlayerOptimizee(this);
     }
 
     public synchronized Searchable<M, B> getSearchable() {

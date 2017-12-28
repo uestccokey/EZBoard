@@ -37,7 +37,6 @@ public class TwoPlayerSGFLoader extends SGFLoader {
      */
     public TwoPlayerSGFLoader() {}
 
-
     /**
      * Reads an SGF token, provided a StreamTokenizer to help with parsing the
      * text into SGFTokens.

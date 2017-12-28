@@ -3,9 +3,7 @@ package com.barrybecker4.game.common;
 
 import com.barrybecker4.game.common.board.IBoard;
 import com.barrybecker4.game.common.persistence.GameExporter;
-import com.barrybecker4.game.common.player.PlayerAction;
 import com.barrybecker4.game.common.player.PlayerList;
-
 
 /**
  * This is an abstract base class for a Game Controller.
@@ -160,7 +158,6 @@ public abstract class GameController<M extends Move, B extends IBoard<M>>
         initializeData();
     }
 
-
     public void setOptions(GameOptions options) {
         gameOptions_ = options;
     }
@@ -170,38 +167,4 @@ public abstract class GameController<M extends Move, B extends IBoard<M>>
     protected AbstractGameProfiler getProfiler() {
         return GameProfiler.getInstance();
     }
-
-    /**
-     *
-     * @param cmd containing an action for one of the players
-     *
-    public void handleServerUpdate(GameCommand cmd) {
-    // @@ need to put something here for.
-    GameContext.log(2, "Need controller implementation for handleServerUpdate");
-    }*/
-
-    /**
-     * @return true if online pay is supported, and the server is available.
-     */
-    public abstract boolean isOnlinePlayAvailable();
-
-    /**
-     * If a derived class supports online play it must override this.
-     *
-     * @return server port number
-     */
-    public int getServerPort() {
-        return -1;
-    }
-
-    /**
-     * Someday 2 player games should use actions rather than moves so
-     * that they too can be run over the game server.
-     *
-     * @param action some action
-     */
-    public void handlePlayerAction(PlayerAction action) {
-        assert false : "handlePlayerAction not implemented for " + this.getClass().getName();
-    }
-
 }

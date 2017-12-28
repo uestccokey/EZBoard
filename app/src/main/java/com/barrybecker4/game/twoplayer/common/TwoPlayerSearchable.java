@@ -28,12 +28,10 @@ public abstract class TwoPlayerSearchable<M extends TwoPlayerMove, B extends Two
     /** Used to generate hashkeys. */
     protected final ZobristHash hash;
 
-
     /**
      * Constructor.
      */
     public TwoPlayerSearchable(final B board, PlayerList players) {
-
         super(board.getMoveList());
         board_ = board;
         players_ = players;
@@ -46,7 +44,6 @@ public abstract class TwoPlayerSearchable<M extends TwoPlayerMove, B extends Two
      * Copy constructor.
      */
     public TwoPlayerSearchable(TwoPlayerSearchable<M, B> searchable) {
-
         this((B) searchable.getBoard().copy(), (PlayerList) searchable.players_.clone());
     }
 
@@ -61,7 +58,6 @@ public abstract class TwoPlayerSearchable<M extends TwoPlayerMove, B extends Two
      * @param move the move to play.
      */
     public void makeInternalMove(M move) {
-
         getBoard().makeMove(move);
 
         if (move.isPassOrResignation()) {
@@ -99,7 +95,6 @@ public abstract class TwoPlayerSearchable<M extends TwoPlayerMove, B extends Two
      */
     public abstract int worth(M lastMove, ParameterArray weights);
 
-
     @Override
     public SearchOptions<M, B> getSearchOptions() {
         return ((TwoPlayerPlayerOptions) getCurrentPlayer().getOptions()).getSearchOptions();
@@ -114,7 +109,6 @@ public abstract class TwoPlayerSearchable<M extends TwoPlayerMove, B extends Two
      * @param recordWin if true then the controller state will record wins
      */
     public boolean done(M move, boolean recordWin) {
-
         // the game can't be over if no moves have been made yet.
         if (moveList_.getNumMoves() == 0) {
             return false;

@@ -35,5 +35,4 @@ public interface TwoPlayerViewModel<M extends TwoPlayerMove, B extends TwoPlayer
      * resume searching for the next move at full speed.
      */
     void continueProcessing();
-
 }

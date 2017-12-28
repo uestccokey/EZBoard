@@ -67,7 +67,6 @@ public class TwoPlayerGameImporter<M extends TwoPlayerMove, B
      */
     @Override
     protected void parseSGFGameInfo(SGFGame game) {
-
         TwoPlayerController gc = (TwoPlayerController) controller_;
 
         Enumeration e = game.getInfoTokens();
@@ -97,7 +96,6 @@ public class TwoPlayerGameImporter<M extends TwoPlayerMove, B
      */
     @Override
     protected boolean processToken(SGFToken token, MoveList<M> moveList) {
-
         boolean found = false;
         if (token instanceof PlacementToken) {
             moveList.add(createMoveFromToken(token));
@@ -110,7 +108,6 @@ public class TwoPlayerGameImporter<M extends TwoPlayerMove, B
         }
         return found;
     }
-
 
     /**
      * Create a move from the two player move Token

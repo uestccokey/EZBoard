@@ -2,7 +2,6 @@
 package com.barrybecker4.game.twoplayer.common;
 
 import com.barrybecker4.game.common.GameOptions;
-//import com.barrybecker4.sound.Instruments;
 
 /**
  * Encapsulate two player options here to keep the TwoPlayerController class mush simpler.
@@ -11,37 +10,19 @@ import com.barrybecker4.game.common.GameOptions;
  */
 public class TwoPlayerOptions extends GameOptions {
 
-    /** Sound played when move is made */
-//    private static final String DEFAULT_TONE = Instruments.TAIKO_DRUM;
-    private static final String DEFAULT_TONE = "";
-
     /** if true, then try to show a dialog visualizing the game tree. */
     private boolean showGameTree_;
 
     private boolean showGameOverDialog_;
     private boolean autoOptimize_;
     private String autoOptimizeFile_;
-    private String preferredTone_;
 
     /**
      * Default Constructor
      */
     public TwoPlayerOptions() {
-        preferredTone_ = getDefaultTone();
         showGameOverDialog_ = true;
         showGameTree_ = false;
-    }
-
-    /**
-     * Constructor
-     *
-     * @param preferredTone sound to make on each move.
-     */
-    protected TwoPlayerOptions(String preferredTone) {
-        preferredTone_ = preferredTone;
-        if (preferredTone == null) {
-//            preferredTone_ = Instruments.TAIKO_DRUM;
-        }
     }
 
     /**
@@ -112,13 +93,5 @@ public class TwoPlayerOptions extends GameOptions {
     public final String getAutoOptimizeFile() {
         assert (autoOptimizeFile_ != null) : "There is no auto optimize file";
         return autoOptimizeFile_;
-    }
-
-    public String getPreferredTone() {
-        return preferredTone_;
-    }
-
-    protected String getDefaultTone() {
-        return DEFAULT_TONE;
     }
 }

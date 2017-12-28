@@ -68,7 +68,6 @@ public class SearchWindow {
         return "(" + alpha + ", " + beta + ")";
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,7 +76,6 @@ public class SearchWindow {
         SearchWindow that = (SearchWindow) o;
 
         return beta == that.beta && alpha == that.alpha;
-
     }
 
     @Override

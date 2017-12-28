@@ -88,7 +88,6 @@ public class HistoricalHashKey extends HashKey {
 
     @Override
     public String toString() {
-
         StringBuilder bldr = new StringBuilder();
         for (Long hkey : keyHistory) {
             bldr.append(Long.toBinaryString(hkey)).append(", ");

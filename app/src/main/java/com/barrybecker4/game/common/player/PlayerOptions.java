@@ -18,7 +18,6 @@ public class PlayerOptions implements Serializable {
     /** each player has an associated color. */
     private Color color_;
 
-
     /**
      * Constructor.
      *

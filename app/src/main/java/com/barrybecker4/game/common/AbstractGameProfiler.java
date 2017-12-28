@@ -29,7 +29,6 @@ public abstract class AbstractGameProfiler extends Profiler {
      * Start profiling the game search.
      */
     public void startProfiling() {
-
         searchTime = 0;
         if (GameContext.isProfiling()) {
             searchTime = System.currentTimeMillis();

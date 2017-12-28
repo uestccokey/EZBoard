@@ -32,7 +32,6 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
      */
     private MoveList<M> moveList_;
 
-
     /**
      * Default constructor
      */
@@ -156,7 +155,6 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
      */
     @Override
     public boolean equals(Object b) {
-
         if (!(b instanceof Board)) return false;
         Board board = (Board) b;
         return (board.positions_.equals(positions_));

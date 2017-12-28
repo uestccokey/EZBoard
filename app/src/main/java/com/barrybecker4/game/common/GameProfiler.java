@@ -10,7 +10,6 @@ public class GameProfiler extends AbstractGameProfiler {
 
     private static GameProfiler instance;
 
-
     /**
      * @return singleton instance.
      */

@@ -19,13 +19,11 @@ public class GoOptions extends TwoPlayerOptions {
      */
     private float komi_ = DEFAULT_KOMI;
 
-
     /** Default constructor */
     public GoOptions() {}
 
     /** Constructor */
-    public GoOptions(String preferredTone, float komi) {
-        super(preferredTone);
+    public GoOptions(float komi) {
         setKomi(komi);
     }
 

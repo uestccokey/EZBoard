@@ -49,11 +49,9 @@ public class Player implements Serializable {
         return options_.getName();
     }
 
-
     public void setName(String name) {
         this.options_.setName(name);
     }
-
 
     public Color getColor() {
         return options_.getColor();

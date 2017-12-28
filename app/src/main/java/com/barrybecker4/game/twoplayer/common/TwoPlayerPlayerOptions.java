@@ -30,7 +30,6 @@ public class TwoPlayerPlayerOptions extends PlayerOptions {
      * @param searchOptions search options to use.
      */
     protected TwoPlayerPlayerOptions(String name, Color color, SearchOptions searchOptions) {
-
         this(name, color);
         searchOptions_ = searchOptions;
     }
@@ -47,5 +46,4 @@ public class TwoPlayerPlayerOptions extends PlayerOptions {
     public void setSearchOptions(SearchOptions options) {
         searchOptions_ = options;
     }
-
 }

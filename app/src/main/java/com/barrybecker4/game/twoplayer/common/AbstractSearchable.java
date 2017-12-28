@@ -11,7 +11,6 @@ import com.barrybecker4.game.twoplayer.common.search.tree.IGameTreeViewable;
 import com.barrybecker4.game.twoplayer.common.search.tree.SearchTreeNode;
 import com.barrybecker4.optimization.parameter.ParameterArray;
 
-
 /**
  * Base class for all classes that can search two player games for the next best move.
  *
@@ -29,7 +28,6 @@ public abstract class AbstractSearchable<M extends TwoPlayerMove, B extends TwoP
      * @param moveList list of moves that have been made so far.
      */
     public AbstractSearchable(MoveList<M> moveList) {
-
         moveList_ = moveList;
     }
 

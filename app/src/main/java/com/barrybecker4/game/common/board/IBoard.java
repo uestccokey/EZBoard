@@ -22,14 +22,12 @@ public interface IBoard<M extends Move> {
      */
     void reset();
 
-
     /**
      * We should be able to create a deep copy of ourselves
      *
      * @return deep copy of the board.
      */
     IBoard copy();
-
 
     /**
      * given a move specification, execute it on the board
@@ -47,5 +45,4 @@ public interface IBoard<M extends Move> {
      * @return the move that was just undone.
      */
     M undoMove();
-
 }

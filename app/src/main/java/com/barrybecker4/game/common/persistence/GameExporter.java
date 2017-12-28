@@ -45,7 +45,6 @@ public abstract class GameExporter<M extends Move, B extends IBoard<M>> {
      * @return name with the sgf suffix added if the name did not have it.
      */
     protected String ensureSuffix(String name) {
-
         String suffix = ".sgf";
         if (!name.endsWith(suffix)) {
             return name + suffix;

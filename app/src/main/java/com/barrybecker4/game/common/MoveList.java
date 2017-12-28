@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.common;
 
-
 import java.util.ArrayList;
 
 /**
@@ -108,7 +107,6 @@ public class MoveList<M extends Move> extends ArrayList<M> {
      * @return a random move from the list.
      */
     public M getRandomMove(int ofFirstN) {
-
         int r = GameContext.random().nextInt(Math.min(ofFirstN, size()));
         return get(r);
     }
@@ -122,7 +120,6 @@ public class MoveList<M extends Move> extends ArrayList<M> {
      * @return a random move from the list.
      */
     public M getRandomMoveForThresh(int percentLessThanBestThresh) {
-
         // first find the index of the last move that is still above the thresh
         double thresh = getFirstMove().getValue() * (1.0 - (float) percentLessThanBestThresh / 100.0);
         int ct = 1;

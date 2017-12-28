@@ -3,7 +3,6 @@ package com.barrybecker4.game.common.board;
 
 import java.io.Serializable;
 
-
 /**
  * the BoardPosition describes the physical marker at a location on the board.
  * It may be empty if there is no piece there.

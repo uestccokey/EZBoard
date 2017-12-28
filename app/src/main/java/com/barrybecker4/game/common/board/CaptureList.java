@@ -19,7 +19,6 @@ public class CaptureList extends LinkedList<BoardPosition> {
      * copy constructor
      */
     public CaptureList(CaptureList captureList) {
-
         for (BoardPosition capture : captureList) {
             add(capture.copy());
         }
@@ -29,7 +28,6 @@ public class CaptureList extends LinkedList<BoardPosition> {
      * @return a deep copy of the capture list.
      */
     public CaptureList copy() {
-
         return new CaptureList(this);
     }
 

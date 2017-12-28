@@ -85,5 +85,4 @@ public class TranspositionTable<M extends TwoPlayerMove> extends LRUCache<HashKe
                 + " nearHits=" + this.getNearCacheHits()
                 + " misses=" + this.getCacheMisses() + "\n]";
     }
-
 }

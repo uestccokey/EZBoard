@@ -17,16 +17,13 @@ public class Size2Token extends SGFToken implements InfoToken {
     private int numRows;
     private int numColumns;
 
-    public Size2Token() {
-
-    }
+    public Size2Token() {}
 
     /**
      * Parse the dimensions of the board
      */
     @Override
     protected boolean parseContent(StreamTokenizer st) throws IOException, SGFException {
-
         try {
             int token = st.nextToken();
             numRows = Integer.parseInt(st.sval);
@@ -49,6 +46,5 @@ public class Size2Token extends SGFToken implements InfoToken {
     public int getNumColumns() {
         return numColumns;
     }
-
 }
 

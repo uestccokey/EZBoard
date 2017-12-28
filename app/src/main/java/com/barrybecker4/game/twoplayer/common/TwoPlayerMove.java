@@ -58,7 +58,6 @@ public class TwoPlayerMove extends Move {
     /** Some comments about how the score was computed. Used for debugging. */
     private String scoreDescription_ = null;
 
-
     /**
      * Protected Constructor.
      * Use the factory method createMove instead.
@@ -85,7 +84,6 @@ public class TwoPlayerMove extends Move {
      * Copy constructor
      */
     protected TwoPlayerMove(TwoPlayerMove move) {
-
         this(move.getToLocation(), move.getValue(), (move.getPiece() != null) ? move.getPiece().copy() : null);
         this.inheritedValue_ = move.inheritedValue_;
         this.selected_ = move.selected_;
@@ -145,7 +143,6 @@ public class TwoPlayerMove extends Move {
      */
     @Override
     public int compareTo(Move m) {
-
         int result = super.compareTo(m);
         if (result != 0) {
             return result;

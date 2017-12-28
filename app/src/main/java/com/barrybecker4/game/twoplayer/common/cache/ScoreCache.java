@@ -56,5 +56,4 @@ public class ScoreCache extends LRUCache<HashKey, ScoreEntry> {
         return "ScoreCache [\n" + "numEntries=" + numEntries() + " hits" +
                 getCacheHits() + " misses=" + this.getCacheMisses() + "\n]";
     }
-
 }

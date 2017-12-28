@@ -19,7 +19,6 @@ class TwoPlayerSearchWorker<M extends TwoPlayerMove, B extends TwoPlayerBoard<M>
     /** this is true while the computer thinks about its next move. */
     private boolean processing_ = false;
 
-
     /**
      * Construct the search worker.
      */
@@ -56,7 +55,6 @@ class TwoPlayerSearchWorker<M extends TwoPlayerMove, B extends TwoPlayerBoard<M>
      * @throws AssertionError if something bad happened while searching.
      */
     public boolean requestComputerMove(final boolean isPlayer1, final boolean synchronous) throws AssertionError {
-
         worker = new Worker() {
 
             private M move;

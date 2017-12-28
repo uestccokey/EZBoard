@@ -1,8 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2013. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.common;
 
-import android.util.Log;
-
 import com.barrybecker4.common.app.ILog;
 
 import java.io.FileNotFoundException;
@@ -38,22 +36,18 @@ public final class GameContext {
 
         @Override
         public void print(int logLevel, int appLogLevel, String message) {
-            Log.e("GameContext", message);
         }
 
         @Override
         public void println(int logLevel, int appLogLevel, String message) {
-            Log.e("GameContext", message);
         }
 
         @Override
         public void print(String message) {
-            Log.e("GameContext", message);
         }
 
         @Override
         public void println(String message) {
-            Log.e("GameContext", message);
         }
     };
 

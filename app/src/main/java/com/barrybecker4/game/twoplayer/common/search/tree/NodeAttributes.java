@@ -1,13 +1,11 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common.search.tree;
 
-
 import com.barrybecker4.common.format.FormatUtil;
 import com.barrybecker4.game.twoplayer.common.TwoPlayerMove;
 import com.barrybecker4.game.twoplayer.common.search.SearchWindow;
 
 import java.util.HashMap;
-
 
 /**
  * Represents a move/node in the game tree.
@@ -49,5 +47,4 @@ public class NodeAttributes extends HashMap<String, String> {
         attributes.put("window", window.toString());
         return attributes;
     }
-
 }

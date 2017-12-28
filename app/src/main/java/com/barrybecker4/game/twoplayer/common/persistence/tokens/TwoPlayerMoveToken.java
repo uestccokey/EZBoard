@@ -12,13 +12,13 @@ import java.io.StreamTokenizer;
  * The superclass for Player1MoveToken and Player2MoveToken.
  */
 public abstract class TwoPlayerMoveToken extends PlacementToken {
-    protected Point toPoint = new Point();
 
+    protected Point toPoint = new Point();
 
     /**
      * A token the describes where a players pawn started and where it ended after moving.
      */
-    protected TwoPlayerMoveToken() { }
+    protected TwoPlayerMoveToken() {}
 
     /**
      * Parse in the position of the piece.
@@ -27,7 +27,6 @@ public abstract class TwoPlayerMoveToken extends PlacementToken {
     protected boolean parseContent(StreamTokenizer st) throws IOException {
         boolean parsed = parsePoint(st, toPoint);
         return st.nextToken() == StreamTokenizer.TT_WORD && parsed;
-
     }
 
     /**
@@ -56,7 +55,6 @@ public abstract class TwoPlayerMoveToken extends PlacementToken {
         return (st.nextToken() == (int) ']');
     }
 
-
     /**
      * @param ch a token whose value ranges between 'a' through 'z', or 'A'  through 'Z',
      * @return the appropriate row/column value.  If
@@ -81,5 +79,4 @@ public abstract class TwoPlayerMoveToken extends PlacementToken {
      * @return The Y coordinate of the placement.
      */
     public int getToY() { return toPoint.y; }
-
 }

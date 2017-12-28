@@ -45,5 +45,4 @@ public interface IGameTreeViewable {
      * @param evt event
      */
     void resetTree(TwoPlayerMove evt);
-
 }

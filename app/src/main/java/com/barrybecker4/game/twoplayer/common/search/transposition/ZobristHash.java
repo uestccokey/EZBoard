@@ -52,7 +52,6 @@ public final class ZobristHash {
      * @param includeHistory if true a lot of debug information is included in the key. Don't use in production.
      */
     public ZobristHash(TwoPlayerBoard board, int randomSeed, boolean includeHistory) {
-
         this.board = board;
         this.includeHistory = includeHistory;
         injectRandom(new Random(randomSeed));
@@ -66,7 +65,6 @@ public final class ZobristHash {
     }
 
     public void applyMove(Location move, int stateIndex) {
-
         applyPositionToKey(move, stateIndex);
     }
 
@@ -133,9 +131,7 @@ public final class ZobristHash {
      * note ^ is XOR (exclusive OR) in java.
      */
     private void applyPositionToKey(Location location, int stateIndex) {
-
         Long specialNum = randomNumberTable[location.getRow() - 1][location.getCol() - 1][stateIndex];
         currentKey.applyMove(location, specialNum);
     }
-
 }

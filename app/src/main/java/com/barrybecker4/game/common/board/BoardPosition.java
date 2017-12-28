@@ -176,6 +176,5 @@ public class BoardPosition {
         sb.append(" (").append(location_.toString()).append(')');
         return sb.toString();
     }
-
 }
 

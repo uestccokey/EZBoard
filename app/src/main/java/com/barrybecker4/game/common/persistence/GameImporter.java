@@ -124,7 +124,6 @@ public abstract class GameImporter<M extends Move, B extends IBoard<M>> {
      * @return true if the token is an instance of PlacementToken.
      */
     protected boolean processToken(SGFToken token, MoveList<M> moveList) {
-
         boolean found = false;
         if (token instanceof PlacementToken) {
             M move = createMoveFromToken(token);
@@ -136,5 +135,4 @@ public abstract class GameImporter<M extends Move, B extends IBoard<M>> {
         }
         return found;
     }
-
 }

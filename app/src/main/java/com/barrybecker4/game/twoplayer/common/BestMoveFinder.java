@@ -38,7 +38,6 @@ public class BestMoveFinder<M extends TwoPlayerMove> {
      * @return the best moves in order of how good they are.
      */
     public MoveList<M> getBestMoves(MoveList<M> moveList) {
-
         Collections.sort(moveList);
 
         // reverse the order so the best (highest scoring) move (using static board evaluation) is first.
@@ -59,7 +58,6 @@ public class BestMoveFinder<M extends TwoPlayerMove> {
      * @return set of best moves from the original list
      */
     private MoveList<M> determineBestMoves(MoveList<M> moveList) {
-
         int minBest = searchOptions_.getMinBestMoves();
         int requestedBest = getNumRequestedBest(moveList);
         double thresholdValue = getThresholdValue(moveList);
@@ -104,7 +102,6 @@ public class BestMoveFinder<M extends TwoPlayerMove> {
      * @return best moves that satisfy requirements
      */
     private MoveList<M> getBestMoves(MoveList<M> moveList, int minToGet, double thresholdValue) {
-
         MoveList<M> bestMoves = new MoveList<>();
 
         if (!moveList.isEmpty()) {

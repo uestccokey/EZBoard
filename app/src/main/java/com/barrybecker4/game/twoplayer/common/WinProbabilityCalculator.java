@@ -52,7 +52,6 @@ public class WinProbabilityCalculator {
      * @return estimated chance of player one winning the game
      */
     public static float getChanceOfPlayer1Winning(int score) {
-
         return computeChanceOfWinning((float) score);
     }
 

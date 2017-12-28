@@ -6,12 +6,13 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 
+import com.barrybecker4.common.app.ILog;
 import com.barrybecker4.game.common.GameContext;
-import com.barrybecker4.game.twoplayer.common.search.options.SearchOptions;
 import com.barrybecker4.game.twoplayer.go.GoController;
 import com.barrybecker4.game.twoplayer.go.board.GoSearchable;
 import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -82,17 +83,50 @@ public class MainActivity extends AppCompatActivity {
         mResignButton.setOnClickListener(v -> resign());
 
         GameContext.setDebugMode(0);
+        GameContext.setLogger(new ILog() {
+            @Override
+            public void setDestination(int logDestination) {
+            }
+
+            @Override
+            public int getDestination() {
+                return 0;
+            }
+
+            @Override
+            public void setLogFile(String fileName) throws FileNotFoundException {
+            }
+
+            @Override
+            public void setStringBuilder(StringBuilder bldr) {
+            }
+
+            @Override
+            public void print(int logLevel, int appLogLevel, String message) {
+                Log.e("GameContext", message);
+            }
+
+            @Override
+            public void println(int logLevel, int appLogLevel, String message) {
+                Log.e("GameContext", message);
+            }
+
+            @Override
+            public void print(String message) {
+                Log.e("GameContext", message);
+            }
+
+            @Override
+            public void println(String message) {
+                Log.e("GameContext", message);
+            }
+        });
 
         controller_ = new GoController(19, 0);
 
-//        for (Player player : controller_.getPlayers()) {
-//            SearchOptions searchOptions = ((TwoPlayerPlayerOptions) player.getOptions()).getSearchOptions();
-//            setOptionOverrides(searchOptions);
-//        }
-
         long time = System.currentTimeMillis();
         try {
-            restore();
+            controller_.restoreFromStream(getResources().openRawResource(R.raw.test));
             Log.e("Main", "Time0:" + (System.currentTimeMillis() - time));
             time = System.currentTimeMillis();
             // force dead stones to be updated by calling done with resignation move.
@@ -119,19 +153,6 @@ public class MainActivity extends AppCompatActivity {
         Log.e("Main", blackTerrEst + " " + whiteTerrEst
                 + " " + numBlackCaptures + " " + numWhiteCaptures
                 + " " + numDeadBlack + " " + numDeadWhite);
-    }
-
-    protected void restore() throws Exception {
-        controller_.restoreFromStream(getResources().openRawResource(R.raw.test));
-    }
-
-    protected void setOptionOverrides(SearchOptions sOptions) {
-//        sOptions.getBruteSearchOptions().setAlphaBeta(true);
-//        sOptions.getBruteSearchOptions().setLookAhead(2);
-//        sOptions.getBestMovesSearchOptions().setPercentageBestMoves(40);
-//        sOptions.getBestMovesSearchOptions().setPercentLessThanBestThresh(0);
-//        //sOptions.setQuiescence(true); // takes too long if on
-//        sOptions.setSearchStrategyMethod(SearchStrategyType.NEGAMAX_W_MEMORY);
     }
 
     private void create() {
