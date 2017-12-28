@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The source from which the game was entered.
  */
 public class SourceToken extends TextToken {
-    public SourceToken() { }
 
-    public String getSource() { return getText(); }
+    public SourceToken() {}
+
+    public String getSource() {
+        return getText();
+    }
 }
 

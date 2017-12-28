@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of lines.
  */
 public class LineToken extends PlacementListToken {
-    public LineToken() { }
+
+    public LineToken() {}
 }
 

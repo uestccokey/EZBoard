@@ -23,16 +23,21 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The time limit for both players.  Time is always given in seconds.
  */
 public class TimeLimitToken extends NumberToken implements InfoToken {
-    public TimeLimitToken() { }
+
+    public TimeLimitToken() {}
 
     /**
      * Presume no time limit by default.
      */
-    protected float getDefault() { return 0; }
+    protected float getDefault() {
+        return 0;
+    }
 
     /**
      * The time limit for the game is given in seconds.
      */
-    public float getTimeLimit() { return getNumber(); }
+    public float getTimeLimit() {
+        return getNumber();
+    }
 }
 

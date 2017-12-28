@@ -24,6 +24,6 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  */
 public class BlackNameToken extends NameToken implements InfoToken {
 
-    public BlackNameToken() { }
+    public BlackNameToken() {}
 }
 

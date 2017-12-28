@@ -25,6 +25,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * @see SpeciesToken
  */
 public class WhiteSpeciesToken extends SpeciesToken implements InfoToken {
-    public WhiteSpeciesToken() { }
+
+    public WhiteSpeciesToken() {}
 }
 

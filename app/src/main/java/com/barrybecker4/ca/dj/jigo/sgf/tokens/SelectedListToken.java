@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of selected points.
  */
 public class SelectedListToken extends PlacementListToken {
-    public SelectedListToken() { }
+
+    public SelectedListToken() {}
 }
 

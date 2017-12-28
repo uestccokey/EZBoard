@@ -30,9 +30,10 @@ import java.io.StreamTokenizer;
  * subclasses then need only interpret the text read by parseContent.
  */
 public class TextToken extends SGFToken {
-    private String myText = null;
 
-    public TextToken() { }
+    private String mText;
+
+    public TextToken() {}
 
     /**
      * Reads the text in between the first opening '[' and closing ']'.  This
@@ -107,8 +108,12 @@ public class TextToken extends SGFToken {
     /**
      * Returns the entire text between the opening '[' and closing ']'.
      */
-    public String getText() { return myText; }
+    public String getText() {
+        return mText;
+    }
 
-    private void setText(String text) { myText = text; }
+    private void setText(String text) {
+        mText = text;
+    }
 }
 

@@ -32,10 +32,15 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * </PRE>
  */
 public class PrintModeToken extends NumberToken implements InfoToken {
-    public PrintModeToken() { }
 
-    protected float getDefault() { return 1; }
+    public PrintModeToken() {}
 
-    public int getPrintMode() { return (int) getNumber(); }
+    protected float getDefault() {
+        return 1;
+    }
+
+    public int getPrintMode() {
+        return (int) getNumber();
+    }
 }
 

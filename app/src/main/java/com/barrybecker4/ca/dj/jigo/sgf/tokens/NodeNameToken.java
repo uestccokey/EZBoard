@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The name of this node (leaf).
  */
 public class NodeNameToken extends TextToken {
-    public NodeNameToken() { }
 
-    public String getNodeName() { return getText(); }
+    public NodeNameToken() {}
+
+    public String getNodeName() {
+        return getText();
+    }
 }
 

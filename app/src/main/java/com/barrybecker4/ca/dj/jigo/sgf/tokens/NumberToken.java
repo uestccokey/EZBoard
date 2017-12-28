@@ -36,7 +36,8 @@ import java.io.StreamTokenizer;
  * Subclasses must implement getDefault().
  */
 public abstract class NumberToken extends TextToken {
-    private float myNumber = 0;
+
+    private float mNumber = 0;
 
     public NumberToken() {
         setNumber(getDefault());
@@ -61,8 +62,12 @@ public abstract class NumberToken extends TextToken {
     /**
      * Returns the number associated with this token.
      */
-    public float getNumber() { return myNumber; }
+    public float getNumber() {
+        return mNumber;
+    }
 
-    private void setNumber(float number) { myNumber = number; }
+    private void setNumber(float number) {
+        mNumber = number;
+    }
 }
 

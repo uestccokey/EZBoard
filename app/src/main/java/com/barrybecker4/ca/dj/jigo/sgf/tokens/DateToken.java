@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The date the game was played.
  */
 public class DateToken extends TextToken implements InfoToken {
-    public DateToken() { }
 
-    public String getDate() { return getText(); }
+    public DateToken() {}
+
+    public String getDate() {
+        return getText();
+    }
 }
 

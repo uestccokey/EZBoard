@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The person who (or program that) entered the game.
  */
 public class UserToken extends TextToken {
-    public UserToken() { }
 
-    public String getUser() { return getText(); }
+    public UserToken() {}
+
+    public String getUser() {
+        return getText();
+    }
 }
 

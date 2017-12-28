@@ -24,8 +24,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A figure name/number.
  */
 public class FigureToken extends TextToken {
-    public FigureToken() { }
 
-    public String getFigure() { return getText(); }
+    public FigureToken() {}
+
+    public String getFigure() {
+        return getText();
+    }
 }
 

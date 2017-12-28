@@ -24,9 +24,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  */
 public abstract class MoveToken extends PlacementToken {
 
-    public MoveToken() { }
+    public MoveToken() {}
 
-    public boolean isPass() { return (getX() == 0) && (getY() == 0); }
+    public boolean isPass() {
+        return (getX() == 0) && (getY() == 0);
+    }
 
     public abstract boolean isWhite();
 }

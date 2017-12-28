@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * White's name.
  */
 public class WhiteNameToken extends NameToken implements InfoToken {
-    public WhiteNameToken() { }
+
+    public WhiteNameToken() {}
 }
 

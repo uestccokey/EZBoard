@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The rule set used for this game (Chinese, Japanese, Korean, etc.).
  */
 public class RuleSetToken extends TextToken implements InfoToken {
-    public RuleSetToken() { }
 
-    public String getRuleSet() { return getText(); }
+    public RuleSetToken() {}
+
+    public String getRuleSet() {
+        return getText();
+    }
 }
 

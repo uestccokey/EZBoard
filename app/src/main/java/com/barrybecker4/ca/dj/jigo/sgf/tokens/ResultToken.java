@@ -31,6 +31,7 @@ import java.io.StreamTokenizer;
  * English-readable string of the game's result.
  */
 public class ResultToken extends TextToken implements InfoToken {
+
     public final static int WHITE_WINS = 1,
             BLACK_WINS = 2,
             JIGO = 3,
@@ -51,12 +52,12 @@ public class ResultToken extends TextToken implements InfoToken {
 
     // By default, the winner is unknown, and the reason for winning is unknown.
     //
-    private int myWinner = SUSPENDED,
+    private int mWinner = SUSPENDED,
             myReason = BY_UNKNOWN;
 
     // How much did the winner win by?  (Only counts when there is a winner.)
     //
-    private float myScore = 0;
+    private float mScore = 0;
 
     public ResultToken() { }
 
@@ -134,9 +135,13 @@ public class ResultToken extends TextToken implements InfoToken {
      *
      * @return Who won, tie game, or suspended (check against constants).
      */
-    public int getWinner() { return myWinner; }
+    public int getWinner() {
+        return mWinner;
+    }
 
-    private void setWinner(int winner) { myWinner = winner; }
+    private void setWinner(int winner) {
+        mWinner = winner;
+    }
 
     /**
      * Returns one of the "reason" constants (BY_SCORE, BY_TIME, BY_FORFEIT,
@@ -144,9 +149,13 @@ public class ResultToken extends TextToken implements InfoToken {
      *
      * @return The reason for winning.
      */
-    public int getReason() { return myReason; }
+    public int getReason() {
+        return myReason;
+    }
 
-    private void setReason(int reason) { myReason = reason; }
+    private void setReason(int reason) {
+        myReason = reason;
+    }
 
     /**
      * Provided getReason returns BY_SCORE, this method will return how much
@@ -154,9 +163,13 @@ public class ResultToken extends TextToken implements InfoToken {
      *
      * @return How many points the winner obtained.
      */
-    public float getScore() { return myScore; }
+    public float getScore() {
+        return mScore;
+    }
 
-    private void setScore(float score) { myScore = score; }
+    private void setScore(float score) {
+        mScore = score;
+    }
 
     /**
      * Returns a human-readable string of the game's result.

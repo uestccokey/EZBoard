@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of triangle marks.
  */
 public class TriangleToken extends PlacementListToken {
-    public TriangleToken() { }
+
+    public TriangleToken() {}
 }
 

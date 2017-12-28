@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The software responsible for creating the SGF file.
  */
 public class SystemToken extends TextToken {
-    public SystemToken() { }
 
-    public String getSystemName() { return getText(); }
+    public SystemToken() {}
+
+    public String getSystemName() {
+        return getText();
+    }
 }
 

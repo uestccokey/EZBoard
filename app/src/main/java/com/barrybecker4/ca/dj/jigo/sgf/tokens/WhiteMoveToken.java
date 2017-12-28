@@ -23,7 +23,8 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * White's move.
  */
 public class WhiteMoveToken extends MoveToken {
-    public WhiteMoveToken() { }
+
+    public WhiteMoveToken() {}
 
     /**
      * Returns true to indicate that this move is a white move.

@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The move was bad, or very bad.
  */
 public class BadMoveToken extends DoubleToken {
-    public BadMoveToken() { }
+
+    public BadMoveToken() {}
 }
 

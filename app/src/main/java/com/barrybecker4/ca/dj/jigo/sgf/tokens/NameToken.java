@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A generic player name.  Superclass for WhiteNameToken and BlackNameToken.
  */
 public class NameToken extends TextToken {
-    public NameToken() { }
 
-    public String getName() { return getText(); }
+    public NameToken() {}
+
+    public String getName() {
+        return getText();
+    }
 }
 

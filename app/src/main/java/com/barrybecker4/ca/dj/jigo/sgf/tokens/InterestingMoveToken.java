@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The move was an interesting move.
  */
 public class InterestingMoveToken extends DoubleToken {
-    public InterestingMoveToken() { }
+
+    public InterestingMoveToken() {}
 }
 

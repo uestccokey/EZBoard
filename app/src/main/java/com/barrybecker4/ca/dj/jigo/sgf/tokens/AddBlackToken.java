@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of Black moves that should be added to the go board.
  */
 public class AddBlackToken extends PlacementListToken implements AddToken {
-    public AddBlackToken() { }
+
+    public AddBlackToken() {}
 }
 

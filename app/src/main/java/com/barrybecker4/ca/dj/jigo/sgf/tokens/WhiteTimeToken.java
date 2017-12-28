@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * White's remaining time.
  */
 public class WhiteTimeToken extends TimeLimitToken {
-    public WhiteTimeToken() { }
+
+    public WhiteTimeToken() {}
 }
 

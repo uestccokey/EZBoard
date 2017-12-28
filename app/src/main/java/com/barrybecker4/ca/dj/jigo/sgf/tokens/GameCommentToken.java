@@ -24,8 +24,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A general comment applied to this game.
  */
 public class GameCommentToken extends TextToken implements InfoToken {
-    public GameCommentToken() { }
 
-    public String getGameComment() { return getText(); }
+    public GameCommentToken() {}
+
+    public String getGameComment() {
+        return getText();
+    }
 }
 

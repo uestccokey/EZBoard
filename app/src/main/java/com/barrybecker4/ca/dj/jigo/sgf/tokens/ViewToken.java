@@ -24,6 +24,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * visible.
  */
 public class ViewToken extends PlacementListToken {
-    public ViewToken() { }
+
+    public ViewToken() {}
 }
 

@@ -23,13 +23,18 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The size of the go board.
  */
 public class SizeToken extends NumberToken implements InfoToken {
-    public SizeToken() { }
+
+    public SizeToken() {}
 
     /**
      * Presume a 19 line board by default.
      */
-    protected float getDefault() { return 19; }
+    protected float getDefault() {
+        return 19;
+    }
 
-    public int getSize() { return (int) getNumber(); }
+    public int getSize() {
+        return (int) getNumber();
+    }
 }
 

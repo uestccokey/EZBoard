@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A name associated with the game.
  */
 public class GameNameToken extends TextToken implements InfoToken {
-    public GameNameToken() { }
 
-    public String getGameName() { return getText(); }
+    public GameNameToken() {}
+
+    public String getGameName() {
+        return getText();
+    }
 }
 

@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of square marks.
  */
 public class SquareToken extends PlacementListToken {
-    public SquareToken() { }
+
+    public SquareToken() {}
 }
 

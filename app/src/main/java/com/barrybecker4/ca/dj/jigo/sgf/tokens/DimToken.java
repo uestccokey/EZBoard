@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of dimmed points.
  */
 public class DimToken extends PlacementListToken {
-    public DimToken() { }
+
+    public DimToken() {}
 }
 

@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The move was good for Black.
  */
 public class GoodBlackMoveToken extends DoubleToken {
-    public GoodBlackMoveToken() { }
+
+    public GoodBlackMoveToken() {}
 }
 

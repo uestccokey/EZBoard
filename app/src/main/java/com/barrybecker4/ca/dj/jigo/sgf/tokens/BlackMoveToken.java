@@ -19,12 +19,12 @@
 
 package com.barrybecker4.ca.dj.jigo.sgf.tokens;
 
-
 /**
  * Black's move.
  */
 public class BlackMoveToken extends MoveToken {
-    public BlackMoveToken() { }
+
+    public BlackMoveToken() {}
 
     /**
      * Returns false to indicate that this move is not a white move.

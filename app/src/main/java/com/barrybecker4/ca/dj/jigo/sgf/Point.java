@@ -24,8 +24,8 @@ package com.barrybecker4.ca.dj.jigo.sgf;
  * accessible due to their common, and frequent use.
  */
 public final class Point {
-    public int x = 0,
-            y = 0;
+
+    public int x = 0, y = 0;
 
     /**
      * Constructs a new point at (0, 0).
@@ -49,6 +49,5 @@ public final class Point {
     public Point(Point pt) {
         this(pt.x, pt.y);
     }
-
 }
 

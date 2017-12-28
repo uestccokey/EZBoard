@@ -23,10 +23,15 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The number of stones left to be played in byo-yomi.
  */
 public class StonesLeftToken extends NumberToken {
-    public StonesLeftToken() { }
 
-    protected float getDefault() { return 0; }
+    public StonesLeftToken() {}
 
-    public int getStonesLeft() { return (int) getNumber(); }
+    protected float getDefault() {
+        return 0;
+    }
+
+    public int getStonesLeft() {
+        return (int) getNumber();
+    }
 }
 

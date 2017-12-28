@@ -28,16 +28,18 @@ import java.io.StreamTokenizer;
  * The version of SGF file.  Versions 3 and 4 are supported.
  */
 public class FileFormatToken extends NumberToken implements InfoToken {
-    private final static String INVALID_VERSION =
-            "Invalid SGF File Version: ";
 
-    public FileFormatToken() { }
+    private final static String INVALID_VERSION = "Invalid SGF File Version: ";
+
+    public FileFormatToken() {}
 
     /**
      * Presume SGF File Format 3 by default.
      */
     @Override
-    protected float getDefault() { return 3; }
+    protected float getDefault() {
+        return 3;
+    }
 
     @Override
     protected boolean parseContent(StreamTokenizer st)
@@ -51,6 +53,8 @@ public class FileFormatToken extends NumberToken implements InfoToken {
         return true;
     }
 
-    public int getVersion() { return (int) getNumber(); }
+    public int getVersion() {
+        return (int) getNumber();
+    }
 }
 

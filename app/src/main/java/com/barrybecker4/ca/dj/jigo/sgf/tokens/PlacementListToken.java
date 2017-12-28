@@ -31,7 +31,8 @@ import java.util.List;
  * A list of points.
  */
 public class PlacementListToken extends PlacementToken implements MarkupToken {
-    private List<Point> myPoints = new LinkedList<Point>();
+
+    private List<Point> mPoints = new LinkedList<Point>();
 
     public PlacementListToken() { }
 
@@ -53,10 +54,12 @@ public class PlacementListToken extends PlacementToken implements MarkupToken {
         return true;
     }
 
-    private void addPoint(Point point) { myPoints.add(point); }
+    private void addPoint(Point point) {
+        mPoints.add(point);
+    }
 
-    public Iterator<Point> getPoints() { return myPoints.iterator(); }
-
-    public List<Point> getPoints2() { return myPoints; }
+    public Iterator<Point> getPoints() {
+        return mPoints.iterator();
+    }
 }
 

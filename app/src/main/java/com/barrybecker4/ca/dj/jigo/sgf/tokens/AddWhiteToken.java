@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of White moves that should be added to the go board.
  */
 public class AddWhiteToken extends PlacementListToken implements AddToken {
-    public AddWhiteToken() { }
+
+    public AddWhiteToken() {}
 }
 

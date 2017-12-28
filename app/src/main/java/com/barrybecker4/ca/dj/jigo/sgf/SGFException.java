@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf;
  * A problem occured loading the SGF game.
  */
 public class SGFException extends Exception {
+
     public SGFException(String message) {
         super(message);
     }

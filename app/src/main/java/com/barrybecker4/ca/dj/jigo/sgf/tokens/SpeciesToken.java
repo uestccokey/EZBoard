@@ -23,17 +23,22 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The type of player (human vs. computer).
  */
 public class SpeciesToken extends NumberToken {
-    public SpeciesToken() { }
+
+    public SpeciesToken() {}
 
     /**
      * Presume a default species of 0 (human).
      */
-    protected float getDefault() { return 0; }
+    protected float getDefault() {
+        return 0;
+    }
 
     /**
      * Returns zero if a human is playing, or greater than one for a computer.
      */
-    public int getSpecies() { return (int) getNumber(); }
+    public int getSpecies() {
+        return (int) getNumber();
+    }
 
     public String toString() {
         return (getSpecies() == 0) ? "Human" : "Computer";

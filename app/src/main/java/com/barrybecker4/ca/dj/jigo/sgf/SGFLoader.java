@@ -90,10 +90,10 @@ import java.util.List;
  * formats shouldn't be difficult.
  */
 public class SGFLoader {
-    private final static String INVALID_SGF_FILE =
-            "Invalid SGF File.";
 
-    private static List<SGFToken> myGameInfoTokens = new ArrayList<SGFToken>(10);
+    private final static String INVALID_SGF_FILE = "Invalid SGF File.";
+
+    private static List<SGFToken> mGameInfoTokens = new ArrayList<>(10);
 
     /**
      * constructor.
@@ -145,7 +145,7 @@ public class SGFLoader {
             throws IOException, SGFException {
         // Reset the game information tokens so they have a place to stay.
         //
-        myGameInfoTokens.clear();
+        mGameInfoTokens.clear();
 
         // Read the game tree, and return a new SGFGame coupling
         // them like lovers.
@@ -158,7 +158,7 @@ public class SGFLoader {
         // to the game.  This way we guarantee that all tokens related to
         // the game are in the SGFGame class.
         //
-        for (SGFToken token : myGameInfoTokens) {
+        for (SGFToken token : mGameInfoTokens) {
             sgfGame.addInfoToken((InfoToken) (token));
         }
 
@@ -247,7 +247,7 @@ public class SGFLoader {
                     // class, it gets a special place in habitat.
                     //
                     if (sgfToken instanceof InfoToken)
-                        myGameInfoTokens.add(sgfToken);
+                        mGameInfoTokens.add(sgfToken);
                     else {
                         if (leaf == null)
                             leaf = new SGFLeaf(sgfToken);

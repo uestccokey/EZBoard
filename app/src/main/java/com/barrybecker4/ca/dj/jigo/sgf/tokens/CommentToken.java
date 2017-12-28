@@ -24,8 +24,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * move which is found in the same game leaf.
  */
 public class CommentToken extends TextToken {
-    public CommentToken() { }
 
-    public String getComment() { return getText(); }
+    public CommentToken() {}
+
+    public String getComment() {
+        return getText();
+    }
 }
 

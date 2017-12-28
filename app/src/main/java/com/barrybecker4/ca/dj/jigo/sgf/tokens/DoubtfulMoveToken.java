@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A doubtful move.
  */
 public class DoubtfulMoveToken extends DoubleToken {
-    public DoubtfulMoveToken() { }
+
+    public DoubtfulMoveToken() {}
 }
 

@@ -23,7 +23,8 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A token that can be normal (1), or emphasiszed (2).
  */
 public class DoubleToken extends NumberToken {
-    public DoubleToken() { }
+
+    public DoubleToken() {}
 
     protected float getDefault() { return 1; }
 

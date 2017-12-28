@@ -40,8 +40,9 @@ import java.util.Vector;
  * than keeping it protected in the family, so to speak).
  */
 public final class SGFGame {
-    private SGFTree myTree = null;
-    private Vector myInfoTokens = new Vector(10);
+
+    private SGFTree mTree;
+    private Vector<InfoToken> mInfoTokens = new Vector<>(10);
 
     /**
      * Creates a new SGFGame given a tree which comprises the game's nodes
@@ -58,16 +59,16 @@ public final class SGFGame {
      *
      * @return An SGFTree which contains all moves played in the game.
      */
-    public SGFTree getTree() { return myTree; }
+    public SGFTree getTree() { return mTree; }
 
     /**
      * Used to set this game's game tree.
      *
      * @param gameTree - The game's game tree.
      */
-    private void setTree(SGFTree gameTree) { myTree = gameTree; }
+    private void setTree(SGFTree gameTree) { mTree = gameTree; }
 
-    public void addInfoToken(InfoToken it) { myInfoTokens.addElement(it); }
+    public void addInfoToken(InfoToken it) { mInfoTokens.addElement(it); }
 
     /**
      * Returns the list of tokens that contain information about the SGF
@@ -75,6 +76,6 @@ public final class SGFGame {
      *
      * @return An Enumeration filled with type com.barrybecker4.ca.dj.jigo.sgf.tokens.InfoToken.
      */
-    public Enumeration getInfoTokens() { return myInfoTokens.elements(); }
+    public Enumeration getInfoTokens() { return mInfoTokens.elements(); }
 }
 

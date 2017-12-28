@@ -33,12 +33,13 @@ import java.util.Vector;
  * just what happens more often than not).
  */
 public final class SGFLeaf {
+
     /**
      * Average number of tokens per leaf (game move, comment, and board mark).
      */
     private final static int AVERAGE_TOKENS = 3;
 
-    private Vector myTokens = new Vector(1, AVERAGE_TOKENS);
+    private Vector<SGFToken> mTokens = new Vector<>(1, AVERAGE_TOKENS);
 
     /**
      * Creates a new SGFLeaf; use with caution.  All SGFLeaves must have
@@ -64,7 +65,7 @@ public final class SGFLeaf {
      * @return An enumeration of this leaf's tokens.
      */
     public Enumeration getTokens() {
-        return myTokens.elements();
+        return mTokens.elements();
     }
 
     /**
@@ -75,7 +76,7 @@ public final class SGFLeaf {
      */
     public void addToken(SGFToken token) {
         if (token != null)
-            myTokens.addElement(token);
+            mTokens.addElement(token);
     }
 
     /**
@@ -86,7 +87,7 @@ public final class SGFLeaf {
      */
     public void removeToken(SGFToken token) {
         if (token != null)
-            myTokens.removeElement(token);
+            mTokens.removeElement(token);
     }
 }
 

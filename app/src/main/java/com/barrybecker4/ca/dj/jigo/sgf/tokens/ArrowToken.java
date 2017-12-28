@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of arrow marks.
  */
 public class ArrowToken extends PlacementListToken {
-    public ArrowToken() { }
+
+    public ArrowToken() {}
 }
 

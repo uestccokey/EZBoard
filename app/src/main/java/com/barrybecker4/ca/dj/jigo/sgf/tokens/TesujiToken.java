@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The move was a tesuji.
  */
 public class TesujiToken extends DoubleToken {
-    public TesujiToken() { }
+
+    public TesujiToken() {}
 }
 

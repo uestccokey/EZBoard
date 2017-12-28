@@ -31,7 +31,8 @@ import java.io.StreamTokenizer;
  * Most often, this class will be used by BlackMoveToken and WhiteMoveToken.
  */
 public class PlacementToken extends SGFToken {
-    private Point myPoint = new Point();
+
+    private Point mPoint = new Point();
 
     public PlacementToken() { }
 
@@ -107,22 +108,22 @@ public class PlacementToken extends SGFToken {
      * Only subclasses (and classes in this package) may get at this class's
      * Point variable.  Everybody else must use getX() and getY().
      */
-    protected Point getPoint() { return myPoint; }
+    protected Point getPoint() { return mPoint; }
 
     /**
      * Returns:
      * The X coordinate of the placement.
      */
-    public int getX() { return myPoint.x; }
+    public int getX() { return mPoint.x; }
 
-    private void setX(int x) { myPoint.x = x; }
+    private void setX(int x) { mPoint.x = x; }
 
     /**
      * Returns:
      * The Y coordinate of the placement.
      */
-    public int getY() { return myPoint.y; }
+    public int getY() { return mPoint.y; }
 
-    private void setY(int y) { myPoint.y = y; }
+    private void setY(int y) { mPoint.y = y; }
 }
 

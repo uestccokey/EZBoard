@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * An even position.
  */
 public class EvenPositionToken extends DoubleToken {
-    public EvenPositionToken() { }
+
+    public EvenPositionToken() {}
 }
 

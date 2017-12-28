@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The ID associated with this game.
  */
 public class GameIDToken extends TextToken implements InfoToken {
-    public GameIDToken() { }
 
-    public String getGameID() { return getText(); }
+    public GameIDToken() {}
+
+    public String getGameID() {
+        return getText();
+    }
 }
 

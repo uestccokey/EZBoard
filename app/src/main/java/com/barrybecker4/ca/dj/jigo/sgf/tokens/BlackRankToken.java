@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * Black's rank.
  */
 public class BlackRankToken extends RankToken implements InfoToken {
-    public BlackRankToken() { }
+
+    public BlackRankToken() {}
 }
 

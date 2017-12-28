@@ -52,8 +52,8 @@ public final class SGFTree {
      */
     private final static int AVERAGE_LEAF_INCR = 50;
 
-    private Vector myLeaves = null;
-    private Vector myVariations = null;
+    private Vector<SGFLeaf> mLeaves;
+    private Vector<SGFTree> mVariations;
 
     /**
      * Empty constructor.  No leaves, no variations.  Rather useless by itself.
@@ -67,18 +67,18 @@ public final class SGFTree {
      * @param leaf - The leaf to add to the end of this tree's leaves list.
      */
     public void addLeaf(SGFLeaf leaf) {
-        // Have the 'myLeaves' dynamic array increase for lots more moves
+        // Have the 'mLeaves' dynamic array increase for lots more moves
         // if it gets filled up.  Typically, there aren't a lot of moves in a
         // variation -- so if there ARE a lot of moves, chances are it isn't
         // a variation, thus the array/vector should jump significantly in size.
         // This makes the code more efficient in terms of both speed and memory
         // consumption.
         //
-        if (myLeaves == null)
-            myLeaves = new Vector(AVERAGE_LEAVES, AVERAGE_LEAF_INCR);
+        if (mLeaves == null)
+            mLeaves = new Vector<>(AVERAGE_LEAVES, AVERAGE_LEAF_INCR);
 
         if (leaf != null)
-            myLeaves.addElement(leaf);
+            mLeaves.addElement(leaf);
     }
 
     /**
@@ -87,7 +87,7 @@ public final class SGFTree {
      * @return A list of leaves at this variation level, or null if none.
      */
     public Enumeration getLeaves() {
-        return (myLeaves == null) ? null : myLeaves.elements();
+        return (mLeaves == null) ? null : mLeaves.elements();
     }
 
     /**
@@ -104,7 +104,7 @@ public final class SGFTree {
      * @return The number of leaves at this level of the game tree.
      */
     public int getLeafCount() {
-        return (myLeaves == null) ? 0 : myLeaves.size();
+        return (mLeaves == null) ? 0 : mLeaves.size();
     }
 
     /**
@@ -114,7 +114,7 @@ public final class SGFTree {
      * @return The variations at this level of the game tree.
      */
     public int getVariationCount() {
-        return (myVariations == null) ? 0 : myVariations.size();
+        return (mVariations == null) ? 0 : mVariations.size();
     }
 
     /**
@@ -123,10 +123,10 @@ public final class SGFTree {
      * @param tree - The tree to add to the end of this tree's variation list.
      */
     public void addTree(SGFTree tree) {
-        if (myVariations == null)
-            myVariations = new Vector(AVERAGE_VARIATIONS);
+        if (mVariations == null)
+            mVariations = new Vector<>(AVERAGE_VARIATIONS);
 
-        myVariations.addElement(tree);
+        mVariations.addElement(tree);
     }
 
     /**
@@ -135,7 +135,7 @@ public final class SGFTree {
      * @return A list of sub-trees at this variation level, or null if none.
      */
     public Enumeration getTrees() {
-        return (myVariations == null) ? null : myVariations.elements();
+        return (mVariations == null) ? null : mVariations.elements();
     }
 }
 

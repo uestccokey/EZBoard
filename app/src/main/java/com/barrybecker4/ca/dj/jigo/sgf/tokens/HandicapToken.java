@@ -25,13 +25,18 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * See http://senseis.xmp.net/?HandicapPlacement
  */
 public class HandicapToken extends NumberToken implements InfoToken {
-    public HandicapToken() { }
+
+    public HandicapToken() {}
 
     /**
      * Presume a default komi of 0.5 points.
      */
-    protected float getDefault() { return (float) 2.0; }
+    protected float getDefault() {
+        return (float) 2.0;
+    }
 
-    public float getHandicap() { return getNumber(); }
+    public float getHandicap() {
+        return getNumber();
+    }
 }
 

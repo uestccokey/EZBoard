@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The round which the game was played.
  */
 public class RoundToken extends TextToken implements InfoToken {
-    public RoundToken() { }
 
-    public String getRound() { return getText(); }
+    public RoundToken() {}
+
+    public String getRound() {
+        return getText();
+    }
 }
 

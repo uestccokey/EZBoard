@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The place the game was played.
  */
 public class PlaceToken extends TextToken implements InfoToken {
-    public PlaceToken() { }
 
-    public String getPlace() { return getText(); }
+    public PlaceToken() {}
+
+    public String getPlace() {
+        return getText();
+    }
 }
 

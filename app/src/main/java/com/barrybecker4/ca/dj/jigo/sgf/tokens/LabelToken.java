@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A label for a list of moves.
  */
 public class LabelToken extends PlacementListToken {
-    public LabelToken() { }
+
+    public LabelToken() {}
 }
 

@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The move is an illegal Ko capture; means to execute the move anyway.
  */
 public class KoToken extends PlacementToken {
-    public KoToken() { }
+
+    public KoToken() {}
 }
 

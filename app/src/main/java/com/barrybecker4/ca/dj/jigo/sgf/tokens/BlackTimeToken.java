@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * Black's remaining time.
  */
 public class BlackTimeToken extends TimeLimitToken {
-    public BlackTimeToken() { }
+
+    public BlackTimeToken() {}
 }
 

@@ -24,13 +24,18 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * the count starts at one by default.
  */
 public class MoveNumberToken extends NumberToken {
-    public MoveNumberToken() { }
+
+    public MoveNumberToken() {}
 
     /**
      * Presume the move numbering starts at 1.
      */
-    protected float getDefault() { return 1; }
+    protected float getDefault() {
+        return 1;
+    }
 
-    public int getMoveNumber() { return (int) getNumber(); }
+    public int getMoveNumber() {
+        return (int) getNumber();
+    }
 }
 

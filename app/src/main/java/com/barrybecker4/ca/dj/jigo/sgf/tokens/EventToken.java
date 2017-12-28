@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The event at which this game occured.
  */
 public class EventToken extends TextToken implements InfoToken {
-    public EventToken() { }
 
-    public String getEvent() { return getText(); }
+    public EventToken() {}
+
+    public String getEvent() {
+        return getText();
+    }
 }
 

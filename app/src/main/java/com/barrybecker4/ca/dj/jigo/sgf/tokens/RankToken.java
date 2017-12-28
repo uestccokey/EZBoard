@@ -23,8 +23,11 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The superclass for WhiteRankToken and BlackRankToken.
  */
 public class RankToken extends TextToken {
-    public RankToken() { }
 
-    public String getRank() { return getText(); }
+    public RankToken() {}
+
+    public String getRank() {
+        return getText();
+    }
 }
 

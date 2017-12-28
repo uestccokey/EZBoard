@@ -31,7 +31,8 @@ import java.io.StreamTokenizer;
  * tokens).
  */
 public abstract class SGFToken {
-    public SGFToken() { }
+
+    public SGFToken() {}
 
     /**
      * Called to parse itself.  Subclasses are responsible for reading

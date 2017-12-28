@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * A list of circle marks.
  */
 public class CircleToken extends PlacementListToken {
-    public CircleToken() { }
+
+    public CircleToken() {}
 }
 

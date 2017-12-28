@@ -32,13 +32,18 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * </PRE>
  */
 public class GameTypeToken extends NumberToken implements InfoToken {
-    public GameTypeToken() { }
+
+    public GameTypeToken() {}
 
     /**
      * Presume the SGF file is a game of Go, by default.
      */
-    protected float getDefault() { return 1; }
+    protected float getDefault() {
+        return 1;
+    }
 
-    public int getType() { return (int) getNumber(); }
+    public int getType() {
+        return (int) getNumber();
+    }
 }
 

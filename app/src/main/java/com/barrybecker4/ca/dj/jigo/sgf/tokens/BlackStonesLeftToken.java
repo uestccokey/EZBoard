@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * The number of stones left for Black in byo-yomi.
  */
 public class BlackStonesLeftToken extends StonesLeftToken {
-    public BlackStonesLeftToken() { }
+
+    public BlackStonesLeftToken() {}
 }
 

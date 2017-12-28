@@ -25,13 +25,18 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * (white wins tie games).
  */
 public class KomiToken extends NumberToken implements InfoToken {
-    public KomiToken() { }
+
+    public KomiToken() {}
 
     /**
      * Presume a default komi of 0.5 points.
      */
-    protected float getDefault() { return (float) 0.5; }
+    protected float getDefault() {
+        return (float) 0.5;
+    }
 
-    public float getKomi() { return getNumber(); }
+    public float getKomi() {
+        return getNumber();
+    }
 }
 

@@ -23,6 +23,7 @@ package com.barrybecker4.ca.dj.jigo.sgf.tokens;
  * An unclear position.
  */
 public class UnclearPositionToken extends DoubleToken {
-    public UnclearPositionToken() { }
+
+    public UnclearPositionToken() {}
 }
 
