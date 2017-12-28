@@ -43,7 +43,7 @@ public class GoGameImporter extends TwoPlayerGameImporter {
 
     @Override
     protected SGFLoader createLoader() {
-        return new GoSGFLoader();
+        return new SGFLoader();
     }
 
     /**
@@ -51,7 +51,6 @@ public class GoGameImporter extends TwoPlayerGameImporter {
      */
     @Override
     protected void parseSGFGameInfo(SGFGame game) {
-
         TwoPlayerController gc = (TwoPlayerController) controller_;
         PlayerList players = gc.getPlayers();
 

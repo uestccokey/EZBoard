@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         long time = System.currentTimeMillis();
         try {
-            controller_.restoreFromStream(getResources().openRawResource(R.raw.test));
+            controller_.restoreFromStream(getResources().openRawResource(R.raw.test2));
             Log.e("Main", "Time0:" + (System.currentTimeMillis() - time));
             time = System.currentTimeMillis();
             // force dead stones to be updated by calling done with resignation move.
