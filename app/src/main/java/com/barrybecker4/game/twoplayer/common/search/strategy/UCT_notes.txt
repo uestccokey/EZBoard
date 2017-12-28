@@ -1,0 +1,153 @@
+/* same as on main page, but translated to java. See http://senseis.xmp.net/?UCT
+ * best = child with max number of visits (instead of max winrate)
+ * UCTK outside of sqrt(...) in uct formula
+ * random result non-global
+ */
+ class Node {
+    public int wins=0;
+    public int visits=0;
+    public int x, y; // position of move
+    //public Node parent; //optional
+    public Node child;
+    public Node sibling;
+
+    public Node(/*Node parent, */int x, int y) {
+      this.x=x;
+      this.y=y;
+    }
+
+    public void update(int val) {
+      visits++;
+      wins+=val;
+    }
+
+    public double getWinRate() {
+        if (visits>0) return (double)wins / visits;
+                 else return 0; /* should not happen */;
+    }
+ }
+
+ class Board {
+    public Node root=null;
+
+    // child with highest number of visits is used (not: best winrate)
+    public Node getBestChild(Node root) {
+        Node child = root.child;
+        Node best_child = null;
+        int  best_visits= -1;
+        while (child!=null) { // for all children
+            if (child.visits>best_visits) {
+                best_child=child;
+                best_visits=child.visits;
+            }
+            child = child.sibling;
+        }
+        return best_child;
+    }
+
+    public static final double UCTK = 0.44; // 0.44 = sqrt(1/5)
+    // Larger values give uniform search
+    // Smaller values give very selective search
+    public Node UCTSelect(Node node) {
+        Node res=null;
+        Node next = node.child;
+        double best_uct=0;
+        while (next!=null) { // for all children
+            double uctvalue;
+            if (next.visits > 0) {
+                double winrate=next.getWinRate();
+                double uct = UCTK * Math.sqrt( Math.log(node.visits) / next.visits );
+                uctvalue = winrate + uct;
+            }
+            else {
+                // Always play a random unexplored move first
+                uctvalue = 10000 + 1000*Math.random();
+            }
+            if (uctvalue > best_uct) { // get max uctvalue of all children
+                    best_uct = uctvalue;
+                    res = next;
+            }
+            next = next.sibling;
+        }
+        return res;
+    }
+
+    // return 0=lose 1=win for current player to move
+    int playSimulation(Node n) {
+        int randomresult=0;
+        if (n.child==null && n.visits<10) { // 10 simulations until chilren are expanded (saves memory)
+            randomresult = playRandomGame();
+        }
+        else {
+            if (n.child == null)
+                createChildren(n);
+            Node next = UCTSelect(n); // select a move
+            if (next==null) { /* ERROR */ }
+            makeMove(next.x, next.y);
+            int res=playSimulation(next);
+            randomresult = 1-res;
+        }
+        n.update(1-randomresult); //update node (Node-wins are associated with moves in the Nodes)
+        return randomresult;
+    }
+
+    // generate a move, using the uct algorithm
+    Move UCTSearch(int numsim) {
+        root=new Node(-1,-1); //init uct tree
+        createChildren(root);
+        Board clone=new Board();
+        for (int i=0; i<numsim; i++) {
+            clone.copyStateFrom(this);
+            clone.playSimulation(root);
+        }
+        Node n=getBestChild(root);
+        return new Move(n.x, n.y);
+    }
+
+// NOT IMPLEMENTED YET:
+
+    int BOARD_SIZE=19;
+    int[][] f = new int[BOARD_SIZE][BOARD_SIZE]; // the board
+    int cur_player=1; //player to make next move (1 or 2)
+
+    void makeMove(int x, int y) {
+      f[x][y]=cur_player;
+      cur_player=3-cur_player;
+    }
+
+    public void makeRandomMove() {
+      int x=0;
+      int y=0;
+      while (true) {
+        x=rand.nextInt(BOARD_SIZE);
+        y=rand.nextInt(BOARD_SIZE);
+        if (f[x][y]==0 && isOnBoard(x,y)) break;
+      }
+      makeMove(x,y);
+    }
+
+    // return 0=lose 1=win for current player to move
+    int playRandomGame() {
+      int cur_player1=cur_player;
+      while (!isGameOver()) {
+        makeRandomMove();
+      }
+      return getWinner()==curplayer1 ? 1 : 0;
+    }
+
+    // expand children in Node
+    void createChildren(Node parent) {
+      Node last=parent;
+      for (int i=0; i<BOARD_SIZE; i++)
+        for (int j=0; j<BOARD_SIZE; j++)
+          if (isOnBoard(i, j) && f[i][j]==0) {
+            Node node=new Node(i, j);
+            if (last==parent) last.child=node;
+                         else last.sibling=node;
+            last=node;
+          }
+    }
+
+    void copyStateFrom(Board b) {
+    }
+ }

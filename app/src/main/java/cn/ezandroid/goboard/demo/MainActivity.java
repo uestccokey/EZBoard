@@ -6,6 +6,12 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 
+import com.barrybecker4.game.common.GameContext;
+import com.barrybecker4.game.twoplayer.common.search.options.SearchOptions;
+import com.barrybecker4.game.twoplayer.go.GoController;
+import com.barrybecker4.game.twoplayer.go.board.GoSearchable;
+import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private StoneColor mCurrentColor = StoneColor.BLACK;
 
     private boolean mIsThinking = false;
+
+    protected GoController controller_;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,58 @@ public class MainActivity extends AppCompatActivity {
         mPassButton.setOnClickListener(v -> pass());
         mResignButton = findViewById(R.id.resign);
         mResignButton.setOnClickListener(v -> resign());
+
+        GameContext.setDebugMode(0);
+
+        controller_ = new GoController(19, 0);
+
+//        for (Player player : controller_.getPlayers()) {
+//            SearchOptions searchOptions = ((TwoPlayerPlayerOptions) player.getOptions()).getSearchOptions();
+//            setOptionOverrides(searchOptions);
+//        }
+
+        long time = System.currentTimeMillis();
+        try {
+            restore();
+            Log.e("Main", "Time0:" + (System.currentTimeMillis() - time));
+            time = System.currentTimeMillis();
+            // force dead stones to be updated by calling done with resignation move.
+            controller_.getSearchable().done(GoMove.createResignationMove(true), true);
+            Log.e("Main", "Time1:" + (System.currentTimeMillis() - time));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        time = System.currentTimeMillis();
+        int blackTerrEst = controller_.getFinalTerritory(true);
+        int whiteTerrEst = controller_.getFinalTerritory(false);
+        Log.e("Main", "Time2:" + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
+        GoSearchable searchable = (GoSearchable) controller_.getSearchable();
+        int numBlackCaptures = searchable.getNumCaptures(true);
+        int numWhiteCaptures = searchable.getNumCaptures(false);
+        Log.e("Main", "Time3:" + (System.currentTimeMillis() - time));
+        time = System.currentTimeMillis();
+        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
+        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
+        Log.e("Main", "Time4:" + (System.currentTimeMillis() - time));
+
+        Log.e("Main", blackTerrEst + " " + whiteTerrEst
+                + " " + numBlackCaptures + " " + numWhiteCaptures
+                + " " + numDeadBlack + " " + numDeadWhite);
+    }
+
+    protected void restore() throws Exception {
+        controller_.restoreFromStream(getResources().openRawResource(R.raw.test));
+    }
+
+    protected void setOptionOverrides(SearchOptions sOptions) {
+//        sOptions.getBruteSearchOptions().setAlphaBeta(true);
+//        sOptions.getBruteSearchOptions().setLookAhead(2);
+//        sOptions.getBestMovesSearchOptions().setPercentageBestMoves(40);
+//        sOptions.getBestMovesSearchOptions().setPercentLessThanBestThresh(0);
+//        //sOptions.setQuiescence(true); // takes too long if on
+//        sOptions.setSearchStrategyMethod(SearchStrategyType.NEGAMAX_W_MEMORY);
     }
 
     private void create() {
@@ -159,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
             mCurrentColor = mCurrentColor.getOther();
             mBoardView.setHighlightStone(stone);
 
+            byte[][] features48 = mFeatureBoard.generateFeatures48();
+            float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+            mHeatMapView.setHeatMap(policies[0]);
+
             if (user) {
                 mIsThinking = true;
                 new Thread() {
@@ -186,9 +250,8 @@ public class MainActivity extends AppCompatActivity {
 
                         final int pos = maxPos;
                         Log.e("MainActivity", "Value Rate:" + (1 - values[0]) / 2);
-                        Log.e("MainActivity", "Policy"
+                        Log.e("MainActivity", "Policy Rate:" + maxRate
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")"
-                                + " Rate:" + maxRate
                                 + " UseTime:" + (System.currentTimeMillis() - time));
                         runOnUiThread(() -> {
                             mHeatMapView.setHeatMap(policies[0]);
