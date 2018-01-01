@@ -1,21 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.go.persistence;
 
-import com.barrybecker4.ca.dj.jigo.sgf.Point;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFGame;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFLoader;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.AddBlackToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.AddWhiteToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.BlackNameToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.InfoToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.KomiToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.MoveToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.PlacementListToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.RuleSetToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SGFToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SizeToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.TextToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.WhiteNameToken;
 import com.barrybecker4.common.geometry.ByteLocation;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.MoveList;
@@ -27,8 +12,23 @@ import com.barrybecker4.game.twoplayer.go.board.elements.position.GoStone;
 import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
 import com.barrybecker4.game.twoplayer.go.options.GoOptions;
 
-import java.util.Enumeration;
 import java.util.Iterator;
+
+import cn.ezandroid.sgf.Point;
+import cn.ezandroid.sgf.SGFGame;
+import cn.ezandroid.sgf.SGFLoader;
+import cn.ezandroid.sgf.tokens.AddBlackToken;
+import cn.ezandroid.sgf.tokens.AddWhiteToken;
+import cn.ezandroid.sgf.tokens.BlackNameToken;
+import cn.ezandroid.sgf.tokens.InfoToken;
+import cn.ezandroid.sgf.tokens.KomiToken;
+import cn.ezandroid.sgf.tokens.MoveToken;
+import cn.ezandroid.sgf.tokens.PlacementListToken;
+import cn.ezandroid.sgf.tokens.RuleToken;
+import cn.ezandroid.sgf.tokens.SGFToken;
+import cn.ezandroid.sgf.tokens.SizeToken;
+import cn.ezandroid.sgf.tokens.TextToken;
+import cn.ezandroid.sgf.tokens.WhiteNameToken;
 
 /**
  * Imports the stat of a Go game from a file.
@@ -54,10 +54,10 @@ public class GoGameImporter extends TwoPlayerGameImporter {
         TwoPlayerController gc = (TwoPlayerController) controller_;
         PlayerList players = gc.getPlayers();
 
-        Enumeration e = game.getInfoTokens();
+        Iterator<InfoToken> e = game.getInfoTokens();
         int size = 13; // default unless specified
-        while (e.hasMoreElements()) {
-            InfoToken token = (InfoToken) e.nextElement();
+        while (e.hasNext()) {
+            InfoToken token = (InfoToken) e.next();
             if (token instanceof SizeToken) {
                 SizeToken sizeToken = (SizeToken) token;
                 size = sizeToken.getSize();
@@ -78,7 +78,7 @@ public class GoGameImporter extends TwoPlayerGameImporter {
             } else if (token instanceof BlackNameToken) {
                 BlackNameToken nameToken = (BlackNameToken) token;
                 players.getPlayer1().setName(nameToken.getName());
-            } else if (token instanceof RuleSetToken) {
+            } else if (token instanceof RuleToken) {
                 //RuleSetToken ruleToken = (RuleSetToken) token;
                 //this.setRuleSet(ruleToken.getKomi());
             } else {
@@ -131,7 +131,7 @@ public class GoGameImporter extends TwoPlayerGameImporter {
 
         while (points.hasNext()) {
             Point point = points.next();
-            //System.out.println("adding move at row=" + point.y+" col="+ point.x);
+            // System.out.println("adding move at row=" + point.y+" col="+ point.x);
             moveList.add(new GoMove(new ByteLocation(point.y, point.x), 0, new GoStone(player1)));
         }
     }
@@ -140,10 +140,10 @@ public class GoGameImporter extends TwoPlayerGameImporter {
     protected GoMove createMoveFromToken(SGFToken token) {
         MoveToken mvToken = (MoveToken) token;
         if (mvToken.isPass()) {
-            return GoMove.createPassMove(0, !mvToken.isWhite());
+            return GoMove.createPassMove(0, mvToken.isBlack());
         }
         return new GoMove(
                 new ByteLocation(mvToken.getY(), mvToken.getX()),
-                0, new GoStone(!mvToken.isWhite()));
+                0, new GoStone(mvToken.isBlack()));
     }
 }

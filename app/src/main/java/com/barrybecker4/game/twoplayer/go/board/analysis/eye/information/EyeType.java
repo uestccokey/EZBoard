@@ -18,15 +18,20 @@ import com.barrybecker4.game.twoplayer.go.board.elements.eye.GoEye;
  * For example, here are all the possible pentomino classifications (independent of symmetry).
  * <p>
  * E11222: XXXXX      XXXX      XXX      XX     XX    X       X
- * X        XX      X      X    X      XX
- * E11123:  XX        X       X          XX      XX   XXX   XX
- * XX        XX       X
- * X         X      XXX
- * E11114:       X    X
- * XXX
- * X
- * E12223:  XX
- * XXX
+ * >                     X        XX      X      X    X      XX
+ * >                                     XX      XX   XXX   XX
+ * <p>
+ * E11123: XX        X       X
+ * >      XX        XX       X
+ * >       X         X      XXX
+ * >                 X
+ * <p>
+ * E11114: X
+ * >      XXX
+ * >       X
+ * <p>
+ * E12223: XX
+ * >       XXX
  */
 public enum EyeType {
 

@@ -6,6 +6,8 @@ import com.barrybecker4.game.twoplayer.go.board.GoBoard;
 import com.barrybecker4.game.twoplayer.go.board.elements.position.GoBoardPosition;
 import com.barrybecker4.game.twoplayer.go.board.elements.position.GoStone;
 
+import java.util.LinkedList;
+
 /**
  * Responsible for determining and updating the dead stones on the board.
  *
@@ -30,6 +32,10 @@ public final class DeadStoneUpdater {
         return deadStones_.getNumberOnBoard(forPlayer1);
     }
 
+    public LinkedList<GoBoardPosition> getDeadStonesOnBoard(boolean forPlayer1) {
+        return deadStones_.getDeadStonesOnBoard(forPlayer1);
+    }
+
     /**
      * Update the final life and death status of all the stones still on the board.
      * This method must only be called once at the end of the game or stones will get prematurely marked as dead.
@@ -49,8 +55,14 @@ public final class DeadStoneUpdater {
                         // then the stone is more dead than alive, so mark it so
                         GameContext.log(0, "setting " + space + " to dead");
                         stone.setDead(true);
-                        deadStones_.increment(space.getPiece().isOwnedByPlayer1());
+                        deadStones_.increment(space, space.getPiece().isOwnedByPlayer1());
                     }
+//                    if (stone.isOwnedByPlayer1() && stone.getHealth() <= 0.1 || !stone.isOwnedByPlayer1() && stone.getHealth() >= -0.1) {
+//                        // then the stone is more dead than alive, so mark it so
+//                        GameContext.log(0, "setting " + space + " to dead");
+//                        stone.setDead(true);
+//                        deadStones_.increment(space.getPiece().isOwnedByPlayer1());
+//                    }
                 }
             }
         }

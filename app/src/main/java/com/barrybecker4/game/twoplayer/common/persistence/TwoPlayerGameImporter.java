@@ -1,13 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common.persistence;
 
-import com.barrybecker4.ca.dj.jigo.sgf.SGFException;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFGame;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFLoader;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.InfoToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.PlacementToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SGFToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.TextToken;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.MoveList;
 import com.barrybecker4.game.common.board.GamePiece;
@@ -24,7 +17,15 @@ import com.barrybecker4.game.twoplayer.common.persistence.tokens.TwoPlayerMoveTo
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.Iterator;
+
+import cn.ezandroid.sgf.SGFException;
+import cn.ezandroid.sgf.SGFGame;
+import cn.ezandroid.sgf.SGFLoader;
+import cn.ezandroid.sgf.tokens.InfoToken;
+import cn.ezandroid.sgf.tokens.PlacementToken;
+import cn.ezandroid.sgf.tokens.SGFToken;
+import cn.ezandroid.sgf.tokens.TextToken;
 
 /**
  * Imports the state of a two player game from a file.
@@ -69,11 +70,11 @@ public class TwoPlayerGameImporter<M extends TwoPlayerMove, B
     protected void parseSGFGameInfo(SGFGame game) {
         TwoPlayerController gc = (TwoPlayerController) controller_;
 
-        Enumeration e = game.getInfoTokens();
+        Iterator<InfoToken> e = game.getInfoTokens();
         int numRows = 15; // default unless specified
         int numCols = 12; // default unless specified
-        while (e.hasMoreElements()) {
-            InfoToken token = (InfoToken) e.nextElement();
+        while (e.hasNext()) {
+            InfoToken token = e.next();
             if (token instanceof Size2Token) {
                 Size2Token sizeToken = (Size2Token) token;
                 GameContext.log(2, "info token columns =" +

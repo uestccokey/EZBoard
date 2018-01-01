@@ -1,15 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.common.persistence;
 
-import com.barrybecker4.ca.dj.jigo.sgf.SGFException;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFGame;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFLeaf;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFLoader;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFTree;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.InfoToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.PlacementToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SGFToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SizeToken;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.GameController;
 import com.barrybecker4.game.common.Move;
@@ -19,7 +10,17 @@ import com.barrybecker4.game.common.board.IRectangularBoard;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.Iterator;
+
+import cn.ezandroid.sgf.SGFException;
+import cn.ezandroid.sgf.SGFGame;
+import cn.ezandroid.sgf.SGFLeaf;
+import cn.ezandroid.sgf.SGFLoader;
+import cn.ezandroid.sgf.SGFTree;
+import cn.ezandroid.sgf.tokens.InfoToken;
+import cn.ezandroid.sgf.tokens.PlacementToken;
+import cn.ezandroid.sgf.tokens.SGFToken;
+import cn.ezandroid.sgf.tokens.SizeToken;
 
 /**
  * Import the state of a game from a file.
@@ -64,10 +65,10 @@ public abstract class GameImporter<M extends Move, B extends IBoard<M>> {
      * @param game to parse
      */
     protected void parseSGFGameInfo(SGFGame game) {
-        Enumeration e = game.getInfoTokens();
+        Iterator<InfoToken> e = game.getInfoTokens();
         int size = 13; // default unless specified
-        while (e.hasMoreElements()) {
-            InfoToken token = (InfoToken) e.nextElement();
+        while (e.hasNext()) {
+            InfoToken token = e.next();
             if (token instanceof SizeToken) {
                 SizeToken sizeToken = (SizeToken) token;
                 GameContext.log(2, "info token size =" + sizeToken.getSize());
@@ -94,27 +95,27 @@ public abstract class GameImporter<M extends Move, B extends IBoard<M>> {
      *                 variation.
      */
     private void extractMoveList(SGFTree tree, MoveList<M> moveList) {
-        Enumeration trees = tree.getTrees();
-        Enumeration leaves = tree.getLeaves();
-        Enumeration tokens;
-        while (leaves != null && leaves.hasMoreElements()) {
+        Iterator<SGFTree> trees = tree.getTrees();
+        Iterator<SGFLeaf> leaves = tree.getLeaves();
+        Iterator<SGFToken> tokens;
+        while (leaves.hasNext()) {
             SGFToken token;
-            tokens = ((SGFLeaf) leaves.nextElement()).getTokens();
+            tokens = leaves.next().getTokens();
 
             boolean found = false;
 
             // While a move token hasn't been found, and there are more tokens to
             // examine ... try and find a move token in this tree's leaves to add
             // to the collection of moves (moveList).
-            while (tokens != null && tokens.hasMoreElements() && !found) {
-                token = (SGFToken) tokens.nextElement();
+            while (tokens.hasNext() && !found) {
+                token = tokens.next();
                 found = processToken(token, moveList);
             }
         }
         // If there are variations, use the first variation, which is
         // the entire game, without extraneous variations.
-        if (trees != null && trees.hasMoreElements()) {
-            extractMoveList((SGFTree) trees.nextElement(), moveList);
+        if (trees.hasNext()) {
+            extractMoveList(trees.next(), moveList);
         }
     }
 

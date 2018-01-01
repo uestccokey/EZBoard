@@ -49,6 +49,8 @@ dependencies {
     implementation "com.android.support:design:$rootProject.ext.supportLibraryVersion"
     implementation 'com.android.support:multidex:1.0.2'
 
+//    implementation 'cn.ezandroid:SGF:2.0.1'
+
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.1'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 

@@ -1,8 +1,8 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common.persistence.tokens;
 
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.InfoToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.NameToken;
+import cn.ezandroid.sgf.tokens.InfoToken;
+import cn.ezandroid.sgf.tokens.NameToken;
 
 /**
  * Player1's name name.

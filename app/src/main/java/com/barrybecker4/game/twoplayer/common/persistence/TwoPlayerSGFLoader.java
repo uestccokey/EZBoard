@@ -1,19 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common.persistence;
 
-import com.barrybecker4.ca.dj.jigo.sgf.SGFException;
-import com.barrybecker4.ca.dj.jigo.sgf.SGFLoader;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.CommentToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.DateToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.FileFormatToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.GameCommentToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.GameIDToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.GameNameToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.GameTypeToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.NodeNameToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.ResultToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.SGFToken;
-import com.barrybecker4.ca.dj.jigo.sgf.tokens.TextToken;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.twoplayer.common.persistence.tokens.Player1MoveToken;
 import com.barrybecker4.game.twoplayer.common.persistence.tokens.Player1NameToken;
@@ -24,6 +11,18 @@ import com.barrybecker4.game.twoplayer.common.persistence.tokens.TwoPlayerMoveTo
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
+
+import cn.ezandroid.sgf.SGFException;
+import cn.ezandroid.sgf.SGFLoader;
+import cn.ezandroid.sgf.tokens.CommentToken;
+import cn.ezandroid.sgf.tokens.DateToken;
+import cn.ezandroid.sgf.tokens.FileFormatToken;
+import cn.ezandroid.sgf.tokens.GameCommentToken;
+import cn.ezandroid.sgf.tokens.GameNameToken;
+import cn.ezandroid.sgf.tokens.GameTypeToken;
+import cn.ezandroid.sgf.tokens.NodeNameToken;
+import cn.ezandroid.sgf.tokens.ResultToken;
+import cn.ezandroid.sgf.tokens.SGFToken;
 
 /**
  * Loads a two player game from a text file.
@@ -104,13 +103,13 @@ public class TwoPlayerSGFLoader extends SGFLoader {
             case "GAMENAME":
                 token = new GameNameToken();
                 break;
-            case "ID":
-                token = new GameIDToken();
-                break;
-            case "CA":
+//            case "ID":
+//                token = new GameIDToken();
+//                break;
+//            case "CA":
                 //  token = new CharsetToken();   // where did this token class go?
-                token = new TextToken();
-                break;
+//                token = new TextToken();
+//                break;
 
             // If all else fails, fail
             default:

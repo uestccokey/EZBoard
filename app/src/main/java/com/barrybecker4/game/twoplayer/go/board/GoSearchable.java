@@ -62,6 +62,10 @@ public class GoSearchable extends TwoPlayerSearchable<GoMove, GoBoard> {
         boardEvaluator_ = new BoardEvaluator(getBoard(), cache);
     }
 
+    public DeadStoneUpdater getDeadStoneUpdater() {
+        return deadStoneUpdater_;
+    }
+
     @Override
     protected GoProfiler getProfiler() {
         return GoProfiler.getInstance();

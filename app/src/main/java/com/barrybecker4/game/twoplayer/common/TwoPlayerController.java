@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.common;
 
-import com.barrybecker4.ca.dj.jigo.sgf.SGFException;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.GameController;
 import com.barrybecker4.game.common.GameWeights;
@@ -21,6 +20,8 @@ import com.barrybecker4.optimization.parameter.ParameterArray;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import cn.ezandroid.sgf.SGFException;
 
 /**
  * This is an abstract base class for a two player Game Controller.

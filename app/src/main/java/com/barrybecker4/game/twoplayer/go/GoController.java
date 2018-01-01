@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.twoplayer.go;
 
-import com.barrybecker4.ca.dj.jigo.sgf.SGFException;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.player.Color;
 import com.barrybecker4.game.common.player.Player;
@@ -24,6 +23,8 @@ import com.barrybecker4.game.twoplayer.go.persistence.GoGameImporter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import cn.ezandroid.sgf.SGFException;
 
 /**
  * Defines everything the computer needs to know to play Go.

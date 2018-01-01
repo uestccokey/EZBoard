@@ -9,7 +9,7 @@ package cn.ezandroid.goboard.demo;
 public class Debug {
 
     public static void printBoard(byte[] board) {
-        System.err.println("FeatureBoard:");
+        System.err.println("Board:");
         System.err.print("|-");
         for (int i = 0; i < 19; i++) {
             System.err.print("--");
@@ -43,7 +43,7 @@ public class Debug {
     }
 
     public static void printBoardNew(byte[] board) {
-        System.err.println("FeatureBoard:");
+        System.err.println("Board:");
         System.err.print("|-");
         for (int i = 0; i < 19; i++) {
             System.err.print("--");

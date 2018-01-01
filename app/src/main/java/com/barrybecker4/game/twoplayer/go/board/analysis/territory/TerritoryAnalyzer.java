@@ -44,7 +44,11 @@ public class TerritoryAnalyzer {
         for (int i = 1; i <= board_.getNumRows(); i++) {
             for (int j = 1; j <= board_.getNumCols(); j++) {
                 GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
-                territoryEstimate += getTerritoryEstimateForPosition(pos, forPlayer1, isEndOfGame);
+                double val = getTerritoryEstimateForPosition(pos, forPlayer1, isEndOfGame);
+                territoryEstimate += val;
+//                if (forPlayer1 && val > 0) {
+//                    Log.e("TA", pos + " " + val + " " + territoryEstimate);
+//                }
             }
         }
         return (int) territoryEstimate;
@@ -77,6 +81,11 @@ public class TerritoryAnalyzer {
                 } else if (!forPlayer1 && piece.isOwnedByPlayer1() && relHealth <= 0) {
                     territoryEstimate -= val;
                 }
+//                if (forPlayer1 && !piece.isOwnedByPlayer1() && relHealth >= -0.1) {
+//                    territoryEstimate += val;
+//                } else if (!forPlayer1 && piece.isOwnedByPlayer1() && relHealth <= 0.1) {
+//                    territoryEstimate -= val;
+//                }
             }
         }
         return territoryEstimate;

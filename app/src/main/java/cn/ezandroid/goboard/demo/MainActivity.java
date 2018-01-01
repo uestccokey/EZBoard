@@ -7,13 +7,19 @@ import android.util.Pair;
 import android.widget.Button;
 
 import com.barrybecker4.common.app.ILog;
+import com.barrybecker4.common.geometry.IntLocation;
 import com.barrybecker4.game.common.GameContext;
+import com.barrybecker4.game.common.board.BoardPosition;
+import com.barrybecker4.game.common.board.GamePiece;
 import com.barrybecker4.game.twoplayer.go.GoController;
 import com.barrybecker4.game.twoplayer.go.board.GoSearchable;
+import com.barrybecker4.game.twoplayer.go.board.elements.position.GoBoardPosition;
+import com.barrybecker4.game.twoplayer.go.board.elements.position.GoStone;
 import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 import cn.ezandroid.goboard.BoardView;
@@ -30,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mUndoButton;
     private Button mPassButton;
     private Button mResignButton;
+    private Button mScoreButton;
+
     private int mBoardSize = 19;
 
     private Game mGame;
@@ -42,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mIsThinking = false;
 
-    protected GoController controller_;
+    private GoController mGoController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         mPassButton.setOnClickListener(v -> pass());
         mResignButton = findViewById(R.id.resign);
         mResignButton.setOnClickListener(v -> resign());
+        mScoreButton = findViewById(R.id.score);
+        mScoreButton.setOnClickListener(v -> score());
 
         GameContext.setDebugMode(0);
         GameContext.setLogger(new ILog() {
@@ -122,37 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        controller_ = new GoController(19, 0);
-
-        long time = System.currentTimeMillis();
-        try {
-            controller_.restoreFromStream(getResources().openRawResource(R.raw.test2));
-            Log.e("Main", "Time0:" + (System.currentTimeMillis() - time));
-            time = System.currentTimeMillis();
-            // force dead stones to be updated by calling done with resignation move.
-            controller_.getSearchable().done(GoMove.createResignationMove(true), true);
-            Log.e("Main", "Time1:" + (System.currentTimeMillis() - time));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        time = System.currentTimeMillis();
-        int blackTerrEst = controller_.getFinalTerritory(true);
-        int whiteTerrEst = controller_.getFinalTerritory(false);
-        Log.e("Main", "Time2:" + (System.currentTimeMillis() - time));
-        time = System.currentTimeMillis();
-        GoSearchable searchable = (GoSearchable) controller_.getSearchable();
-        int numBlackCaptures = searchable.getNumCaptures(true);
-        int numWhiteCaptures = searchable.getNumCaptures(false);
-        Log.e("Main", "Time3:" + (System.currentTimeMillis() - time));
-        time = System.currentTimeMillis();
-        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
-        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
-        Log.e("Main", "Time4:" + (System.currentTimeMillis() - time));
-
-        Log.e("Main", blackTerrEst + " " + whiteTerrEst
-                + " " + numBlackCaptures + " " + numWhiteCaptures
-                + " " + numDeadBlack + " " + numDeadWhite);
+        mGoController = new GoController(19, 0);
     }
 
     private void create() {
@@ -166,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Pair<Move, Chain> pair = mGame.undo();
+        mGoController.undoLastMove();
 
         if (pair != null) {
             mHeatMapView.setHeatMap(null);
@@ -184,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
 
             // 双重撤销
             Pair<Move, Chain> pair2 = mGame.undo();
+            mGoController.undoLastMove();
+
             if (pair2 != null) {
                 Move move2 = pair2.first;
                 Set<Chain> captured2 = move2.getCaptured();
@@ -216,6 +199,145 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void score() {
+        if (mIsThinking) {
+            return;
+        }
+
+        // force dead stones to be updated by calling done with resignation move.
+        mGoController.getSearchable().done(GoMove.createResignationMove(true), true);
+        GoSearchable searchable = (GoSearchable) mGoController.getSearchable();
+        LinkedList<GoBoardPosition> blackDeads = searchable.getDeadStoneUpdater().getDeadStonesOnBoard(true);
+        LinkedList<GoBoardPosition> whiteDeads = searchable.getDeadStoneUpdater().getDeadStonesOnBoard(false);
+
+        int[][] board = new int[mBoardSize][mBoardSize];
+        for (int i = 0; i < mBoardSize; i++) {
+            for (int j = 0; j < mBoardSize; j++) {
+                BoardPosition position = mGoController.getBoard().getPosition(i + 1, j + 1);
+                if (position != null) {
+                    GamePiece piece = position.getPiece();
+                    if (piece != null) {
+                        if (piece.isOwnedByPlayer1() && !blackDeads.contains(position)) {
+                            board[i][j] = 1;
+                        } else if (!piece.isOwnedByPlayer1() && !whiteDeads.contains(position)) {
+                            board[i][j] = -1;
+                        }
+                    }
+                }
+            }
+        }
+        int[] boardP = new int[mBoardSize * mBoardSize];
+        for (int i = 0; i < mBoardSize; i++) {
+            System.arraycopy(board[i], 0, boardP, i * 19, mBoardSize);
+        }
+        printBoard(boardP);
+
+        float[][] state = TerrainAnalyze.terrainAnalyze(board);
+
+        int blackScore = 0;
+        int whiteScore = 0;
+        float[] rate = new float[mBoardSize * mBoardSize];
+        for (int i = 0; i < mBoardSize; i++) {
+            System.arraycopy(state[i], 0, rate, i * 19, mBoardSize);
+        }
+        for (float aRate : rate) {
+            int r = Math.round(aRate * 100);
+            if (r < -25) {
+                whiteScore++;
+            } else if (r > 25) {
+                blackScore++;
+            }
+        }
+        printRate(rate);
+
+        int numBlackCaptures = searchable.getNumCaptures(true);
+        int numWhiteCaptures = searchable.getNumCaptures(false);
+        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
+        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
+
+        Log.e("MainActivity", numBlackCaptures + " " + numWhiteCaptures + " " + numDeadBlack + " " + numDeadWhite);
+        Log.e("MainActivity", "Black Score:" + blackScore);
+        Log.e("MainActivity", "White Score:" + whiteScore);
+    }
+
+    private void printBoard(int[] board) {
+        System.err.println("Board:");
+        System.err.print("|-");
+        for (int i = 0; i < 19; i++) {
+            System.err.print("--");
+        }
+        System.err.print("|");
+        System.err.println();
+        for (int i = 0; i < 19; i++) {
+            for (int j = 0; j < 21; j++) {
+                if (j == 0 || j == 20) {
+                    System.err.print("| ");
+                } else {
+                    int player = board[i * 19 + (j - 1)];
+                    if (player == FeatureBoard.BLACK) {
+                        System.err.print("B");
+                    } else if (player == FeatureBoard.WHITE) {
+                        System.err.print("W");
+                    } else {
+                        System.err.print("+");
+                    }
+                    System.err.print(" ");
+                }
+            }
+            System.err.println();
+        }
+        System.err.print("|-");
+        for (int i = 0; i < 19; i++) {
+            System.err.print("--");
+        }
+        System.err.print("|");
+        System.err.println();
+    }
+
+    private void printRate(float[] rate) {
+        System.err.println("Rate:");
+        System.err.print("|");
+        for (int i = 0; i < 19; i++) {
+            System.err.print("----");
+        }
+        System.err.print("|");
+        System.err.println();
+        for (int i = 0; i < 19; i++) {
+            for (int j = 0; j < 21; j++) {
+                if (j == 0 || j == 20) {
+                    System.err.print("|");
+                } else {
+                    int value = Math.round(rate[i * 19 + (j - 1)] * 1000 / 10f);
+                    if (value < 0) {
+                        if (value <= -99) {
+                            System.err.print("-99");
+                        } else if (value > -10) {
+                            System.err.print(" " + value);
+                        } else {
+                            System.err.print(value);
+                        }
+                    } else {
+                        if (value >= 99) {
+                            System.err.print(" 99");
+                        } else if (value < 10) {
+                            System.err.print("  " + value);
+                        } else {
+                            System.err.print(" " + value);
+                        }
+                    }
+                    System.err.print(" ");
+                }
+            }
+            System.err.println();
+        }
+        System.err.print("|");
+        for (int i = 0; i < 19; i++) {
+            System.err.print("----");
+        }
+        System.err.print("|");
+        System.err.println();
+    }
+
     private void putStone(Intersection intersection, StoneColor color, boolean user) {
         if (mIsThinking) {
             return;
@@ -227,6 +349,9 @@ public class MainActivity extends AppCompatActivity {
         stone.number = mGame.getHistory().size() + 1;
         boolean add = mGame.addStone(stone, captured);
         if (add) {
+            GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1), 0, new GoStone(user));
+            mGoController.makeMove(goMove);
+
             mBoardView.setHighlightIntersection(null);
 
             for (Chain chain : captured) {
@@ -240,10 +365,6 @@ public class MainActivity extends AppCompatActivity {
             mCurrentColor = mCurrentColor.getOther();
             mBoardView.setHighlightStone(stone);
 
-            byte[][] features48 = mFeatureBoard.generateFeatures48();
-            float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
-            mHeatMapView.setHeatMap(policies[0]);
-
             if (user) {
                 mIsThinking = true;
                 new Thread() {
@@ -251,11 +372,18 @@ public class MainActivity extends AppCompatActivity {
                         long time = System.currentTimeMillis();
 
                         byte[][] feature49 = mFeatureBoard.generateFeatures49();
+                        Log.e("MainActivity", "FeatureBoard->generateFeatures49:" + (System.currentTimeMillis() - time) + "ms");
+                        time = System.currentTimeMillis();
                         byte[][] features48 = mFeatureBoard.generateFeatures48();
+                        Log.e("MainActivity", "FeatureBoard->generateFeatures48:" + (System.currentTimeMillis() - time) + "ms");
+                        time = System.currentTimeMillis();
 
                         float[] values = mValueNetwork.getOutput(new byte[][][]{feature49},
                                 mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE);
+                        Log.e("MainActivity", "ValueNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
+                        time = System.currentTimeMillis();
                         float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+                        Log.e("MainActivity", "PolicyNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
                         Debug.printRate(policies[0]);
 
                         float maxRate = -1;
@@ -272,8 +400,7 @@ public class MainActivity extends AppCompatActivity {
                         final int pos = maxPos;
                         Log.e("MainActivity", "Value Rate:" + (1 - values[0]) / 2);
                         Log.e("MainActivity", "Policy Rate:" + maxRate
-                                + " Choose:(" + pos % 19 + "," + pos / 19 + ")"
-                                + " UseTime:" + (System.currentTimeMillis() - time));
+                                + " Choose:(" + pos % 19 + "," + pos / 19 + ")");
                         runOnUiThread(() -> {
                             mHeatMapView.setHeatMap(policies[0]);
 
