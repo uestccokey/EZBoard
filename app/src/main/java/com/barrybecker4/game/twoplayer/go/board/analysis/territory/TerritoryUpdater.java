@@ -1,7 +1,6 @@
 // Copyright by Barry G. Becker, 2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT
 package com.barrybecker4.game.twoplayer.go.board.analysis.territory;
 
-import com.barrybecker4.game.twoplayer.go.GoController;
 import com.barrybecker4.game.twoplayer.go.board.GoBoard;
 import com.barrybecker4.game.twoplayer.go.board.GoProfiler;
 import com.barrybecker4.game.twoplayer.go.board.analysis.group.GroupAnalyzerMap;
@@ -61,9 +60,7 @@ public class TerritoryUpdater {
         analyzerMap_.clear();  /// need?
 
         float delta = calcAbsoluteHealth();
-        if (GoController.USE_RELATIVE_GROUP_SCORING) {
-            delta = calcRelativeHealth(prof, delta);
-        }
+        delta = calcRelativeHealth(prof, delta);
         prof.startUpdateEmpty();
         if (isEndOfGame) {
             EmptyRegionUpdater emptyUpdater = new EmptyRegionUpdater(board_, analyzerMap_);
@@ -103,17 +100,11 @@ public class TerritoryUpdater {
     private float calcAbsoluteHealth() {
         float delta = 0;
         GoProfiler.getInstance().startAbsoluteTerritory();
-
         for (IGoGroup g : board_.getGroups()) {
-
-            float health = analyzerMap_.getAnalyzer(g).calculateAbsoluteHealth(board_);
-
-            if (!GoController.USE_RELATIVE_GROUP_SCORING) {
-                g.updateTerritory(health);
-                delta += health * g.getNumStones();
-            }
+            analyzerMap_.getAnalyzer(g).calculateAbsoluteHealth(board_);
         }
         GoProfiler.getInstance().stopAbsoluteTerritory();
+
         return delta;
     }
 
@@ -123,14 +114,12 @@ public class TerritoryUpdater {
      */
     private float calcRelativeHealth(GoProfiler prof, float initDelta) {
         float delta = initDelta;
-
         prof.startRelativeTerritory();
         for (IGoGroup g : board_.getGroups()) {
             float health = analyzerMap_.getAnalyzer(g).calculateRelativeHealth(board_);
             g.updateTerritory(health);
             delta += health * g.getNumStones();
         }
-
         prof.stopRelativeTerritory();
 
         return delta;

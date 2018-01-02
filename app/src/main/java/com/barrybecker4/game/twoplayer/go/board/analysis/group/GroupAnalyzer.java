@@ -3,7 +3,6 @@ package com.barrybecker4.game.twoplayer.go.board.analysis.group;
 
 import com.barrybecker4.common.format.FormatUtil;
 import com.barrybecker4.game.common.GameContext;
-import com.barrybecker4.game.twoplayer.go.GoController;
 import com.barrybecker4.game.twoplayer.go.board.GoBoard;
 import com.barrybecker4.game.twoplayer.go.board.elements.eye.GoEyeSet;
 import com.barrybecker4.game.twoplayer.go.board.elements.group.GroupChangeListener;
@@ -79,9 +78,6 @@ public class GroupAnalyzer implements GroupChangeListener {
      * @return relative health
      */
     public float getRelativeHealth(GoBoard board, boolean useCachedValue) {
-        if (!GoController.USE_RELATIVE_GROUP_SCORING) {
-            return getAbsoluteHealth();
-        }
         if (isValid() || useCachedValue) {
             if (!isValid())
                 GameContext.log(3, "using cached relative health when not valid");

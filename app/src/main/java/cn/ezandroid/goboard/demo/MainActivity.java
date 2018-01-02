@@ -12,7 +12,6 @@ import com.barrybecker4.common.geometry.IntLocation;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.board.BoardPosition;
 import com.barrybecker4.game.common.board.GamePiece;
-import com.barrybecker4.game.twoplayer.common.cache.ScoreCache;
 import com.barrybecker4.game.twoplayer.go.board.GoBoard;
 import com.barrybecker4.game.twoplayer.go.board.analysis.BoardEvaluator;
 import com.barrybecker4.game.twoplayer.go.board.elements.position.GoBoardPosition;
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mGoBoard = new GoBoard(19, 0);
-        mBoardEvaluator = new BoardEvaluator(mGoBoard, new ScoreCache());
+        mBoardEvaluator = new BoardEvaluator(mGoBoard);
         mDeadStoneUpdater = new DeadStoneUpdater(mGoBoard);
     }
 
