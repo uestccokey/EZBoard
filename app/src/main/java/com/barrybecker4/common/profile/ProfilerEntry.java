@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.common.profile;
 
-import com.barrybecker4.common.app.ILog;
 import com.barrybecker4.common.format.FormatUtil;
 
 import java.util.LinkedList;
@@ -59,21 +58,17 @@ public class ProfilerEntry {
     }
 
     public void print() {
-        print("", null);
+        print("");
     }
 
-    public void print(String indent, ILog logger) {
-
+    public void print(String indent) {
         String text = indent + getFormattedTime();
-        if (logger == null)
-            System.out.println(text);
-        else
-            logger.println(text);
+        System.out.println(text);
 
         long totalChildTime = 0;
         for (ProfilerEntry pe : children_) {
             totalChildTime += pe.getTime();
-            pe.print(indent + INDENT, logger);
+            pe.print(indent + INDENT);
         }
 
         assert (totalChildTime <= 1.0 * totalTime_) : "The sum of the child times(" + totalChildTime

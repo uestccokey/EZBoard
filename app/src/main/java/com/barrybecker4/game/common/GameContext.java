@@ -1,9 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2013. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.game.common;
 
-import com.barrybecker4.common.app.ILog;
-
-import java.io.FileNotFoundException;
 import java.util.Random;
 
 /**
@@ -13,43 +10,6 @@ import java.util.Random;
  * @author Barry Becker
  */
 public final class GameContext {
-
-    /** logger object. Use console by default. */
-    private static ILog sLogger = new ILog() {
-
-        @Override
-        public void setDestination(int logDestination) {
-        }
-
-        @Override
-        public int getDestination() {
-            return 0;
-        }
-
-        @Override
-        public void setLogFile(String fileName) throws FileNotFoundException {
-        }
-
-        @Override
-        public void setStringBuilder(StringBuilder bldr) {
-        }
-
-        @Override
-        public void print(int logLevel, int appLogLevel, String message) {
-        }
-
-        @Override
-        public void println(int logLevel, int appLogLevel, String message) {
-        }
-
-        @Override
-        public void print(String message) {
-        }
-
-        @Override
-        public void println(String message) {
-        }
-    };
 
     /** Make sure that the program runs in a reproducible way by always starting from the same random seed. */
     private static Random RANDOM = new Random(0);
@@ -96,25 +56,10 @@ public final class GameContext {
     }
 
     /**
-     * @param logger the logging device. Determines where the output goes.
-     */
-    public static void setLogger(ILog logger) {
-        assert logger != null;
-        sLogger = logger;
-    }
-
-    /**
-     * @return the logging device to use.
-     */
-    public static ILog getLogger() {
-        return sLogger;
-    }
-
-    /**
      * log a message using the internal logger object
      */
     public static void log(int logLevel, String message) {
-        sLogger.print(logLevel, getDebugMode(), message);
+        System.out.println(message);
     }
 
     public static Random random() {

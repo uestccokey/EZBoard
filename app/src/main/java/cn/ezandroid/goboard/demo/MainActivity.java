@@ -7,7 +7,6 @@ import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.barrybecker4.common.app.ILog;
 import com.barrybecker4.common.geometry.IntLocation;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.board.BoardPosition;
@@ -19,7 +18,6 @@ import com.barrybecker4.game.twoplayer.go.board.elements.position.GoStone;
 import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
 import com.barrybecker4.game.twoplayer.go.board.update.DeadStoneUpdater;
 
-import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -109,44 +107,6 @@ public class MainActivity extends AppCompatActivity {
         mScoreButton.setOnClickListener(v -> score());
 
         GameContext.setDebugMode(0);
-        GameContext.setLogger(new ILog() {
-            @Override
-            public void setDestination(int logDestination) {
-            }
-
-            @Override
-            public int getDestination() {
-                return 0;
-            }
-
-            @Override
-            public void setLogFile(String fileName) throws FileNotFoundException {
-            }
-
-            @Override
-            public void setStringBuilder(StringBuilder bldr) {
-            }
-
-            @Override
-            public void print(int logLevel, int appLogLevel, String message) {
-                Log.e("GameContext", message);
-            }
-
-            @Override
-            public void println(int logLevel, int appLogLevel, String message) {
-                Log.e("GameContext", message);
-            }
-
-            @Override
-            public void print(String message) {
-                Log.e("GameContext", message);
-            }
-
-            @Override
-            public void println(String message) {
-                Log.e("GameContext", message);
-            }
-        });
 
         mGoBoard = new GoBoard(19, 0);
         mBoardEvaluator = new BoardEvaluator(mGoBoard);

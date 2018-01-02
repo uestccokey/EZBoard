@@ -65,7 +65,6 @@ public abstract class AbstractGameProfiler extends Profiler {
     void initialize() {
         resetAll();
         setEnabled(GameContext.isProfiling());
-        setLogger(GameContext.getLogger());
     }
 
     public void startGenerateMoves() {

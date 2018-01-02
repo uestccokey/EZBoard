@@ -1,8 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package com.barrybecker4.common.profile;
 
-import com.barrybecker4.common.app.ILog;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,7 +18,6 @@ public class Profiler {
     private final Map<String, ProfilerEntry> hmEntries_ = new HashMap<>();
     private final List<ProfilerEntry> topLevelEntries_ = new LinkedList<>();
     private boolean enabled_ = true;
-    private ILog logger_ = null;
 
     /**
      * Default constructor.
@@ -89,7 +86,7 @@ public class Profiler {
     public void print() {
         if (!enabled_) return;
         for (ProfilerEntry entry : topLevelEntries_) {
-            entry.print("", logger_);
+            entry.print("");
         }
     }
 
@@ -100,18 +97,5 @@ public class Profiler {
 
     public boolean isEnabled() {
         return enabled_;
-    }
-
-
-    public void setLogger(ILog logger) {
-        logger_ = logger;
-    }
-
-    public void printMessage(String message) {
-        if (logger_ != null) {
-            logger_.print(message);
-        } else {
-            System.out.println(message);
-        }
     }
 }
