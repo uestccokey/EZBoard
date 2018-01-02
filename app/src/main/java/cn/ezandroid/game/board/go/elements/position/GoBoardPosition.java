@@ -7,7 +7,6 @@ import cn.ezandroid.game.board.go.elements.IGoMember;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.format.FormatUtil;
 
 /**
  * The GoBoardPosition describes the physical marker at a location on the board.
@@ -56,8 +55,8 @@ public final class GoBoardPosition extends BoardPosition
      * Create a deep copy of this position.
      */
     public GoBoardPosition(GoBoardPosition pos) {
-        this(pos.location_.getRow(), pos.location_.getCol(), pos.string_,
-                (pos.piece_ == null) ? null : (GoStone) pos.piece_.copy());
+        this(pos.mLocation.getRow(), pos.mLocation.getCol(), pos.string_,
+                (pos.mPiece == null) ? null : (GoStone) pos.mPiece.copy());
         pos.setEye(getEye());
         setVisited(pos.isVisited());
     }
@@ -180,22 +179,6 @@ public final class GoBoardPosition extends BoardPosition
         setEye(null);
         scoreContribution_ = 0;
         setVisited(false);
-    }
-
-    /**
-     * @return a string representation of the go board position
-     */
-    @Override
-    public String getDescription() {
-        return super.getDescription() + " score:" + FormatUtil.formatNumber(scoreContribution_);
-    }
-
-    /**
-     * @return a string representation of the go board position
-     */
-    @Override
-    public String toString() {
-        return super.toString() + " s:" + FormatUtil.formatNumber(scoreContribution_) + " hc:" + hashCode();
     }
 
     public double getScoreContribution() {

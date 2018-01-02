@@ -1,43 +1,33 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.common.board;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.common.geometry.ByteLocation;
 import cn.ezandroid.game.common.geometry.Location;
 
 /**
- * Represents the array of positions on the board.
- * Assumes an M*N grid.
- * Legal positions are [1, numRows_][1, numCols_]
+ * 棋盘位置点二维数组
+ * <p>
+ * 合法的位置为 [1, mNumRows],[1, mNumCols]
  *
  * @author Barry Becker
  */
 public class BoardPositions {
 
-    /** the internal data structures representing the positions on the game board. */
-    protected BoardPosition positions_[][];
+    protected BoardPosition mPositions[][];
 
-    private int numRows_;
-    private int numCols_;
-    private int rowsTimesCols_;
+    private int mNumRows;
+    private int mNumCols;
 
-    /**
-     * Constructor
-     */
     public BoardPositions(int numRows, int numCols) {
         setSize(numRows, numCols);
     }
 
-    /**
-     * Copy constructor.
-     * Makes a deep copy of the board and all its parts.
-     */
     protected BoardPositions(BoardPositions b) {
         this(b.getNumRows(), b.getNumCols());
 
         for (int i = 1; i <= getNumRows(); i++) {
             for (int j = 1; j <= getNumCols(); j++) {
-                positions_[i][j] = b.getPosition(i, j).copy();
+                mPositions[i][j] = b.getPosition(i, j).copy();
             }
         }
     }
@@ -46,75 +36,54 @@ public class BoardPositions {
         return new BoardPositions(this);
     }
 
-    /**
-     * Change the dimensions of this game board.
-     * Note that there are sentinels around the border
-     */
     public void setSize(int numRows, int numCols) {
-        numRows_ = numRows;
-        numCols_ = numCols;
-        rowsTimesCols_ = numRows_ * numCols_;
-        positions_ = new BoardPosition[getNumRows() + 1][getNumCols() + 1];
+        mNumRows = numRows;
+        mNumCols = numCols;
+        mPositions = new BoardPosition[getNumRows() + 1][getNumCols() + 1];
     }
 
     public void clear(BoardPosition proto) {
         for (int i = 1; i <= getNumRows(); i++) {
             for (int j = 1; j <= getNumCols(); j++) {
                 proto.setLocation(new ByteLocation(i, j));
-                positions_[i][j] = proto.copy();
+                mPositions[i][j] = proto.copy();
             }
         }
     }
 
     /**
-     * @return retrieve the number of rows that the board has.
+     * 获取棋盘行数
+     *
+     * @return
      */
     public final int getNumRows() {
-        return numRows_;
+        return mNumRows;
     }
 
     /**
-     * @return retrieve the number of cols that the board has.
+     * 获取棋盘列数
+     *
+     * @return
      */
     public final int getNumCols() {
-        return numCols_;
+        return mNumCols;
     }
 
-    public final int getNumBoardSpaces() {
-        return rowsTimesCols_;
-    }
-
-    /**
-     * returns null if there is no game piece at the position specified.
-     *
-     * @return the piece at the specified location. Returns null if there is no piece there.
-     */
     public final BoardPosition getPosition(int row, int col) {
-        if (row < 1 || row > numRows_ || col < 1 || col > numCols_) {
+        if (row < 1 || row > mNumRows || col < 1 || col > mNumCols) {
             return null;
         }
-        return positions_[row][col];
+        return mPositions[row][col];
     }
 
-    /**
-     * returns null if there is no game piece at the position specified.
-     *
-     * @return the piece at the specified location. Returns null if there is no piece there.
-     */
     public final BoardPosition getPosition(Location loc) {
         return getPosition(loc.getRow(), loc.getCol());
     }
 
     public void setPosition(BoardPosition pos) {
-        positions_[pos.getRow()][pos.getCol()] = pos;
+        mPositions[pos.getRow()][pos.getCol()] = pos;
     }
 
-    /**
-     * Two boards are considered equal if all the pieces are in the same spot and have like ownership.
-     *
-     * @param b the board to compare to.
-     * @return true if all the pieces in board b in the same spot and have like ownership as this.
-     */
     @Override
     public boolean equals(Object b) {
         if (!(b instanceof BoardPositions)) return false;
@@ -126,7 +95,6 @@ public class BoardPositions {
                 assert p1 != null;
                 assert p2 != null;
                 if (p1.isOccupied() != p2.isOccupied()) {
-                    GameContext.log(2, "Inconsistent occupation status  p1=" + p1 + " and p2=" + p2);
                     return false;
                 }
                 if (p1.isOccupied()) {
@@ -134,7 +102,6 @@ public class BoardPositions {
                     GamePiece piece2 = p2.getPiece();
                     if (piece1.isOwnedByPlayer1() != piece2.isOwnedByPlayer1() ||
                             piece1.getType() != piece2.getType()) {
-                        GameContext.log(2, "There was an inconsistency between p1=" + p1 + " and " + p2);
                         return false;
                     }
                 }
@@ -162,7 +129,11 @@ public class BoardPositions {
     }
 
     /**
-     * @return true if the specified position is within the bounds of the board
+     * 是否指定位置在棋盘范围内
+     *
+     * @param r
+     * @param c
+     * @return
      */
     public final boolean inBounds(int r, int c) {
         return !(r < 1 || r > getNumRows() || c < 1 || c > getNumCols());
@@ -189,10 +160,10 @@ public class BoardPositions {
     }
 
     /**
-     * Check the 4 corners
+     * 检查是否在4个角落
      *
-     * @param position position to see if in corner of board.
-     * @return true if the specified BoardPosition is on the corder of the board
+     * @param position
+     * @return
      */
     public boolean isInCorner(BoardPosition position) {
         return ((position.getRow() == 1 && position.getCol() == 1) ||
@@ -202,10 +173,10 @@ public class BoardPositions {
     }
 
     /**
-     * Corner points are also on the edge.
+     * 检查是否在边线上（角落的点也在边线上）
      *
-     * @param position position to see if on edge of board.
-     * @return true if the specified BoardPosition is on the edge of the board
+     * @param position
+     * @return
      */
     public boolean isOnEdge(BoardPosition position) {
         return (position.getRow() == 1 || position.getRow() == getNumRows()

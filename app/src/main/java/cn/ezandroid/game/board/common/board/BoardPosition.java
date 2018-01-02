@@ -5,58 +5,36 @@ import cn.ezandroid.game.common.geometry.ByteLocation;
 import cn.ezandroid.game.common.geometry.Location;
 
 /**
- * The BoardPosition describes the physical marker at a location on the board.
- * It may be empty if there is no piece there.
+ * 棋盘位置点模型
  *
  * @author Barry Becker
- * @see Board
  */
 public class BoardPosition {
 
-    /** we need to store the location so we can restore captures. */
-    protected Location location_;
+    // 当前位置
+    protected Location mLocation;
 
-    /** the piece to display at this position. Null if the position is unoccupied. */
-    protected GamePiece piece_;
+    // 当前位置棋子，可以为空
+    protected GamePiece mPiece;
 
-    /**
-     * constructor
-     *
-     * @param row   - y position on the board.
-     * @param col   - x position on the board.
-     * @param piece - the piece to put at this position (use null if there is none).
-     */
     public BoardPosition(int row, int col, GamePiece piece) {
         this(new ByteLocation(row, col), piece);
     }
 
     public BoardPosition(BoardPosition p) {
-
-        location_ = new ByteLocation(p.getRow(), p.getCol());
-        piece_ = (p.piece_ != null) ? p.piece_.copy() : null;
+        mLocation = new ByteLocation(p.getRow(), p.getCol());
+        mPiece = (p.mPiece != null) ? p.mPiece.copy() : null;
     }
 
-    /**
-     * @return copy of this position.
-     */
+    protected BoardPosition(Location loc, GamePiece piece) {
+        mLocation = loc;
+        mPiece = piece;
+    }
+
     public BoardPosition copy() {
         return new BoardPosition(this);
     }
 
-    /**
-     * constructor
-     *
-     * @param loc   -  location on the board.
-     * @param piece - the piece to put at this position (use null if there is none).
-     */
-    protected BoardPosition(Location loc, GamePiece piece) {
-        location_ = loc;
-        piece_ = piece;
-    }
-
-    /**
-     * @return true if values are equal.
-     */
     @Override
     public boolean equals(Object pos) {
         if ((pos == null) || !(pos.getClass().equals(this.getClass()))) {
@@ -74,107 +52,86 @@ public class BoardPosition {
                 (getCol() == comparisonPos.getCol()) && (sameSide);
     }
 
-    /**
-     * override hashcode if you override equals
-     */
     @Override
     public int hashCode() {
         return getRow() * 300 + getCol();
     }
 
     /**
-     * @return the piece at this position if there is one.
+     * 获取当前位置棋子
+     *
+     * @return
      */
     public GamePiece getPiece() {
-        return piece_;
+        return mPiece;
     }
 
-    /**
-     * @param piece the piece to assign to this position.
-     */
     public void setPiece(GamePiece piece) {
-        piece_ = piece;
+        mPiece = piece;
     }
 
     /**
-     * @return true if the piece space is currently unoccupied
+     * 当前位置是否未被占用
+     *
+     * @return
      */
     public final boolean isUnoccupied() {
-        return (piece_ == null);
+        return (mPiece == null);
     }
 
     /**
-     * @return true if the piece space is currently occupied
+     * 当前位置是否已被占用
      */
     public final boolean isOccupied() {
-        return (piece_ != null);
+        return (mPiece != null);
     }
 
     public final int getRow() {
-        return location_.getRow();
+        return mLocation.getRow();
     }
 
     public final int getCol() {
-        return location_.getCol();
+        return mLocation.getCol();
+    }
+
+    /**
+     * 获取当前位置
+     *
+     * @return
+     */
+    public final Location getLocation() {
+        return mLocation;
     }
 
     public final void setLocation(Location loc) {
-        location_ = loc;
-    }
-
-    public final Location getLocation() {
-        return location_;
+        mLocation = loc;
     }
 
     /**
-     * Get the euclidean distance from another board position
+     * 获取当前位置到指定位置的欧几里德距离
      *
-     * @param position to get the distance from
-     * @return distance from another position
+     * @param position
+     * @return
      */
     public final double getDistanceFrom(BoardPosition position) {
-        return location_.getDistanceFrom(position.getLocation());
+        return mLocation.getDistanceFrom(position.getLocation());
     }
 
     /**
-     * @param position to check if neighboring
-     * @return true if immediate neighbor (nobi neighbor)
+     * 是否当前位置与指定位置相邻
+     *
+     * @param position
+     * @return
      */
     public final boolean isNeighbor(BoardPosition position) {
         return getDistanceFrom(position) == 1.0;
     }
 
     /**
-     * make it show an empty board position.
+     * 清除当前位置棋子
      */
     public void clear() {
         setPiece(null);
-    }
-
-    /**
-     * @return a string representation of the board position
-     */
-    protected String getDescription() {
-        return toString(true);
-    }
-
-    /**
-     * @return a string representation of the board position
-     */
-    @Override
-    public String toString() {
-        return toString(false);
-    }
-
-    /**
-     * @return string form.
-     */
-    private String toString(boolean longForm) {
-        StringBuilder sb = new StringBuilder("");
-        if (piece_ != null)
-            sb.append(longForm ? piece_.getDescription() : " " + piece_.toString());
-        sb.append(" (").append(location_.toString()).append(')');
-        return sb.toString();
     }
 }
 

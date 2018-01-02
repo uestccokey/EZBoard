@@ -68,11 +68,5 @@ public final class FormatUtil {
     public static String formatNumber(int num) {
         return intFormat_.format(num);
     }
-
-    public static void main(String[] args) {
-        System.out.println("formatted small number: " + FormatUtil.formatNumber(0.00000003456)); //NON-NLS
-        System.out.println("formatted medium number: " + FormatUtil.formatNumber(239909.034983456)); //NON-NLS
-        System.out.println("formatted large number: " + FormatUtil.formatNumber(1234981289879875329290.3456)); //NON-NLS
-    }
 }
 

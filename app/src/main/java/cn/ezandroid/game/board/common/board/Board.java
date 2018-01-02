@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.common.board;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.Move;
 import cn.ezandroid.game.board.common.MoveList;
 import cn.ezandroid.game.common.geometry.Location;
@@ -23,41 +22,31 @@ import cn.ezandroid.game.common.geometry.Location;
  */
 public abstract class Board<M extends Move> implements IRectangularBoard<M> {
 
-    /** the internal data structures representing the game board and the positions on it. */
-    protected BoardPositions positions_;
+    // 棋盘位置点模型
+    protected BoardPositions mPositions;
 
-    /**
-     * We keep a list of the moves that have been made.
-     * We can navigate forward or backward in time using this
-     */
-    private MoveList<M> moveList_;
+    // 落子历史列表（用来支持向前和向后导航）
+    private MoveList<M> mMoveList;
 
-    /**
-     * Default constructor
-     */
     public Board() {
-        moveList_ = new MoveList<>();
+        mMoveList = new MoveList<>();
     }
 
-    /**
-     * Copy constructor.
-     * Makes a deep copy of the board and all its parts.
-     */
-    protected Board(Board<M> b) {
+    protected Board(Board<M> board) {
         this();
-        this.setSize(b.getNumRows(), b.getNumCols());
+        this.setSize(board.getNumRows(), board.getNumCols());
 
-        moveList_ = b.moveList_.copy();
-        positions_ = b.positions_.copy();
+        mMoveList = board.mMoveList.copy();
+        mPositions = board.mPositions.copy();
     }
 
     /**
-     * Reset the board to its initial state.
+     * 重置棋盘为初始状态
      */
     @Override
     public void reset() {
         getMoveList().clear();
-        positions_.clear(getPositionPrototype());
+        mPositions.clear(getPositionPrototype());
     }
 
     protected BoardPosition getPositionPrototype() {
@@ -65,51 +54,46 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
     }
 
     /**
-     * Change the dimensions of this game board.
-     * Note: we must call reset after changing the size, since the original game board will now be invalid.
+     * 修改棋盘大小
+     * <p>
+     * 注意：修改大小后需要调用reset方法重置棋盘，因为原来的棋盘现在无效了
      *
-     * @param numRows the new number of rows for the board to have.
-     * @param numCols the new number of cols for the board to have.
+     * @param numRows
+     * @param numCols
      */
     @Override
     public void setSize(int numRows, int numCols) {
-        GameContext.log(3, "Board rows cols== " + numRows + ", " + numCols);
-        positions_ = new BoardPositions(numRows, numCols);
+        mPositions = new BoardPositions(numRows, numCols);
         reset();
     }
 
     /**
-     * @return retrieve the number of rows that the board has.
+     * 获取棋盘行数
+     *
+     * @return
      */
     @Override
     public final int getNumRows() {
-        return positions_.getNumRows();
+        return mPositions.getNumRows();
     }
 
     /**
-     * @return retrieve the number of columns that the board has.
+     * 获取棋盘列数
+     *
+     * @return
      */
     @Override
     public final int getNumCols() {
-        return positions_.getNumCols();
+        return mPositions.getNumCols();
     }
 
-    /**
-     * consider making a defensive copy to avoid concurrent modification exception.
-     *
-     * @return moves made so far.
-     */
     public MoveList<M> getMoveList() {
-        return moveList_;
-    }
-
-    public int getTypicalNumMoves() {
-        return 40;
+        return mMoveList;
     }
 
     @Override
     public BoardPosition getPosition(int row, int col) {
-        return positions_.getPosition(row, col);
+        return mPositions.getPosition(row, col);
     }
 
     @Override
@@ -118,12 +102,14 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
     }
 
     protected void setPosition(BoardPosition pos) {
-        positions_.setPosition(pos);
+        mPositions.setPosition(pos);
     }
 
     /**
-     * @param move to make
-     * @return false if the move is illegal
+     * 落子
+     *
+     * @param move
+     * @return
      */
     @Override
     public boolean makeMove(M move) {
@@ -133,9 +119,9 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
     }
 
     /**
-     * undo the last move made.
+     * 悔棋
      *
-     * @return the move that got undone
+     * @return
      */
     @Override
     public M undoMove() {
@@ -147,66 +133,65 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
         return null;
     }
 
-    /**
-     * Two boards are considered equal if all the pieces are in the same spot and have like ownership.
-     *
-     * @param b the board to compare to.
-     * @return true if all the pieces in board b in the same spot and have like ownership as this.
-     */
     @Override
     public boolean equals(Object b) {
         if (!(b instanceof Board)) return false;
         Board board = (Board) b;
-        return (board.positions_.equals(positions_));
+        return (board.mPositions.equals(mPositions));
     }
 
     @Override
     public int hashCode() {
-        return positions_.hashCode();
+        return mPositions.hashCode();
     }
 
     /**
-     * @param move the move to make
-     * @return false if the move is illegal (true if legal)
+     * 落子内部函数
+     *
+     * @param move
+     * @return
      */
     protected abstract boolean makeInternalMove(M move);
 
     /**
-     * Allow reverting a move so we can step backwards in time.
-     * Board is returned to the exact state it was in before the last move was made.
+     * 悔棋内部函数
      */
     protected abstract void undoInternalMove(M move);
 
     /**
-     * @return true if the specified position is within the bounds of the board
+     * 是否指定位置在棋盘范围内
+     *
+     * @param r
+     * @param c
+     * @return
      */
     @Override
     public final boolean inBounds(int r, int c) {
-        return positions_.inBounds(r, c);
+        return mPositions.inBounds(r, c);
     }
 
     @Override
     public String toString() {
-        return positions_.toString();
+        return mPositions.toString();
     }
 
     /**
-     * Check the 4 corners
+     * 检查是否在4个角落
      *
-     * @param position position to see if in corner of board.
-     * @return true if the specified BoardPosition is on the corner of the board
+     * @param position
+     * @return
      */
     public boolean isInCorner(BoardPosition position) {
-        return positions_.isInCorner(position);
+        return mPositions.isInCorner(position);
     }
 
     /**
-     * Corner points are also on the edge.
+     * 检查是否在边线上（角落的点也在边线上）
      *
-     * @param position position to see if on edge of board.
-     * @return true if the specified BoardPosition is on the edge of the board
+     * @param position
+     * @return
      */
     public boolean isOnEdge(BoardPosition position) {
-        return positions_.isOnEdge(position);
+        return mPositions.isOnEdge(position);
     }
 }

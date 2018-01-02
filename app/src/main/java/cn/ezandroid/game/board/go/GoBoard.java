@@ -115,17 +115,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
     }
 
     /**
-     * in go there is not really a theoretical limit to the number of moves,
-     * but practically if we exceed this then we award the game to whoever is ahead.
-     *
-     * @return the maximum number of moves ever expected for this game.
-     */
-    @Override
-    public int getMaxNumMoves() {
-        return 2 * positions_.getNumBoardSpaces();
-    }
-
-    /**
      * Num different states.
      * This is used primarily for the Zobrist hash. You do not need to override if you do not use it.
      * The states are player1, player2, or empty (we may want to add ko).
@@ -139,14 +128,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
 
     public List getHandicapPositions() {
         return handicap_.getStarPoints();
-    }
-
-    /**
-     * @return typical number of moves in a go game.
-     */
-    @Override
-    public int getTypicalNumMoves() {
-        return positions_.getNumBoardSpaces() - getNumRows();
     }
 
     /**

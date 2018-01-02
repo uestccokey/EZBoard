@@ -4,52 +4,43 @@ package cn.ezandroid.game.board.common.board;
 import java.util.LinkedList;
 
 /**
- * This class represents a linked list of captured pieces.
- * It provides convenience methods for removing and restoring those
- * pieces to a game board.
+ * 捕获的棋子列表
  *
  * @author Barry Becker
- * @see Board
  */
 public class CaptureList extends LinkedList<BoardPosition> {
 
-    public CaptureList() { }
+    public CaptureList() {}
 
-    /**
-     * copy constructor
-     */
     public CaptureList(CaptureList captureList) {
         for (BoardPosition capture : captureList) {
             add(capture.copy());
         }
     }
 
-    /**
-     * @return a deep copy of the capture list.
-     */
     public CaptureList copy() {
         return new CaptureList(this);
     }
 
     /**
-     * remove the captured pieces from the board.
+     * 从棋盘上移除
      */
     public void removeFromBoard(Board board) {
         modifyCaptures(board, true);
     }
 
     /**
-     * restore the captured pieces on the board.
+     * 恢复到棋盘上
      */
     public void restoreOnBoard(Board board) {
         modifyCaptures(board, false);
     }
 
     /**
-     * Either take the pieces off the board, or put them back on based on the value of remove.
+     * 要么把棋子从棋盘上移除，要么把移除的棋子放回原处
      *
-     * @param board  the game board.
-     * @param remove if true then remove the pieces, else restore them
+     * @param board
+     * @param remove
      */
     protected void modifyCaptures(Board board, boolean remove) {
         for (BoardPosition capture : this) {
@@ -64,9 +55,12 @@ public class CaptureList extends LinkedList<BoardPosition> {
     }
 
     /**
-     * @return true if the piece was already captured
+     * 获取是否当前位置棋子已被捕获
+     *
+     * @param p
+     * @return
      */
-    public boolean alreadyCaptured(BoardPosition p) {
+    public boolean isAlreadyCaptured(BoardPosition p) {
         for (BoardPosition capture : this) {
             if (capture.getRow() == p.getRow() &&
                     capture.getCol() == p.getCol() &&
@@ -74,18 +68,6 @@ public class CaptureList extends LinkedList<BoardPosition> {
                 return true;
         }
         return false;
-    }
-
-    /**
-     * Produces a string representation of the list of captured pieces.
-     */
-    @Override
-    public String toString() {
-        String s = " These piece(s) were captured by this move:\n";
-        for (BoardPosition p : this) {
-            s += '(' + p.toString() + "),";
-        }
-        return s;
     }
 }
 

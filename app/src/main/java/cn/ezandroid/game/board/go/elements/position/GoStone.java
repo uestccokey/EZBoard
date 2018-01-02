@@ -108,25 +108,9 @@ public class GoStone extends GamePiece implements IGoMember {
     }
 
     @Override
-    public String getDescription() {
-        StringBuilder sb = new StringBuilder("");
-        //sb.append( pieceType );
-        sb.append(ownedByPlayer1 ? "Black" : "White").append("stone");
-        if (positionalScore_ != null) {
-            sb.append(positionalScore_.toString(true));
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Print more compactly than super class.
-     */
-    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("");
-        sb.append(ownedByPlayer1 ? 'B' : 'W');
-
+        sb.append(mIsOwnedByPlayer1 ? 'B' : 'W');
         return sb.toString();
     }
 }

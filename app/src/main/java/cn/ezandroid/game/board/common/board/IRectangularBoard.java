@@ -5,78 +5,53 @@ import cn.ezandroid.game.board.common.Move;
 import cn.ezandroid.game.common.geometry.Location;
 
 /**
- * This is the interface that all rectangular game boards should implement.
- * We assume that the board is composed of a 2D array of BoardPositions.
- * <p>
- * Providing both an interface and an abstract implementation is a pattern
- * which maximizes flexibility in a framework. The interface defines the
- * public contract. The abstract class may be package private if we don't
- * want to expose it. Or other classes may implement this interface without
- * extending the abstract base class.
+ * 矩形棋盘接口
  *
  * @author Barry Becker
- * @see Board for the base implementation of this interface
  */
 public interface IRectangularBoard<M extends Move> extends IBoard<M> {
 
     /**
-     * Reset the board to its initial starting state.
-     */
-    @Override
-    void reset();
-
-    /**
-     * Change the dimensions of this game board.
-     * Note: we must call reset after changing the size, since the original game board will now be invalid.
+     * 修改棋盘大小
+     * <p>
+     * 注意：修改大小后需要调用reset方法重置棋盘，因为原来的棋盘现在无效了
      *
-     * @param numRows the new number of rows for the board to have.
-     * @param numCols the new number of cols for the board to have.
+     * @param numRows
+     * @param numCols
      */
     void setSize(int numRows, int numCols);
 
     /**
-     * @return retrieve the number of rows that the board has.
+     * 获取棋盘行数
+     *
+     * @return
      */
     int getNumRows();
 
     /**
-     * @return retrieve the number of cols that the board has.
+     * 获取棋盘列数
+     *
+     * @return
      */
     int getNumCols();
 
-    /**
-     * There can be no more than this many moves in a game
-     * In many games, it is not just the number of squares.
-     * the main purpose of this function is to avoid cases where
-     * a game can go on forever by making repeat moves.
-     *
-     * @return upper limit on the number of moves that the board can support
-     */
-    int getMaxNumMoves();
-
-    /**
-     * Returns null if the coordinates specified are not on the board.
-     *
-     * @return the piece at the specified location. Returns null if there is no piece there.
-     */
     BoardPosition getPosition(int row, int col);
 
-    /**
-     * Returns null if the coordinates specified are not on the board.
-     *
-     * @return the piece at the specified location. Returns null if there is no piece there.
-     */
     BoardPosition getPosition(Location loc);
 
     /**
-     * @return true if the specified position is within the bounds of the board
+     * 是否指定位置在棋盘范围内
+     *
+     * @param r
+     * @param c
+     * @return
      */
     boolean inBounds(int r, int c);
 
     /**
-     * We should be able to create a deep copy of ourselves
+     * 深克隆
      *
-     * @return deep copy of the board.
+     * @return
      */
     @Override
     IRectangularBoard copy();
