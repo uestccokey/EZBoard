@@ -7,21 +7,20 @@ import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.ezandroid.board.common.GameContext;
-import com.ezandroid.board.common.board.BoardPosition;
-import com.ezandroid.board.common.board.GamePiece;
-import com.ezandroid.board.go.board.GoBoard;
-import com.ezandroid.board.go.board.analysis.BoardEvaluator;
-import com.ezandroid.board.go.board.elements.position.GoBoardPosition;
-import com.ezandroid.board.go.board.elements.position.GoStone;
-import com.ezandroid.board.go.board.move.GoMove;
-import com.ezandroid.board.go.board.update.DeadStoneUpdater;
-import com.ezandroid.common.geometry.IntLocation;
-
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import cn.ezandroid.game.board.common.GameContext;
+import cn.ezandroid.game.board.common.board.BoardPosition;
+import cn.ezandroid.game.board.common.board.GamePiece;
+import cn.ezandroid.game.board.go.GoBoard;
+import cn.ezandroid.game.board.go.analysis.BoardEvaluator;
+import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
+import cn.ezandroid.game.board.go.elements.position.GoStone;
+import cn.ezandroid.game.board.go.move.GoMove;
+import cn.ezandroid.game.board.go.update.DeadStoneUpdater;
+import cn.ezandroid.game.common.geometry.IntLocation;
 import cn.ezandroid.goboard.BoardView;
 import cn.ezandroid.goboard.Intersection;
 import cn.ezandroid.goboard.Stone;
