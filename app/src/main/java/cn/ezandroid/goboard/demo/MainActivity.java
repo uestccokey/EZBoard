@@ -241,21 +241,20 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        int[] boardP = new int[mBoardSize * mBoardSize];
-        for (int i = 0; i < mBoardSize; i++) {
-            System.arraycopy(board[i], 0, boardP, i * 19, mBoardSize);
-        }
-        printBoard(boardP);
+//        int[] boardP = new int[mBoardSize * mBoardSize];
+//        for (int i = 0; i < mBoardSize; i++) {
+//            System.arraycopy(board[i], 0, boardP, i * 19, mBoardSize);
+//        }
+//        printBoard(boardP);
 
         float[][] state = TerrainAnalyze.terrainAnalyze(board);
-
         int blackScore = 0;
         int whiteScore = 0;
         float[] rate = new float[mBoardSize * mBoardSize];
         for (int i = 0; i < mBoardSize; i++) {
             System.arraycopy(state[i], 0, rate, i * 19, mBoardSize);
         }
-        mTerrainMapView.setTerrainMap(rate);
+        printRate(rate);
 
         for (float aRate : rate) {
             int r = Math.round(aRate * 100);
@@ -267,16 +266,8 @@ public class MainActivity extends AppCompatActivity {
         }
         mBlackScore = blackScore;
         mWhiteScore = whiteScore;
-        printRate(rate);
 
-//        int numBlackCaptures = searchable.getNumCaptures(true);
-//        int numWhiteCaptures = searchable.getNumCaptures(false);
-//        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
-//        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
-//
-//        Log.e("MainActivity", numBlackCaptures + " " + numWhiteCaptures + " " + numDeadBlack + " " + numDeadWhite);
-//        Log.e("MainActivity", "Black Score:" + blackScore);
-//        Log.e("MainActivity", "White Score:" + whiteScore);
+        mTerrainMapView.setTerrainMap(rate);
 
         updateDetail();
     }

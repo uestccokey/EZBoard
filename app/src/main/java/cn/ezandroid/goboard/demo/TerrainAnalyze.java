@@ -7,9 +7,7 @@ package cn.ezandroid.goboard.demo;
  */
 public class TerrainAnalyze {
 
-    public static final float THRESHOLD = 0.25f;
-
-    public static final float MIN_THRESHOLD = 0.05f;
+    private static final float MIN_THRESHOLD = 0.05f;
 
     /**
      * -1是白，0是空，1是黑

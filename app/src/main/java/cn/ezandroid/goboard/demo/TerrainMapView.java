@@ -24,7 +24,7 @@ public class TerrainMapView extends View {
 
     private float[] mTerrainMap;
 
-    private float mThreshold = 0.25f; // 阈值
+    private float mThreshold = 0.35f; // 阈值
 
     public TerrainMapView(Context context) {
         super(context);
@@ -142,25 +142,19 @@ public class TerrainMapView extends View {
                 }
                 if (value < -mThreshold) {
                     mTerrainMapPaint.setColor(Color.BLUE);
-
-                    mTerrainMapPaint.setAlpha(Math.round(Math.abs(value) * 192));
-
-                    int left = Math.round((i % mBoardSize) * mSquareSize);
-                    int top = Math.round((i / mBoardSize) * mSquareSize);
-                    int right = Math.round((i % mBoardSize + 1) * mSquareSize);
-                    int bottom = Math.round((i / mBoardSize + 1) * mSquareSize);
-                    canvas.drawRect(left, top, right, bottom, mTerrainMapPaint);
                 } else if (value > mThreshold) {
                     mTerrainMapPaint.setColor(Color.RED);
-
-                    mTerrainMapPaint.setAlpha(Math.round(Math.abs(value) * 192));
-
-                    int left = Math.round((i % mBoardSize) * mSquareSize);
-                    int top = Math.round((i / mBoardSize) * mSquareSize);
-                    int right = Math.round((i % mBoardSize + 1) * mSquareSize);
-                    int bottom = Math.round((i / mBoardSize + 1) * mSquareSize);
-                    canvas.drawRect(left, top, right, bottom, mTerrainMapPaint);
+                } else {
+                    continue;
                 }
+
+                mTerrainMapPaint.setAlpha(Math.round(Math.abs(value) * 192));
+
+                int left = Math.round((i % mBoardSize) * mSquareSize);
+                int top = Math.round((i / mBoardSize) * mSquareSize);
+                int right = Math.round((i % mBoardSize + 1) * mSquareSize);
+                int bottom = Math.round((i / mBoardSize + 1) * mSquareSize);
+                canvas.drawRect(left, top, right, bottom, mTerrainMapPaint);
             }
 
             canvas.translate(-mSquareSize / 2, -mSquareSize / 2);
