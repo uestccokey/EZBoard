@@ -12,11 +12,13 @@ import com.barrybecker4.common.geometry.IntLocation;
 import com.barrybecker4.game.common.GameContext;
 import com.barrybecker4.game.common.board.BoardPosition;
 import com.barrybecker4.game.common.board.GamePiece;
-import com.barrybecker4.game.twoplayer.go.GoController;
-import com.barrybecker4.game.twoplayer.go.board.GoSearchable;
+import com.barrybecker4.game.twoplayer.common.cache.ScoreCache;
+import com.barrybecker4.game.twoplayer.go.board.GoBoard;
+import com.barrybecker4.game.twoplayer.go.board.analysis.BoardEvaluator;
 import com.barrybecker4.game.twoplayer.go.board.elements.position.GoBoardPosition;
 import com.barrybecker4.game.twoplayer.go.board.elements.position.GoStone;
 import com.barrybecker4.game.twoplayer.go.board.move.GoMove;
+import com.barrybecker4.game.twoplayer.go.board.update.DeadStoneUpdater;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -53,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mIsThinking = false;
 
-    private GoController mGoController;
+    private GoBoard mGoBoard;
+    private BoardEvaluator mBoardEvaluator;
+    private DeadStoneUpdater mDeadStoneUpdater;
 
     private int mBlackScore;
     private int mWhiteScore;
@@ -145,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mGoController = new GoController(19, 0);
+        mGoBoard = new GoBoard(19, 0);
+        mBoardEvaluator = new BoardEvaluator(mGoBoard, new ScoreCache());
+        mDeadStoneUpdater = new DeadStoneUpdater(mGoBoard);
     }
 
     private void create() {
@@ -161,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
         mTerrainMapView.setTerrainMap(null);
 
         Pair<Move, Chain> pair = mGame.undo();
-        mGoController.undoLastMove();
+        mGoBoard.undoMove();
 
         if (pair != null) {
             mHeatMapView.setHeatMap(null);
@@ -180,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
 
             // 双重撤销
             Pair<Move, Chain> pair2 = mGame.undo();
-            mGoController.undoLastMove();
+            mGoBoard.undoMove();
 
             if (pair2 != null) {
                 Move move2 = pair2.first;
@@ -218,17 +224,16 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+        mBoardEvaluator.updateTerritoryAtEndOfGame();
+        mDeadStoneUpdater.determineDeadStones();
 
-        // force dead stones to be updated by calling done with resignation move.
-        mGoController.getSearchable().done(GoMove.createResignationMove(true), true);
-        GoSearchable searchable = (GoSearchable) mGoController.getSearchable();
-        LinkedList<GoBoardPosition> blackDeads = searchable.getDeadStoneUpdater().getDeadStonesOnBoard(true);
-        LinkedList<GoBoardPosition> whiteDeads = searchable.getDeadStoneUpdater().getDeadStonesOnBoard(false);
+        LinkedList<GoBoardPosition> blackDeads = mDeadStoneUpdater.getDeadStonesOnBoard(true);
+        LinkedList<GoBoardPosition> whiteDeads = mDeadStoneUpdater.getDeadStonesOnBoard(false);
 
         int[][] board = new int[mBoardSize][mBoardSize];
         for (int i = 0; i < mBoardSize; i++) {
             for (int j = 0; j < mBoardSize; j++) {
-                BoardPosition position = mGoController.getBoard().getPosition(i + 1, j + 1);
+                BoardPosition position = mGoBoard.getPosition(i + 1, j + 1);
                 if (position != null) {
                     GamePiece piece = position.getPiece();
                     if (piece != null) {
@@ -362,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         boolean add = mGame.addStone(stone, captured);
         if (add) {
             GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1), 0, new GoStone(user));
-            mGoController.makeMove(goMove);
+            mGoBoard.makeMove(goMove);
 
             mBoardView.setHighlightIntersection(null);
 
