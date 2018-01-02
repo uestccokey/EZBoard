@@ -109,7 +109,7 @@ public class HeatMapView extends View {
      */
     private void drawHeatMap(Canvas canvas) {
         if (mHeatMap != null) {
-            mHeatMapPaint.setColor(Color.BLUE);
+            mHeatMapPaint.setColor(Color.GREEN);
             mHeatMapPaint.setStyle(Paint.Style.FILL);
 
             canvas.translate(mSquareSize / 2, mSquareSize / 2);

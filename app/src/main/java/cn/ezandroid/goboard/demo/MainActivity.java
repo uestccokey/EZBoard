@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.barrybecker4.common.app.ILog;
 import com.barrybecker4.common.geometry.IntLocation;
@@ -31,12 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
     private BoardView mBoardView;
     private HeatMapView mHeatMapView;
+    private TerrainMapView mTerrainMapView;
 
     private Button mCreateButton;
     private Button mUndoButton;
     private Button mPassButton;
     private Button mResignButton;
     private Button mScoreButton;
+    private TextView mDetailView;
 
     private int mBoardSize = 19;
 
@@ -51,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean mIsThinking = false;
 
     private GoController mGoController;
+
+    private int mBlackScore;
+    private int mWhiteScore;
+
+    private float mBlackWinRatio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
 
         mHeatMapView = findViewById(R.id.heat_map);
         mHeatMapView.setBoardSize(mBoardSize);
+
+        mTerrainMapView = findViewById(R.id.terrain_map);
+        mTerrainMapView.setBoardSize(mBoardSize);
+
+        mDetailView = findViewById(R.id.detail);
 
         mCreateButton = findViewById(R.id.create);
         mCreateButton.setOnClickListener(v -> create());
@@ -145,6 +158,8 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+        mTerrainMapView.setTerrainMap(null);
+
         Pair<Move, Chain> pair = mGame.undo();
         mGoController.undoLastMove();
 
@@ -240,6 +255,8 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < mBoardSize; i++) {
             System.arraycopy(state[i], 0, rate, i * 19, mBoardSize);
         }
+        mTerrainMapView.setTerrainMap(rate);
+
         for (float aRate : rate) {
             int r = Math.round(aRate * 100);
             if (r < -25) {
@@ -248,16 +265,20 @@ public class MainActivity extends AppCompatActivity {
                 blackScore++;
             }
         }
+        mBlackScore = blackScore;
+        mWhiteScore = whiteScore;
         printRate(rate);
 
-        int numBlackCaptures = searchable.getNumCaptures(true);
-        int numWhiteCaptures = searchable.getNumCaptures(false);
-        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
-        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
+//        int numBlackCaptures = searchable.getNumCaptures(true);
+//        int numWhiteCaptures = searchable.getNumCaptures(false);
+//        int numDeadBlack = searchable.getNumDeadStonesOnBoard(true);
+//        int numDeadWhite = searchable.getNumDeadStonesOnBoard(false);
+//
+//        Log.e("MainActivity", numBlackCaptures + " " + numWhiteCaptures + " " + numDeadBlack + " " + numDeadWhite);
+//        Log.e("MainActivity", "Black Score:" + blackScore);
+//        Log.e("MainActivity", "White Score:" + whiteScore);
 
-        Log.e("MainActivity", numBlackCaptures + " " + numWhiteCaptures + " " + numDeadBlack + " " + numDeadWhite);
-        Log.e("MainActivity", "Black Score:" + blackScore);
-        Log.e("MainActivity", "White Score:" + whiteScore);
+        updateDetail();
     }
 
     private void printBoard(int[] board) {
@@ -397,18 +418,30 @@ public class MainActivity extends AppCompatActivity {
 
                         mIsThinking = false;
 
+                        mBlackWinRatio = (1 - values[0]) / 2;
+
                         final int pos = maxPos;
-                        Log.e("MainActivity", "Value Rate:" + (1 - values[0]) / 2);
+                        Log.e("MainActivity", "Value Rate:" + mBlackWinRatio);
                         Log.e("MainActivity", "Policy Rate:" + maxRate
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")");
                         runOnUiThread(() -> {
-                            mHeatMapView.setHeatMap(policies[0]);
+                            updateDetail();
+//                            mHeatMapView.setHeatMap(policies[0]);
+                            mTerrainMapView.setTerrainMap(null);
 
                             putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false);
                         });
                     }
                 }.start();
+            } else {
+                byte[][] features48 = mFeatureBoard.generateFeatures48();
+                float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+                mHeatMapView.setHeatMap(policies[0]);
             }
         }
+    }
+
+    private void updateDetail() {
+        mDetailView.setText("形势 黑:" + mBlackScore + " 白:" + mWhiteScore + " 黑胜率:" + mBlackWinRatio);
     }
 }

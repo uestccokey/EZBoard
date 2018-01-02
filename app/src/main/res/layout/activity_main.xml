@@ -13,6 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <cn.ezandroid.goboard.demo.TerrainMapView
+        android:id="@+id/terrain_map"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
         android:id="@+id/toolbar1"
         android:layout_width="wrap_content"
@@ -57,4 +62,10 @@
             android:layout_height="wrap_content"
             android:text="形势" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" />
 </RelativeLayout>
