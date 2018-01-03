@@ -6,17 +6,9 @@ import cn.ezandroid.game.board.common.MoveList;
 import cn.ezandroid.game.common.geometry.Location;
 
 /**
- * the Board describes the physical layout of the game.
- * It is an abstract class that provides a common implementation for many of the
- * methods in the IRectangularBoard.
- * Assumes an M*N grid.
- * Legal positions are [1, numRows_][1, numCols_]
+ * 棋盘模型（适用于五子棋，围棋，象棋，跳棋，军棋，黑白棋等）
  * <p>
- * Games like gomoku, go, chess, checkers, go-moku,
- * shoji, othello, connect4, squares, Stratego, Blockade fit this pattern.
- * Other games like Risk, Galactic Empire, or Monopoly and might be supportable in the future.
- * They are harder because they do not have perfect information (i.e. they use dice).
- * and have multiple players.
+ * 合法的位置为 [1, mNumRows],[1, mNumCols]
  *
  * @author Barry Becker
  */

@@ -1,72 +1,72 @@
 /** Copyright by Barry G. Becker, 2000-2013. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.common;
 
-import java.util.Random;
-
 /**
- * Manage game context info such as logging, debugging, resources, and profiling.
- * Perhaps use java properties or config file to define options.
+ * 游戏上下文
  *
  * @author Barry Becker
  */
 public final class GameContext {
 
-    /** Make sure that the program runs in a reproducible way by always starting from the same random seed. */
-    private static Random RANDOM = new Random(0);
+    // 默认关闭， 大于0时，调试模式开启
+    private static final int DEBUG_LEVEL = 0;
 
-    /** if greater than 0, then debug mode is on. the higher the number, the more info that is printed. */
-    private static final int DEBUG = 0;
+    // 调试模式
+    private static int sDebugLevel = DEBUG_LEVEL;
 
-    /** now the variable forms of the above defaults */
-    private static int debug_ = DEBUG;
-
-    /** if true, then profiling performance statistics will be printed to the console while running. */
+    // 默认关闭
     private static final boolean PROFILING = false;
-    private static boolean profiling_ = PROFILING;
 
-    /** private constructor for singleton. */
+    // 分析模式
+    private static boolean sProfiling = PROFILING;
+
     private GameContext() {}
 
     /**
-     * @return the level of debugging in effect
+     * 获取当前调试等级
+     *
+     * @return
      */
     public static int getDebugMode() {
-        return debug_;
+        return sDebugLevel;
     }
 
     /**
-     * @param debug the debug level. 0 means all logging.
+     * 设置调试等级
+     *
+     * @param debug
      */
     public static void setDebugMode(int debug) {
-        debug_ = debug;
+        sDebugLevel = debug;
     }
 
     /**
-     * @return true if profiling stats are being shown after every move
+     * 是否分析模式开启
+     *
+     * @return
      */
     public static boolean isProfiling() {
-        return profiling_;
+        return sProfiling;
     }
 
     /**
-     * @param prof whether or not to turn on profiling
+     * 开启或关闭分析模式
+     *
+     * @param prof
      */
     public static void setProfiling(boolean prof) {
-        profiling_ = prof;
+        sProfiling = prof;
     }
 
     /**
-     * log a message using the internal logger object
+     * 打印
+     *
+     * @param logLevel
+     * @param message
      */
     public static void log(int logLevel, String message) {
-        System.out.println(message);
-    }
-
-    public static Random random() {
-        return RANDOM;
-    }
-
-    public static void setRandomSeed(int seed) {
-        RANDOM = new Random(seed);
+        if (sDebugLevel > 0) {
+            System.out.println(message);
+        }
     }
 }

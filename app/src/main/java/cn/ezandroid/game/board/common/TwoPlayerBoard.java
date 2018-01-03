@@ -8,30 +8,20 @@ import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.common.board.GamePiece;
 
 /**
- * Defines the structure of the board and the pieces on it.
- * Each BoardPosition can contain a piece.
+ * 两人游戏棋盘模型
  *
  * @author Barry Becker
  */
 public abstract class TwoPlayerBoard<M extends TwoPlayerMove> extends Board<M> {
 
-    /** default constructor */
     public TwoPlayerBoard() {}
 
-    /** copy constructor */
     public TwoPlayerBoard(TwoPlayerBoard<M> board) {
         super(board);
     }
 
     public abstract TwoPlayerBoard<M> copy();
 
-    /**
-     * given a move specification, execute it on the board
-     * This places the players symbol at the position specified by move.
-     *
-     * @param move the move to make, if possible.
-     * @return false if the move is illegal.
-     */
     @Override
     protected boolean makeInternalMove(M move) {
         if (!move.isPassOrResignation()) {
@@ -47,35 +37,10 @@ public abstract class TwoPlayerBoard<M extends TwoPlayerMove> extends Board<M> {
         return true;
     }
 
-    /**
-     * @param moves list of moves to make all at once.
-     */
     protected void makeMoves(List<M> moves) {
         for (M move : moves) {
             makeMove(move);
         }
-    }
-
-    /**
-     * Num different states. E.g. black queen.
-     * This is used primarily for the Zobrist hash. You do not need to override if yo udo not use it.
-     *
-     * @return number of different states this position can have.
-     */
-    public abstract int getNumPositionStates();
-
-
-    /**
-     * The index of the state for this position.
-     * Perhaps this would be better abstract.
-     *
-     * @return The index of the state for this position.
-     */
-    public int getStateIndex(BoardPosition pos) {
-        if (!pos.isOccupied()) {
-            throw new IllegalArgumentException("this should only be called on occupied positions. Position = " + pos);
-        }
-        return pos.getPiece().isOwnedByPlayer1() ? 1 : 2;
     }
 
     @Override

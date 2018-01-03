@@ -73,5 +73,14 @@ public class GamePiece implements Serializable {
     public String getAnnotation() {
         return mAnnotation;
     }
+
+    public char getSymbol() {
+        return mIsOwnedByPlayer1 ? 'X' : 'O';
+    }
+
+    @Override
+    public String toString() {
+        return Character.toString(getSymbol());
+    }
 }
 
