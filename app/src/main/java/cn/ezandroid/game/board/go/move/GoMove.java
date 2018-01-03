@@ -1,8 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.move;
 
-import java.util.Iterator;
-
 import cn.ezandroid.game.board.common.TwoPlayerMove;
 import cn.ezandroid.game.board.common.geometry.ByteLocation;
 import cn.ezandroid.game.board.common.geometry.Location;
@@ -12,51 +10,35 @@ import cn.ezandroid.game.board.go.analysis.neighbor.NeighborType;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
-import cn.ezandroid.game.board.go.elements.string.GoStringSet;
-import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * Describes a change in state from one board
- * position to the next in a Go game.
+ * 围棋落子
  *
  * @author Barry Becker
  */
 public class GoMove extends TwoPlayerMove {
 
     /**
-     * A linked list of the pieces that were captured with this move.
-     * null if there were no captures.
+     * 落子后的提子
      */
-    private GoCaptureList captureList_ = null;
+    private GoCaptureList mCaptureList;
 
-    /**
-     * Constructor.
-     */
     public GoMove(Location destination, int val, GoStone stone) {
         super(destination, val, stone);
     }
 
-    /** Copy constructor */
     protected GoMove(GoMove move) {
         super(move);
-        if (move.captureList_ != null) {
-            captureList_ = move.captureList_.copy();
+        if (move.mCaptureList != null) {
+            mCaptureList = move.mCaptureList.copy();
         }
     }
 
-    /**
-     * make a deep copy of the move object
-     */
     @Override
     public GoMove copy() {
         return new GoMove(this);
     }
 
-    /**
-     * factory method for creating a passing move
-     *
-     * @return new passing move
-     */
     public static GoMove createPassMove(int val, boolean player1) {
         GoMove m = new GoMove(new ByteLocation(1, 1), val, null);
         m.mIsPass = true;
@@ -64,11 +46,6 @@ public class GoMove extends TwoPlayerMove {
         return m;
     }
 
-    /**
-     * factory method for creating a resignation move
-     *
-     * @return new resignation move
-     */
     public static GoMove createResignationMove(boolean player1) {
         GoMove m = new GoMove(new ByteLocation(1, 1), 0, null);
         m.mIsResignation = true;
@@ -77,13 +54,10 @@ public class GoMove extends TwoPlayerMove {
     }
 
     /**
-     * Check if the current move is suicidal.
-     * Suicidal moves (ones that kill your own pieces) are illegal.
-     * Usually a move is suicidal if you play on your last liberty.
-     * However, if you kill an enemy string by playing on your last liberty,
-     * then it is legal.
+     * 检查该落子是否自杀着
      *
-     * @return true if this move is suicidal.
+     * @param board
+     * @return
      */
     public boolean isSuicidal(GoBoard board) {
         GoBoardPosition stone = (GoBoardPosition) board.getPosition(getToRow(), getToCol());
@@ -101,19 +75,19 @@ public class GoMove extends TwoPlayerMove {
     }
 
     /**
-     * Can't be suicidal if we have a liberty.
+     * 如果还有一气，说明不是自杀着
      *
-     * @return true if one or more liberties still available.
+     * @return
      */
     private boolean hasLiberties(GoBoardPositionSet occupiedNbrs, GoBoardPositionSet nobiNbrs) {
         return (nobiNbrs.size() > occupiedNbrs.size());
     }
 
     /**
-     * If the newly placed stone captures an opponent string, then we return false.
+     * 如果新的落子提走了对方的棋串，返回false
      *
-     * @param occupiedNbrs The 4 occupied Nbrs neighbors to check
-     * @return true if the newly placed stone is part of a string that is now captured as a result of playing.
+     * @param occupiedNbrs
+     * @return
      */
     private boolean partOfDeadString(GoBoardPositionSet occupiedNbrs, GoBoard board) {
         for (GoBoardPosition nbr : occupiedNbrs) {
@@ -134,14 +108,18 @@ public class GoMove extends TwoPlayerMove {
     }
 
     /**
-     * It's a ko if its a single stone string, it captured exactly one stone, and it has one liberty.
+     * 检查是否是劫
+     * <p>
+     * 1，它是单一棋子的棋串
+     * 2，提走了一个敌方棋子
+     * 3，现在还有一口气
      *
-     * @param board the go board
-     * @return true if this move is part of a ko fight sequence.
+     * @param board
+     * @return
      */
     public boolean isKo(GoBoard board) {
         if (getNumCaptures() == 1) {
-            //GoBoardPosition capture = (GoBoardPosition) getCaptures().getFirst();
+            // GoBoardPosition capture = (GoBoardPosition) getCaptures().getFirst();
             GoBoardPosition pos = (GoBoardPosition) board.getPosition(getToLocation());
 
             NeighborAnalyzer nbrAnal = new NeighborAnalyzer(board);
@@ -157,63 +135,20 @@ public class GoMove extends TwoPlayerMove {
         return false;
     }
 
-    /**
-     * returns true if the specified move caused one or more opponent groups to be in atari
-     *
-     * @return a number > 0 if the move m caused an atari. The number gives the number of stones in atari.
-     */
-    public int numStonesAtaried(GoBoard board) {
-        if (isPassingMove())
-            return 0; // a pass cannot cause an atari
-
-        GoBoardPosition pos = (GoBoardPosition) board.getPosition(getToRow(), getToCol());
-        NeighborAnalyzer na = new NeighborAnalyzer(board);
-        GoBoardPositionSet enemyNbrs = na.getNobiNeighbors(pos, NeighborType.ENEMY);
-        Iterator it = enemyNbrs.iterator();
-        int numInAtari = 0;
-        GoStringSet stringSet = new GoStringSet();
-        while (it.hasNext()) {
-            GoBoardPosition s = (GoBoardPosition) it.next();
-            IGoString atariedString = s.getString();
-            if (!stringSet.contains(atariedString) && atariedString.getNumLiberties(board) == 1) {
-                numInAtari += atariedString.size();
-            }
-            stringSet.add(atariedString); // once its in the set we won't check it again.
-        }
-        return numInAtari;
-    }
-
-    /**
-     * I would like to avoid this setter.
-     *
-     * @param captures captures to set. We make a defensive copy of them.
-     */
     public void setCaptures(GoCaptureList captures) {
-        captureList_ = captures.copy();
+        mCaptureList = captures.copy();
     }
 
     public GoCaptureList getCaptures() {
-        return captureList_;
+        return mCaptureList;
     }
 
     public int getNumCaptures() {
-        if (captureList_ != null) {
-            return captureList_.size();
+        if (mCaptureList != null) {
+            return mCaptureList.size();
         } else {
             return 0;
         }
-    }
-
-    /**
-     * @return stringified form.
-     */
-    @Override
-    public String toString() {
-        String s = super.toString();
-        if (captureList_ != null) {
-            s += "num captured=" + captureList_.size();
-        }
-        return s;
     }
 }
 

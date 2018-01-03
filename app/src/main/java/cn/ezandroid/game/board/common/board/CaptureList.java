@@ -4,7 +4,7 @@ package cn.ezandroid.game.board.common.board;
 import java.util.LinkedList;
 
 /**
- * 捕获的棋子列表
+ * 被吃的棋子列表
  *
  * @author Barry Becker
  */

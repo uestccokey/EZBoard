@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.move;
 
 import java.util.List;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.board.Board;
 import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.common.board.CaptureList;
@@ -19,9 +18,7 @@ import cn.ezandroid.game.board.go.elements.string.GoString;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * This class represents a linked list of captured pieces.
- * It provides convenience methods for removing and restoring those
- * pieces to a game board.
+ * 被吃的围棋棋子列表
  *
  * @author Barry Becker
  */
@@ -30,28 +27,15 @@ public class GoCaptureList extends CaptureList {
     public GoCaptureList() {
     }
 
-    /**
-     * copy constructor
-     */
     public GoCaptureList(CaptureList captureList) {
         super(captureList);
     }
 
-    /**
-     * @return a deep copy of the capture list.
-     */
     @Override
     public GoCaptureList copy() {
         return new GoCaptureList(this);
     }
 
-    /**
-     * we need to add copies so that when the original stones on the board are
-     * changed we don't change the captures
-     *
-     * @param set set of go stones to add to the capture list. If null, then none will be added.
-     * @return true if set is not null or 0 sized.
-     */
     public boolean addCaptures(GoBoardPositionSet set) {
         if (set == null) {
             return false;
@@ -66,7 +50,7 @@ public class GoCaptureList extends CaptureList {
     }
 
     /**
-     * remove the captured pieces from the board.
+     * 从棋盘上移除
      */
     @Override
     public void removeFromBoard(Board board) {
@@ -82,16 +66,14 @@ public class GoCaptureList extends CaptureList {
     }
 
     /**
-     * Restore the captured pieces on the board.
+     * 恢复到棋盘上
      */
     @Override
     public void restoreOnBoard(Board board) {
         GoBoard goBoard = (GoBoard) board;
         super.modifyCaptures(goBoard, false);
 
-        GameContext.log(3, "GoMove: restoring these captures: " + this);
-
-        GoBoardPositionLists strings = getRestoredStringLists(goBoard);  // XXX should remove
+        GoBoardPositionLists strings = getRestoredStringLists(goBoard); // XXX should remove
         adjustStringLiberties(goBoard);
 
         // XXX should remove next lines
@@ -103,7 +85,9 @@ public class GoCaptureList extends CaptureList {
     }
 
     /**
-     * Update the liberties of the surrounding strings.
+     * 更新周围棋串的气
+     *
+     * @param board
      */
     public void adjustStringLiberties(GoBoard board) {
         for (BoardPosition capture : this) {
@@ -113,13 +97,7 @@ public class GoCaptureList extends CaptureList {
         }
     }
 
-    /**
-     * There may have been more than one string in the captureList
-     *
-     * @return list of strings that were restored on the board.
-     */
     private GoBoardPositionLists getRestoredStringLists(GoBoard b) {
-
         GoBoardPositionList restoredList = getRestoredList(b);
         GoBoardPositionLists strings = new GoBoardPositionLists();
         NeighborAnalyzer nbrAnalyzer = new NeighborAnalyzer(b);
@@ -132,17 +110,13 @@ public class GoCaptureList extends CaptureList {
         return strings;
     }
 
-    /**
-     * @return list of captured stones that were restored on the board.
-     */
     private GoBoardPositionList getRestoredList(GoBoard b) {
-
         GoBoardPositionList restoredList = new GoBoardPositionList();
         for (BoardPosition pos : this) {
             GoBoardPosition capStone = (GoBoardPosition) pos;
             GoBoardPosition stoneOnBoard =
                     (GoBoardPosition) b.getPosition(capStone.getRow(), capStone.getCol());
-            stoneOnBoard.setVisited(false);    // make sure in virgin unvisited state
+            stoneOnBoard.setVisited(false); // make sure in virgin unvisited state
 
             // --adjustLiberties(stoneOnBoard, board);
             restoredList.add(stoneOnBoard);
