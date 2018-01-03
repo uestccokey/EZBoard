@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.analysis.group.eye;
 
 import java.util.Iterator;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzer;
@@ -126,7 +125,6 @@ class EyeSpaceAnalyzer {
         Box innerBox = createBoxExcludingBorder(boundingBox_);
         for (int r = innerBox.getMinRow(); r < innerBox.getMaxRow(); r++) {
             for (int c = innerBox.getMinCol(); c < innerBox.getMaxCol(); c++) {
-
                 // if the empty space is already marked as being an eye, skip
                 GoBoardPosition space = (GoBoardPosition) board_.getPosition(r, c);
                 assert space != null : "pos r=" + r + " c=" + c;
@@ -140,8 +138,6 @@ class EyeSpaceAnalyzer {
                     if (confirmEye(eyeSpaces)) {
                         GoEye eye = new GoEye(eyeSpaces, board_, group_, groupAnalyzer);
                         eyes.add(eye);
-                    } else {
-                        GameContext.log(3, eyeSpaces.toString("This list of stones was rejected as being an eye: "));
                     }
                 }
             }

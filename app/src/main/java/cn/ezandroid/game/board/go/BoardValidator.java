@@ -1,16 +1,8 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go;
 
-import java.util.Iterator;
-
-import cn.ezandroid.game.board.common.GameContext;
-import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
-import cn.ezandroid.game.board.go.elements.group.GoGroup;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
-import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
-import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
-import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
  * Assert certain things are true about the board.
@@ -24,24 +16,6 @@ public class BoardValidator {
 
     public BoardValidator(GoBoard board) {
         board_ = board;
-    }
-
-    /**
-     * Confirm no empty strings, stones in valid groups, all stones in unique groups,
-     * and all stones in groups claimed.
-     *
-     * @param pos position to check
-     */
-    public void consistencyCheck(GoBoardPosition pos) {
-        board_.getGroups().confirmNoEmptyStrings();
-        confirmStonesInValidGroups();
-        board_.getGroups().confirmAllStonesInUniqueGroups();
-        try {
-            confirmAllStonesInGroupsClaimed(board_.getGroups());
-        } catch (AssertionError e) {
-            GameContext.log(0, "The move was :" + pos);
-            throw e;
-        }
     }
 
     /**
@@ -82,54 +56,5 @@ public class BoardValidator {
             }
         }
         return null;
-    }
-
-    /**
-     * For every stone in every group specified in groups, verify that the group determined from using that stone as a
-     * seed matches the group that is claims by ancestry.
-     * (expensive to check)
-     *
-     * @param groups we will check each stone in each of these groups.
-     */
-    public void confirmAllStonesInGroupsClaimed(GoGroupSet groups) {
-        NeighborAnalyzer na = new NeighborAnalyzer(board_);
-
-        for (IGoGroup parentGroup : groups) {
-            GoBoardPositionSet parentGroupStones = parentGroup.getStones();
-            for (GoBoardPosition stone : parentGroupStones) {  // for each stone in that group
-                // compute the group from this stone and confirm it matches the parent group
-                GoBoardPositionList g = na.findGroupFromInitialPosition(stone);
-
-                // perhaps we should do something more than check the size.
-                if (g.size() != parentGroupStones.size()) {
-                    groups.debugPrint(0, "Confirm stones in groups they Claim failed. \nGroups are:\n", true, true);
-                    StringBuilder bldr = new StringBuilder();
-                    bldr.append(board_.toString());
-                    bldr.append("\n");
-                    bldr.append("\n\nIt seems that using different seeds yields different groups:");
-                    for (GoBoardPosition stone1 : parentGroupStones) {
-                        GoBoardPositionList gg = na.findGroupFromInitialPosition(stone);
-                        String title = "\nSEED STONE = " + stone1 + " found groups of size " + gg.size();
-                        bldr.append(gg.toString(title));
-                    }
-                    GameContext.log(0, bldr.toString());
-                    GameContext.log(0,
-                            g.toString("Calculated Group (seeded by ") + stone + "):"
-                                    + "\n is not equal to the expected parent group:\n" + parentGroup);
-                }
-            }
-        }
-    }
-
-    public static void confirmNoNullMembers(GoGroup group) {
-        Iterator it = group.getStones().iterator();
-        boolean failed = false;
-        while (it.hasNext()) {
-            GoBoardPosition s = (GoBoardPosition) it.next();
-            if (s.getPiece() == null) failed = true;
-        }
-        if (failed) {
-            assert false : "Group contains an empty position: " + group.toString();
-        }
     }
 }

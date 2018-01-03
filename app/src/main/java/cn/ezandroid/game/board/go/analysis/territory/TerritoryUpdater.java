@@ -75,7 +75,7 @@ public class TerritoryUpdater {
         for (int i = 1; i <= board_.getNumRows(); i++) {
             for (int j = 1; j <= board_.getNumCols(); j++) {
                 GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
-                pos.setScoreContribution(0);
+                pos.setScore(0);
 
                 if (pos.isOccupied()) {
                     GoStone stone = ((GoStone) pos.getPiece());

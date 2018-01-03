@@ -102,12 +102,12 @@ public class EmptyRegionUpdater {
                 assert (score <= 1.0 && score >= -1.0) : "score=" + score + " avg=" + avg;
 
                 for (GoBoardPosition space : empties) {
-                    space.setScoreContribution(score);
+                    space.setScore(score);
                     diffScore += score;
                 }
             }
         } else if (pos.isInEye()) {
-            pos.setScoreContribution(pos.getGroup().isOwnedByPlayer1() ? STONE_IN_EYE_CONTRIB : -STONE_IN_EYE_CONTRIB);
+            pos.setScore(pos.getGroup().isOwnedByPlayer1() ? STONE_IN_EYE_CONTRIB : -STONE_IN_EYE_CONTRIB);
         }
         return diffScore;
     }

@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * A set of GoBoardPositions.
+ * 围棋位置点集合
  *
  * @author Barry Becker
  */
@@ -18,35 +18,17 @@ public class GoBoardPositionSet extends LinkedHashSet<GoBoardPosition> {
     }
 
     /**
-     * Note: there is no concept of order.
+     * 注意，没有顺序的概念.
      *
-     * @return one of the members
+     * @return
      */
     public GoBoardPosition getOneMember() {
         return iterator().next();
     }
 
-    /**
-     * Set the visited flag back to false for a set of stones.
-     * Returns the whole list of stones to unvisited state.
-     */
     public void unvisitPositions() {
         for (GoBoardPosition position : this) {
             position.setVisited(false);
         }
-    }
-
-    /**
-     * pretty print a list of all the current groups (and the strings they contain)
-     *
-     * @return string form of list of stones.
-     */
-    String toString(String title) {
-        StringBuilder buf = new StringBuilder(title);
-        buf.append("\n  ");
-        for (GoBoardPosition stone : this) {
-            buf.append(stone.toString()).append(", ");
-        }
-        return buf.substring(0, buf.length() - 2);
     }
 }

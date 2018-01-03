@@ -59,14 +59,14 @@ public class TerritoryAnalyzer {
      */
     private float getTerritoryEstimateForPosition(GoBoardPosition pos, boolean forPlayer1,
                                                   boolean isEndOfGame) {
-        double val = isEndOfGame ? (forPlayer1 ? 1.0 : -1.0) : pos.getScoreContribution();
+        double val = isEndOfGame ? (forPlayer1 ? 1.0 : -1.0) : pos.getScore();
         float territoryEstimate = 0;
 
         // the territory estimate will always be positive for both sides.
         if (pos.isUnoccupied()) {
-            if (forPlayer1 && pos.getScoreContribution() > 0) {
+            if (forPlayer1 && pos.getScore() > 0) {
                 territoryEstimate += val;
-            } else if (!forPlayer1 && pos.getScoreContribution() < 0) {
+            } else if (!forPlayer1 && pos.getScore() < 0) {
                 territoryEstimate -= val;  // will be positive
             }
         } else { // occupied
