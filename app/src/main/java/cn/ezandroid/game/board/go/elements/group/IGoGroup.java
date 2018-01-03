@@ -9,8 +9,7 @@ import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * Makes some unit tests much simpler if we create the tests to use this interface instead
- * of the full-blown GoGroup class.
+ * 棋群接口
  *
  * @author Barry Becker
  */
@@ -37,6 +36,4 @@ public interface IGoGroup extends IGoSet {
     void updateTerritory(float health);
 
     Box findBoundingBox();
-
-    String toHtml();
 }

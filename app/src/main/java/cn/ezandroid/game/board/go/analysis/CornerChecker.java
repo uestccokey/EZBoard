@@ -4,28 +4,33 @@ package cn.ezandroid.game.board.go.analysis;
 import cn.ezandroid.game.board.common.board.BoardPosition;
 
 /**
- * Used to check to see if a position is in the corner of the board.
+ * 角点位置检查器
  *
  * @author Barry Becker
  */
 public final class CornerChecker {
 
-    private int numRows;
-    private int numCols;
+    private int mNumRows;
+    private int mNumCols;
 
-    /**
-     * Constructor.
-     */
     public CornerChecker(int numRows, int numCols) {
-        this.numRows = numRows;
-        this.numCols = numCols;
+        this.mNumRows = numRows;
+        this.mNumCols = numCols;
     }
 
     /**
-     * Corner triples are the 3 points closest to a corner
+     * 是否角落3角点
+     * <p>
+     * 如下图所示，x点为角落3角点
+     * |  |  |
+     * ---------
+     * |  |  |
+     * x--------
+     * |  |  |
+     * x--x-----
      *
-     * @param position position to see if in corner of board.
-     * @return true if the specified BoardPosition is on the corner of the board
+     * @param position
+     * @return
      */
     public boolean isCornerTriple(BoardPosition position) {
         return (isULCornerTriple(position) || isURCornerTriple(position)
@@ -39,22 +44,20 @@ public final class CornerChecker {
     }
 
     private boolean isURCornerTriple(BoardPosition position) {
-
-        return ((position.getRow() == 1 && position.getCol() == numCols) ||
-                (position.getRow() == 2 && position.getCol() == numCols) ||
-                (position.getRow() == 1 && position.getCol() == numCols - 1));
+        return ((position.getRow() == 1 && position.getCol() == mNumCols) ||
+                (position.getRow() == 2 && position.getCol() == mNumCols) ||
+                (position.getRow() == 1 && position.getCol() == mNumCols - 1));
     }
 
     private boolean isLLCornerTriple(BoardPosition position) {
-
-        return ((position.getRow() == numRows && position.getCol() == 1) ||
-                (position.getRow() == numRows && position.getCol() == 2) ||
-                (position.getRow() == numRows - 1 && position.getCol() == 1));
+        return ((position.getRow() == mNumRows && position.getCol() == 1) ||
+                (position.getRow() == mNumRows && position.getCol() == 2) ||
+                (position.getRow() == mNumRows - 1 && position.getCol() == 1));
     }
 
     private boolean isLRCornerTriple(BoardPosition position) {
-        return ((position.getRow() == numRows && position.getCol() == numCols) ||
-                (position.getRow() == numRows - 1 && position.getCol() == numCols) ||
-                (position.getRow() == numRows && position.getCol() == numCols - 1));
+        return ((position.getRow() == mNumRows && position.getCol() == mNumCols) ||
+                (position.getRow() == mNumRows - 1 && position.getCol() == mNumCols) ||
+                (position.getRow() == mNumRows && position.getCol() == mNumCols - 1));
     }
 }

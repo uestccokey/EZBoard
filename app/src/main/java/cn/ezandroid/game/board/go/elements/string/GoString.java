@@ -41,7 +41,7 @@ public class GoString extends GoSet
      */
     public GoString(GoBoardPosition stone, GoBoard board) {
         assert (stone.isOccupied());
-        ownedByPlayer1_ = stone.getPiece().isOwnedByPlayer1();
+        mIsOwnedByPlayer1 = stone.getPiece().isOwnedByPlayer1();
         getMembers().add(stone);
         stone.setString(this);
         group_ = null;
@@ -57,7 +57,7 @@ public class GoString extends GoSet
         GoStone stone = (GoStone) stones.getFirst().getPiece();
         // GoEye constructor calls this method. For eyes the stone is null.
         if (stone != null)
-            ownedByPlayer1_ = stone.isOwnedByPlayer1();
+            mIsOwnedByPlayer1 = stone.isOwnedByPlayer1();
         for (GoBoardPosition pos : stones) {
             addMemberInternal(pos, board);
         }
@@ -213,20 +213,6 @@ public class GoString extends GoSet
             GoStone stone = (GoStone) pos.getPiece();
             stone.setHealth(health);
         }
-    }
-
-    /**
-     * @return true if the piece at the specified position is an enemy of the string owner
-     */
-    @Override
-    public boolean isEnemy(GoBoardPosition pos) {
-        assert (group_ != null) : "group for " + this + " is null";
-        assert (pos.isOccupied()) : "pos not occupied: =" + pos;
-        GoStone stone = (GoStone) pos.getPiece();
-        //boolean stoneMuchWeaker = getGroup().isStoneMuchWeaker(stone);
-
-        assert (getGroup().isOwnedByPlayer1() == isOwnedByPlayer1()) : getGroup() + " string=" + this;
-        return stone.isOwnedByPlayer1() != isOwnedByPlayer1(); // && !stoneMuchWeaker);
     }
 
     /**

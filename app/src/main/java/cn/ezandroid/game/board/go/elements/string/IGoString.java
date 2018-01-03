@@ -8,40 +8,52 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Makes some unit tests much simpler if we create the tests to use this interface instead
- * of the full-blown GoString or GoEye class.
+ * 棋串接口
  *
  * @author Barry Becker
  */
 public interface IGoString extends IGoSet {
 
-    /**
-     * @return set of member positions.
-     */
     @Override
     GoBoardPositionSet getMembers();
 
     /**
-     * @return the group that this string belongs to.
+     * 获取该棋串所属的棋群
+     *
+     * @return
      */
     IGoGroup getGroup();
 
     /**
-     * @param pos position to test for inclusion in this string
-     * @return true if the specified position is a member of this string.
+     * 设置该棋串所属的棋群
+     *
+     * @param group
+     */
+    void setGroup(IGoGroup group);
+
+    /**
+     * 检查当前棋串是否包含指定位置点
+     *
+     * @param pos
+     * @return
      */
     boolean contains(GoBoardPosition pos);
 
     /**
-     * @return true if this string is unconditionally alive according to Benson's algorithm.
+     * 检查这个棋串是否无条件存活（根据Benson算法）
+     *
+     * @return
      */
     boolean isUnconditionallyAlive();
 
+    /**
+     * 设置是否无条件存活
+     *
+     * @param unconditionallyAlive
+     */
     void setUnconditionallyAlive(boolean unconditionallyAlive);
 
     void remove(GoBoardPosition stone, GoBoard board);
 
     void updateTerritory(float health);
-
-    void setGroup(IGoGroup group);
 }

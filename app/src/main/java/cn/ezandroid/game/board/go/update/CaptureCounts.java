@@ -4,29 +4,37 @@ package cn.ezandroid.game.board.go.update;
 import cn.ezandroid.game.board.go.move.GoMove;
 
 /**
- * Maintains the count of captured stones for each side.
+ * 保存每个玩家的提子数
  *
  * @author Barry Becker
  */
 public class CaptureCounts {
 
-    private int numWhiteStonesCaptured_ = 0;
-    private int numBlackStonesCaptured_ = 0;
+    private int mNumWhiteStonesCaptured = 0;
+    private int mNumBlackStonesCaptured = 0;
 
     public CaptureCounts copy() {
         CaptureCounts countsCopy = new CaptureCounts();
-        countsCopy.numBlackStonesCaptured_ = this.numBlackStonesCaptured_;
-        countsCopy.numWhiteStonesCaptured_ = this.numWhiteStonesCaptured_;
+        countsCopy.mNumBlackStonesCaptured = this.mNumBlackStonesCaptured;
+        countsCopy.mNumWhiteStonesCaptured = this.mNumWhiteStonesCaptured;
         return countsCopy;
     }
 
+    /**
+     * 获取指定玩家的提子数
+     *
+     * @param player1StonesCaptured
+     * @return
+     */
     public int getNumCaptures(boolean player1StonesCaptured) {
-        return player1StonesCaptured ? numBlackStonesCaptured_ : numWhiteStonesCaptured_;
+        return player1StonesCaptured ? mNumBlackStonesCaptured : mNumWhiteStonesCaptured;
     }
 
     /**
-     * @param move      the move just made or removed.
-     * @param increment if true then add to number of captures, else subtract.
+     * 更新提子数
+     *
+     * @param move
+     * @param increment
      */
     public void updateCaptures(GoMove move, boolean increment) {
         int numCaptures = move.getNumCaptures();
@@ -34,13 +42,13 @@ public class CaptureCounts {
 
         if (numCaptures > 0) {
             if (move.isPlayer1()) {
-                numWhiteStonesCaptured_ += num;
-                assert numWhiteStonesCaptured_ >= 0 :
-                        "The number of captured white stones became less than 0 :  " + numWhiteStonesCaptured_;
+                mNumWhiteStonesCaptured += num;
+                assert mNumWhiteStonesCaptured >= 0 :
+                        "The number of captured white stones became less than 0 :  " + mNumWhiteStonesCaptured;
             } else {
-                numBlackStonesCaptured_ += num;
-                assert numBlackStonesCaptured_ >= 0 :
-                        "The number of captured black stones became less than 0 :  " + numBlackStonesCaptured_;
+                mNumBlackStonesCaptured += num;
+                assert mNumBlackStonesCaptured >= 0 :
+                        "The number of captured black stones became less than 0 :  " + mNumBlackStonesCaptured;
             }
         }
     }

@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go;
 
 import java.util.List;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.TwoPlayerBoard;
 import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.go.analysis.CornerChecker;
@@ -18,30 +17,21 @@ import cn.ezandroid.game.board.go.update.BoardUpdater;
 import cn.ezandroid.game.board.go.update.CaptureCounts;
 
 /**
- * Representation of a Go Game Board
- * There are a lot of data structures to organize the state of the pieces.
- * For example, we update strings, and groups (and eventually armies) after each move.
- * After updating we can use these structures to estimate territory for each side.
+ * 围棋棋盘模型
  *
  * @author Barry Becker
  */
 public final class GoBoard extends TwoPlayerBoard<GoMove> {
 
-    /** This is a set of active groups. Groups are composed of strings. */
-    private GoGroupSet groups_;
+    // 棋群集合 棋群由棋串组成
+    private GoGroupSet mGroups;
 
-    /** Handicap stones are on the star points, unless the board is very small */
-    private HandicapStones handicap_;
+    // 让子
+    private HandicapStones mHandicap;
 
-    /** Updates the board's structure after making or undoing moves */
-    private BoardUpdater boardUpdater_;
+    // 棋盘更新器
+    private BoardUpdater mBoardUpdater;
 
-    /**
-     * Constructor.
-     *
-     * @param size              The dimension (i.e. the number rows and columns). Must be square.
-     * @param numHandicapStones number of black handicap stones to initialize with.
-     */
     public GoBoard(int size, int numHandicapStones) {
         setSize(size, size);
         setHandicap(numHandicapStones);
@@ -49,18 +39,15 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         init(new CaptureCounts());
     }
 
-    /**
-     * Copy constructor
-     */
     public GoBoard(GoBoard board) {
         super(board);
 
-        handicap_ = board.handicap_;
+        mHandicap = board.mHandicap;
         NeighborAnalyzer analyzer = new NeighborAnalyzer(this);
         analyzer.determineAllStringsOnBoard();
-        groups_ = analyzer.findAllGroupsOnBoard();
+        mGroups = analyzer.findAllGroupsOnBoard();
 
-        init(board.boardUpdater_.getCaptureCounts());
+        init(board.mBoardUpdater.getCaptureCounts());
     }
 
     @Override
@@ -74,20 +61,19 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
     }
 
     /**
-     * Start over from the beginning and reinitialize everything.
-     * The first time through we need to initialize the star-point positions.
+     * 从头开始，重新初始化一切
      */
     @Override
     public void reset() {
         super.reset();
-        groups_ = new GoGroupSet();
+        mGroups = new GoGroupSet();
 
         setHandicap(getHandicap());
         init(new CaptureCounts());
     }
 
     private void init(CaptureCounts capCounts) {
-        boardUpdater_ = new BoardUpdater(this, capCounts);
+        mBoardUpdater = new BoardUpdater(this, capCounts);
     }
 
     @Override
@@ -96,43 +82,48 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
     }
 
     public void setHandicap(int numHandicapStones) {
-        handicap_ = new HandicapStones(numHandicapStones, getNumRows());
-        makeMoves(handicap_.getHandicapMoves());
+        mHandicap = new HandicapStones(numHandicapStones, getNumRows());
+        makeMoves(mHandicap.getHandicapMoves());
     }
 
     /**
-     * get the number of handicap stones used in this game.
+     * 获取让子数
      *
-     * @return number of handicap stones
+     * @return
      */
     public int getHandicap() {
-        if (handicap_ == null) {
+        if (mHandicap == null) {
             return 0;
         }
-        return handicap_.getNumber();
-    }
-
-    public List getHandicapPositions() {
-        return handicap_.getStarPoints();
+        return mHandicap.getNumber();
     }
 
     /**
-     * get the current set of active groups. Should be read only. Do not modify.
+     * 获取让子位置
      *
-     * @return all the valid groups on the board (for both sides)
+     * @return
      */
-    public GoGroupSet getGroups() {
-        return groups_;
+    public List getHandicapPositions() {
+        return mHandicap.getStarPoints();
     }
 
     public void setGroups(GoGroupSet groups) {
-        groups_ = groups;
+        mGroups = groups;
     }
 
     /**
-     * Adjust the liberties on the strings (both black and white) that we touch.
+     * 获取当前存活的棋群集合
      *
-     * @param liberty either occupied or not depending on if we are placing the stone or removing it.
+     * @return
+     */
+    public GoGroupSet getGroups() {
+        return mGroups;
+    }
+
+    /**
+     * 更新气点周围棋串的气
+     *
+     * @param liberty
      */
     public void adjustLiberties(GoBoardPosition liberty) {
         NeighborAnalyzer na = new NeighborAnalyzer(this);
@@ -143,7 +134,7 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
     }
 
     /**
-     * Make sure that all the positions on the board are reset to the unvisited state.
+     * 确保棋盘上所有点都重置为未被访问状态
      */
     public void unvisitAll() {
         for (int i = 1; i <= getNumRows(); i++) {
@@ -154,31 +145,18 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         }
     }
 
-    /**
-     * given a move specification, execute it on the board.
-     * This places the players symbol at the position specified by move, and updates groups,
-     * removes captures, and counts territory.
-     *
-     * @return false if the move is somehow invalid
-     */
     @Override
     protected boolean makeInternalMove(GoMove move) {
         // if its a passing move, there is nothing to do
         if (move.isPassOrResignation()) {
-            GameContext.log(2, move.isPassingMove() ? "Making passing move" : "Resigning");   // NON-NLS
             return true;
         }
 
         boolean valid = super.makeInternalMove(move);
-        boardUpdater_.updateAfterMove(move);
+        mBoardUpdater.updateAfterMove(move);
         return valid;
     }
 
-    /**
-     * for Go, undoing a move means changing that space back to a blank, restoring captures, and updating groups.
-     *
-     * @param move the move to undo.
-     */
     @Override
     protected void undoInternalMove(GoMove move) {
         // there is nothing to do if it is a pass
@@ -186,25 +164,33 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
             return;
         }
 
-        boardUpdater_.updateAfterRemove(move);
-    }
-
-    public int getNumCaptures(boolean player1StonesCaptured) {
-        return boardUpdater_.getNumCaptures(player1StonesCaptured);
+        mBoardUpdater.updateAfterRemove(move);
     }
 
     /**
-     * Corner triples are the 3 points closest to a corner
+     * 获取指定玩家的被提子数
      *
-     * @param position position to see if in corner of board.
-     * @return true if the specified BoardPosition is on the order of the board
+     * @param player1StonesCaptured
+     * @return
+     */
+    public int getNumCaptures(boolean player1StonesCaptured) {
+        return mBoardUpdater.getNumCaptures(player1StonesCaptured);
+    }
+
+    /**
+     * 检查指定点是否属于角落3角点
+     *
+     * @param position
+     * @return
      */
     public boolean isCornerTriple(BoardPosition position) {
         return new CornerChecker(getNumRows(), getNumCols()).isCornerTriple(position);
     }
 
     /**
-     * @return either the number of black or white stones.
+     * 获取指定玩家在棋盘上的棋子数
+     *
+     * @return
      */
     public int getNumStones(boolean forPlayer1) {
         int numStones = 0;

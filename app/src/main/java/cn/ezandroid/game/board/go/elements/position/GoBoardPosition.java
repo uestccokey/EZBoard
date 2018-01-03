@@ -15,8 +15,7 @@ import cn.ezandroid.game.board.go.elements.string.IGoString;
  *
  * @author Barry Becker
  */
-public final class GoBoardPosition extends BoardPosition
-        implements IGoMember {
+public final class GoBoardPosition extends BoardPosition implements IGoMember {
 
     /** the string (connected set of stones) to which this stone belongs. */
     private IGoString string_;

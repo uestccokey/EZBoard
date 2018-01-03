@@ -8,11 +8,23 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * A GoEye is composed of a strongly connected set of empty spaces (and possibly some dead enemy stones).
+ * 眼位模型
+ * <p>
+ * 眼位由一组强连接的空点组成（有时也包含敌方死子）
  *
  * @author Barry Becker
  */
 public interface IGoEye extends IGoSet {
+
+    @Override
+    GoBoardPositionSet getMembers();
+
+    /**
+     * 获取该眼位所属的棋群
+     *
+     * @return
+     */
+    IGoGroup getGroup();
 
     EyeStatus getStatus();
 
@@ -24,25 +36,8 @@ public interface IGoEye extends IGoSet {
 
     int getNumEdgePoints();
 
-    /**
-     * @return the group that this eye belongs to.
-     */
-    IGoGroup getGroup();
-
-    /**
-     * @return the hashSet containing the members
-     */
-    @Override
-    GoBoardPositionSet getMembers();
-
-    /**
-     * empty the positions from the eye.
-     */
     void clear();
 
-    /**
-     * @return true if unconditionally alive.
-     */
     boolean isUnconditionallyAlive();
 
     void setUnconditionallyAlive(boolean unconditionallyAlive);

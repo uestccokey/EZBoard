@@ -4,51 +4,54 @@ package cn.ezandroid.game.board.go.elements;
 import java.util.Set;
 
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * A collection of GoMembers of some type (e.g. strings, stones, groups, etc).
+ * 围棋构件集接口
  *
  * @author Barry Becker
  */
 public interface IGoSet extends IGoMember {
 
     /**
-     * @return the Set containing the members
+     * 获取围棋构件的集合
+     *
+     * @return
      */
     Set<? extends IGoMember> getMembers();
 
     /**
-     * @return true if pos is our enemy.
-     */
-    boolean isEnemy(GoBoardPosition pos);
-
-    /**
-     * @return true if owned by player 1 (i.e. black).
-     */
-    boolean isOwnedByPlayer1();
-
-    /**
-     * Mark all members unvisited.
-     *
-     * @param visited whether or not the members should be marked visited or unvisited.
-     */
-    void setVisited(boolean visited);
-
-    /**
-     * @return the number of elements in the set
+     * 获取围棋构件的数目
      */
     int size();
 
     /**
-     * Get the number of liberties (open surrounding spaces)
+     * 是否属于1号玩家
      *
-     * @param board go board
-     * @return the liberties/positions for the set.
+     * @return
+     */
+    boolean isOwnedByPlayer1();
+
+    /**
+     * 标记构件集是否被访问过
+     *
+     * @param visited
+     */
+    void setVisited(boolean visited);
+
+    /**
+     * 获取周围气的集合
+     *
+     * @param board
+     * @return
      */
     GoBoardPositionSet getLiberties(GoBoard board);
 
-    /** @return the number of liberties. */
+    /**
+     * 获取周围气的数量
+     *
+     * @param board
+     * @return
+     */
     int getNumLiberties(GoBoard board);
 }

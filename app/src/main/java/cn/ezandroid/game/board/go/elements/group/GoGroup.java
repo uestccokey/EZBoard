@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.elements.group;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import cn.ezandroid.game.board.go.elements.GoSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
-import cn.ezandroid.game.board.go.elements.position.GoStone;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
@@ -45,7 +43,7 @@ public final class GoGroup extends GoSet
      * @param string make the group from this string.
      */
     public GoGroup(IGoString string) {
-        ownedByPlayer1_ = string.isOwnedByPlayer1();
+        mIsOwnedByPlayer1 = string.isOwnedByPlayer1();
 
         getMembers().add(string);
         string.setGroup(this);
@@ -61,7 +59,7 @@ public final class GoGroup extends GoSet
      * @param stones list of stones to create a group from.
      */
     public GoGroup(GoBoardPositionList stones) {
-        ownedByPlayer1_ = (stones.getFirst()).getPiece().isOwnedByPlayer1();
+        mIsOwnedByPlayer1 = (stones.getFirst()).getPiece().isOwnedByPlayer1();
         for (GoBoardPosition stone : stones) {
             assimilateStone(stones, stone);
         }
@@ -82,30 +80,18 @@ public final class GoGroup extends GoSet
     }
 
     /**
-     * @return true if the piece is an enemy of the set owner.
-     * If the difference in health between the stones is great, then they are not really enemies
-     * because one of them is dead.
-     */
-    @Override
-    public boolean isEnemy(GoBoardPosition pos) {
-        assert (pos.isOccupied());
-        GoStone stone = (GoStone) pos.getPiece();
-        return stone.isOwnedByPlayer1() != isOwnedByPlayer1(); // && !muchWeaker);
-    }
-
-    /**
      * @param stones stones to assimilate
      * @param stone  the new stone to add to the group.
      */
     private void assimilateStone(GoBoardPositionList stones, GoBoardPosition stone) {
-        assert stone.getPiece().isOwnedByPlayer1() == ownedByPlayer1_ :
+        assert stone.getPiece().isOwnedByPlayer1() == mIsOwnedByPlayer1 :
                 "Stones in group must all be owned by the same player. stones=" + stones;
         // actually this is ok - sometimes happens legitimately
         // assert isFalse(stone.isVisited(), stone+" is marked visited in "+stones+" when it should not be.");
         IGoString string = stone.getString();
         assert (string != null) : "There is no owning string for " + stone;
         if (!getMembers().contains(string)) {
-            assert (ownedByPlayer1_ == string.isOwnedByPlayer1()) : string + "ownership not the same as " + this;
+            assert (mIsOwnedByPlayer1 == string.isOwnedByPlayer1()) : string + "ownership not the same as " + this;
             //string.confirmOwnedByOnlyOnePlayer();
             getMembers().add(string);
         }
@@ -145,7 +131,7 @@ public final class GoGroup extends GoSet
      */
     @Override
     public void addMember(IGoString string) {
-        assert (string.isOwnedByPlayer1() == ownedByPlayer1_) :
+        assert (string.isOwnedByPlayer1() == mIsOwnedByPlayer1) :
                 "strings added to a group must have like ownership. String=" + string
                         + ". Group we are trying to add it to: " + this;
         if (getMembers().contains(string)) {
@@ -244,7 +230,7 @@ public final class GoGroup extends GoSet
     public void updateTerritory(float health) {
         for (IGoString string : getMembers()) {
             if (string.isUnconditionallyAlive()) {
-                string.updateTerritory(ownedByPlayer1_ ? 1.0f : -1.0f);
+                string.updateTerritory(mIsOwnedByPlayer1 ? 1.0f : -1.0f);
             } else {
                 string.updateTerritory(health);
             }
@@ -289,47 +275,6 @@ public final class GoGroup extends GoSet
             }
         }
         return (rMin > rMax) ? new Box(0, 0, 0, 0) : new Box(rMin, cMin, rMax, cMax);
-    }
-
-    /**
-     * get the textual representation of the group.
-     *
-     * @return string form
-     */
-    @Override
-    public String toString() {
-        return toString("\n");
-    }
-
-    /**
-     * get the html representation of the group.
-     *
-     * @return html form
-     */
-    @Override
-    public String toHtml() {
-        return toString("<br>");
-    }
-
-    /**
-     * @param newline string to use for the newline - eg "\n" or "<br>".
-     * @return string form.
-     */
-    private String toString(String newline) {
-
-        StringBuilder sb = new StringBuilder(" GROUP {" + newline);
-        Iterator it = getMembers().iterator();
-        // print the member strings
-        if (it.hasNext()) {
-            IGoString p = (IGoString) it.next();
-            sb.append("    ").append(p.toString());
-        }
-        while (it.hasNext()) {
-            IGoString p = (IGoString) it.next();
-            sb.append(',').append(newline).append("    ").append(p.toString());
-        }
-        sb.append(newline).append('}');
-        return sb.toString();
     }
 
     /**

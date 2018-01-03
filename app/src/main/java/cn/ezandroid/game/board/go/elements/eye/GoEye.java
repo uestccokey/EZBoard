@@ -11,7 +11,6 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
-import cn.ezandroid.game.board.go.elements.position.GoStone;
 import cn.ezandroid.game.board.go.elements.string.GoString;
 
 /**
@@ -45,7 +44,7 @@ public class GoEye extends GoString implements IGoEye {
     public GoEye(GoBoardPositionList spaces, GoBoard board, IGoGroup g, GroupAnalyzer groupAnalyzer) {
         super(spaces, board);
         group_ = g;
-        ownedByPlayer1_ = g.isOwnedByPlayer1();
+        mIsOwnedByPlayer1 = g.isOwnedByPlayer1();
 
         EyeTypeAnalyzer eyeAnalyzer = new EyeTypeAnalyzer(this, board, groupAnalyzer);
         information_ = eyeAnalyzer.determineEyeInformation();
@@ -104,26 +103,6 @@ public class GoEye extends GoString implements IGoEye {
     @Override
     public GoBoardPositionSet getMembers() {
         return members_;
-    }
-
-    /**
-     * @return true if the piece is an enemy of the string owner.
-     * If the difference in health between the stones is great, then they are not really enemies
-     * because one of them is dead. I used to do the "much weaker" test here but the group health
-     * info is not guaranteed to be updated yet.
-     */
-    @Override
-    public boolean isEnemy(GoBoardPosition pos) {
-        IGoGroup g = getGroup();
-        assert (g != null) : "group for " + this + " is null";
-        if (pos.isUnoccupied()) {
-            return false;
-        }
-        GoStone stone = (GoStone) pos.getPiece();
-
-        assert (g.isOwnedByPlayer1() == isOwnedByPlayer1()) :
-                "Bad group ownership for eye=" + this + ". Owning Group=" + g;
-        return (stone.isOwnedByPlayer1() != isOwnedByPlayer1()); // && !weaker);
     }
 
     /**

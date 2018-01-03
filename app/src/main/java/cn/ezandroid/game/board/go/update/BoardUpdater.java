@@ -5,62 +5,57 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.move.GoMove;
 
 /**
- * Responsible for updating a go board after making or undoing a move.
+ * 棋盘更新器
+ * <p>
+ * 负责更新落子或者悔棋后的棋盘
  *
  * @author Barry Becker
  */
 public class BoardUpdater {
 
-    private PostMoveUpdater postMoveUpdater_;
-    private PostRemoveUpdater postRemoveUpdater_;
-    private CaptureCounts captureCounts_;
+    private PostMoveUpdater mPostMoveUpdater;
+    private PostRemoveUpdater mPostRemoveUpdater;
+    private CaptureCounts mCaptureCounts;
 
-    /**
-     * Essentially a copy constructor. The counts are preserved.
-     *
-     * @param board     board to update
-     * @param capCounts current counts so they are not lost.
-     */
     public BoardUpdater(GoBoard board, CaptureCounts capCounts) {
-        captureCounts_ = capCounts;
+        mCaptureCounts = capCounts;
         initialize(board);
     }
 
-    /**
-     * @return a defensive copy
-     */
     public CaptureCounts getCaptureCounts() {
-        return captureCounts_.copy();
+        return mCaptureCounts.copy();
     }
 
     private void initialize(GoBoard board) {
-        postMoveUpdater_ = new PostMoveUpdater(board, captureCounts_);
-        postRemoveUpdater_ = new PostRemoveUpdater(board, captureCounts_);
+        mPostMoveUpdater = new PostMoveUpdater(board, mCaptureCounts);
+        mPostRemoveUpdater = new PostRemoveUpdater(board, mCaptureCounts);
     }
 
     /**
-     * @param player1StonesCaptured if true then get the black stones captured
-     * @return the captured stones of the specified color
+     * 获取指定玩家的被提子数
+     *
+     * @param player1StonesCaptured
+     * @return
      */
     public int getNumCaptures(boolean player1StonesCaptured) {
-        return captureCounts_.getNumCaptures(player1StonesCaptured);
+        return mCaptureCounts.getNumCaptures(player1StonesCaptured);
     }
 
     /**
-     * Update the board after move has been played.
+     * 落子后更新棋盘
      *
-     * @param move the move that was just made
+     * @param move
      */
     public void updateAfterMove(GoMove move) {
-        postMoveUpdater_.update(move);
+        mPostMoveUpdater.update(move);
     }
 
     /**
-     * Update the board after backing out a move.
+     * 悔棋后更新棋盘
      *
-     * @param move the move that was just undone
+     * @param move
      */
     public void updateAfterRemove(GoMove move) {
-        postRemoveUpdater_.update(move);
+        mPostRemoveUpdater.update(move);
     }
 }
