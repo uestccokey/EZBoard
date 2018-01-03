@@ -4,6 +4,8 @@ package cn.ezandroid.game.board.go.move;
 import java.util.Iterator;
 
 import cn.ezandroid.game.board.common.TwoPlayerMove;
+import cn.ezandroid.game.board.common.geometry.ByteLocation;
+import cn.ezandroid.game.board.common.geometry.Location;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborType;
@@ -12,8 +14,6 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.ByteLocation;
-import cn.ezandroid.game.common.geometry.Location;
 
 /**
  * Describes a change in state from one board

@@ -2,7 +2,7 @@
 package cn.ezandroid.game.board.common.board;
 
 import cn.ezandroid.game.board.common.Move;
-import cn.ezandroid.game.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.Location;
 
 /**
  * 矩形棋盘接口

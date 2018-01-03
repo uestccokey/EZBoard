@@ -1,8 +1,8 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.common.board;
 
-import cn.ezandroid.game.common.geometry.ByteLocation;
-import cn.ezandroid.game.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.ByteLocation;
+import cn.ezandroid.game.board.common.geometry.Location;
 
 /**
  * 棋盘位置点模型

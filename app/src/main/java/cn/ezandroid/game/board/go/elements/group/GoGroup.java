@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cn.ezandroid.game.board.common.GameContext;
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.GoSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
@@ -14,7 +15,6 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * A GoGroup is composed of a loosely connected set of one or more same color strings.

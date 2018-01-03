@@ -2,8 +2,8 @@
 package cn.ezandroid.game.board.common;
 
 import cn.ezandroid.game.board.common.board.GamePiece;
-import cn.ezandroid.game.common.geometry.ByteLocation;
-import cn.ezandroid.game.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.ByteLocation;
+import cn.ezandroid.game.board.common.geometry.Location;
 
 /**
  * 两人游戏落子模型
@@ -11,9 +11,6 @@ import cn.ezandroid.game.common.geometry.Location;
  * @author Barry Becker
  */
 public class TwoPlayerMove extends Move {
-
-    private static final String P1 = "PLAYER1";
-    private static final String P2 = "PLAYER2";
 
     // 这手棋下的位置
     protected Location mToLocation;

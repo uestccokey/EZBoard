@@ -3,7 +3,7 @@ package cn.ezandroid.game.board.common.board;
 
 import cn.ezandroid.game.board.common.Move;
 import cn.ezandroid.game.board.common.MoveList;
-import cn.ezandroid.game.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.Location;
 
 /**
  * 棋盘模型（适用于五子棋，围棋，象棋，跳棋，军棋，黑白棋等）
@@ -168,7 +168,7 @@ public abstract class Board<M extends Move> implements IRectangularBoard<M> {
     }
 
     /**
-     * 检查是否在4个角落
+     * 检查是否在4个角上
      *
      * @param position
      * @return

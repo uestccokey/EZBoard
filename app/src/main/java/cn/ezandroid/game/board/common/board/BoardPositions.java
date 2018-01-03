@@ -1,8 +1,8 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.common.board;
 
-import cn.ezandroid.game.common.geometry.ByteLocation;
-import cn.ezandroid.game.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.ByteLocation;
+import cn.ezandroid.game.board.common.geometry.Location;
 
 /**
  * 棋盘位置点二维数组
@@ -160,7 +160,7 @@ public class BoardPositions {
     }
 
     /**
-     * 检查是否在4个角落
+     * 检查是否在4个角上
      *
      * @param position
      * @return

@@ -1,6 +1,7 @@
 // Copyright by Barry G. Becker, 2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT
 package cn.ezandroid.game.board.go.analysis.territory;
 
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
@@ -10,7 +11,6 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionLists;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Updates the empty regions on the board at the end of the game.

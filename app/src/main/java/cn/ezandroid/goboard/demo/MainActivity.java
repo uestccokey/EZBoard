@@ -13,13 +13,13 @@ import java.util.Set;
 
 import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.common.board.GamePiece;
+import cn.ezandroid.game.board.common.geometry.IntLocation;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.BoardEvaluator;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 import cn.ezandroid.game.board.go.move.GoMove;
 import cn.ezandroid.game.board.go.update.DeadStoneUpdater;
-import cn.ezandroid.game.common.geometry.IntLocation;
 import cn.ezandroid.goboard.BoardView;
 import cn.ezandroid.goboard.Intersection;
 import cn.ezandroid.goboard.Stone;

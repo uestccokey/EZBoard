@@ -4,6 +4,7 @@ package cn.ezandroid.game.board.go.analysis.group.eye;
 import java.util.Iterator;
 
 import cn.ezandroid.game.board.common.GameContext;
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzer;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
@@ -15,7 +16,6 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionLists;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Analyzes the eye spaces within a group to determine if they are real eyes.

@@ -2,12 +2,12 @@
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
 import cn.ezandroid.game.board.common.GameContext;
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.BoardValidator;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Performs static analysis of a go board to determine strings.

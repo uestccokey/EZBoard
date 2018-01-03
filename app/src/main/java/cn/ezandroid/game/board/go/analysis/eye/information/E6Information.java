@@ -1,11 +1,11 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.eye.information;
 
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Eye6Type containing MetaData for the different possible Eye shapes of size 6.

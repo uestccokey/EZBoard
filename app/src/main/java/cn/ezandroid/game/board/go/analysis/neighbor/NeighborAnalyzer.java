@@ -1,6 +1,7 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
@@ -9,7 +10,6 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.string.GoString;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Performs static analysis of a go board to determine strings and

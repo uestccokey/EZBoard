@@ -1,12 +1,12 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.elements.group;
 
+import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.elements.IGoSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.Box;
 
 /**
  * Makes some unit tests much simpler if we create the tests to use this interface instead

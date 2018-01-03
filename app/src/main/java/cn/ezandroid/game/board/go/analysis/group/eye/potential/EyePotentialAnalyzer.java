@@ -1,12 +1,12 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.group.eye.potential;
 
+import cn.ezandroid.game.board.common.geometry.Box;
+import cn.ezandroid.game.board.common.geometry.ByteLocation;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.Box;
-import cn.ezandroid.game.common.geometry.ByteLocation;
 
 /**
  * Figure out how likely (the potential) that a group can form two eyes.
@@ -39,19 +39,13 @@ public class EyePotentialAnalyzer {
     }
 
     /**
-     * Expand the bbox by one in all directions.
-     * if the bbox is within one space of the edge, extend it all the way to the edge.
-     * loop through the rows and columns calculating distances from group stones
-     * to the edge and to other stones.
-     * if there is a (mostly living) enemy stone in the run, don't count the run.
+     * 计算做出两个眼的潜力
      *
-     * @return eye potential - a measure of how easily this group can make 2 eyes
-     * (0 - 2; 2 meaning it already has 2 guaranteed eyes or can easily get them).
+     * @return 在0~2间取值，2表示可以轻松做出两眼
      */
     public float calculateEyePotential() {
         int numRows = board_.getNumRows();
         int numCols = board_.getNumCols();
-        assert board_ != null : "The board must be set before calculating potential";
         boundingBox_.expandGloballyBy(1, numRows, numCols);
         boundingBox_.expandBordersToEdge(1, numRows, numCols);
 
@@ -65,7 +59,6 @@ public class EyePotentialAnalyzer {
      * @return eyePotential - a measure of how easily this group can make 2 eyes (0 - 2; 2 meaning has 2 eyes).
      */
     private float findTotalEyePotential() {
-
         if (group_.getMembers().isEmpty()) return 0;
         IGoString groupString = group_.getMembers().iterator().next();
 
@@ -85,7 +78,6 @@ public class EyePotentialAnalyzer {
      * @return total of all the row run potentials.
      */
     private float getTotalRowPotentials(IGoString groupString, int rMin, int rMax, int cMin, int cMax) {
-
         float totalPotential = 0;
         RunPotentialAnalyzer runAnalyzer = new RunPotentialAnalyzer(groupString, board_, analyzerMap_);
 

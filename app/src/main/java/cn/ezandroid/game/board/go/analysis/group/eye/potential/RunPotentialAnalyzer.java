@@ -1,13 +1,13 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.group.eye.potential;
 
+import cn.ezandroid.game.board.common.geometry.Location;
+import cn.ezandroid.game.board.common.geometry.MutableIntLocation;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzer;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
-import cn.ezandroid.game.common.geometry.Location;
-import cn.ezandroid.game.common.geometry.MutableIntLocation;
 
 /**
  * Figure out the "eye potential" contribution from a horizontal or vertical run within a string.
