@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.analysis.neighbor;
 
 import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.elements.group.GoGroup;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
@@ -129,7 +128,6 @@ public class GroupNeighborAnalyzer {
      */
     private int pushGroupNeighbors(GoBoardPosition s, boolean friendPlayer1, GoBoardPositionList stack,
                                    boolean samePlayerOnly) {
-        GoProfiler.getInstance().startGetGroupNeightbors();
         // start with the nobi string nbrs
         int numPushed = stringAnalyzer_.pushStringNeighbors(s, friendPlayer1, stack, samePlayerOnly);
 
@@ -139,7 +137,6 @@ public class GroupNeighborAnalyzer {
 
         // we only find pure group neighbors of the same color
         numPushed += pushPureGroupNeighbors(s, friendPlayer1, true, stack);
-        GoProfiler.getInstance().stopGetGroupNeighbors();
         return numPushed;
     }
 

@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.update;
 
 import cn.ezandroid.game.board.go.BoardValidator;
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
 import cn.ezandroid.game.board.go.elements.group.GoGroup;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
@@ -23,7 +22,6 @@ public abstract class PostChangeUpdater {
     CaptureCounts captureCounter_;
     NeighborAnalyzer nbrAnalyzer_;
     BoardValidator validator_;
-    GoProfiler profiler_;
 
     /**
      * Update the board information data after a change has been made (like an add or a remove of a stone)
@@ -34,7 +32,6 @@ public abstract class PostChangeUpdater {
     PostChangeUpdater(GoBoard board, CaptureCounts captureCounter) {
         board_ = board;
         captureCounter_ = captureCounter;
-        profiler_ = GoProfiler.getInstance();
         nbrAnalyzer_ = new NeighborAnalyzer(board);
         validator_ = new BoardValidator(board);
     }

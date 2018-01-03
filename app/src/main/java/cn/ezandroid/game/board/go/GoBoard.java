@@ -65,9 +65,7 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
 
     @Override
     public synchronized GoBoard copy() {
-        getProfiler().startCopyBoard();
         GoBoard b = new GoBoard(this);
-        getProfiler().stopCopyBoard();
         return b;
     }
 
@@ -114,18 +112,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         return handicap_.getNumber();
     }
 
-    /**
-     * Num different states.
-     * This is used primarily for the Zobrist hash. You do not need to override if you do not use it.
-     * The states are player1, player2, or empty (we may want to add ko).
-     *
-     * @return number of different states this position can have.
-     */
-    @Override
-    public int getNumPositionStates() {
-        return 3;
-    }
-
     public List getHandicapPositions() {
         return handicap_.getStarPoints();
     }
@@ -168,10 +154,6 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
         }
     }
 
-    private GoProfiler getProfiler() {
-        return GoProfiler.getInstance();
-    }
-
     /**
      * given a move specification, execute it on the board.
      * This places the players symbol at the position specified by move, and updates groups,
@@ -181,19 +163,14 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      */
     @Override
     protected boolean makeInternalMove(GoMove move) {
-        getProfiler().startMakeMove();
-
         // if its a passing move, there is nothing to do
         if (move.isPassOrResignation()) {
             GameContext.log(2, move.isPassingMove() ? "Making passing move" : "Resigning");   // NON-NLS
-            getProfiler().stopMakeMove();
             return true;
         }
 
         boolean valid = super.makeInternalMove(move);
         boardUpdater_.updateAfterMove(move);
-
-        getProfiler().stopMakeMove();
         return valid;
     }
 
@@ -204,16 +181,12 @@ public final class GoBoard extends TwoPlayerBoard<GoMove> {
      */
     @Override
     protected void undoInternalMove(GoMove move) {
-        getProfiler().startUndoMove();
-
         // there is nothing to do if it is a pass
         if (move.isPassingMove()) {
-            getProfiler().stopUndoMove();
             return;
         }
 
         boardUpdater_.updateAfterRemove(move);
-        getProfiler().stopUndoMove();
     }
 
     public int getNumCaptures(boolean player1StonesCaptured) {

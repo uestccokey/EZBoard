@@ -14,12 +14,6 @@ public final class GameContext {
     // 调试模式
     private static int sDebugLevel = DEBUG_LEVEL;
 
-    // 默认关闭
-    private static final boolean PROFILING = false;
-
-    // 分析模式
-    private static boolean sProfiling = PROFILING;
-
     private GameContext() {}
 
     /**
@@ -38,24 +32,6 @@ public final class GameContext {
      */
     public static void setDebugMode(int debug) {
         sDebugLevel = debug;
-    }
-
-    /**
-     * 是否分析模式开启
-     *
-     * @return
-     */
-    public static boolean isProfiling() {
-        return sProfiling;
-    }
-
-    /**
-     * 开启或关闭分析模式
-     *
-     * @param prof
-     */
-    public static void setProfiling(boolean prof) {
-        sProfiling = prof;
     }
 
     /**

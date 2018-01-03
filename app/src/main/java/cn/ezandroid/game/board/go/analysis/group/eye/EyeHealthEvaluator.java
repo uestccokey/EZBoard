@@ -2,7 +2,6 @@
 package cn.ezandroid.game.board.go.analysis.group.eye;
 
 import cn.ezandroid.game.board.common.GameContext;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.group.LifeAnalyzer;
 
 /**
@@ -49,7 +48,6 @@ public class EyeHealthEvaluator {
     private float calcTwoEyedHealth(float side) {
         float health;
 
-        GoProfiler.getInstance().startBensonsCheck();
         if (lifeAnalyzer_.isUnconditionallyAlive()) {
             // in addition to this, the individual strings will get a score of side (ie +/- 1).
             health = BEST_TWO_EYED_HEALTH * side;
@@ -58,7 +56,6 @@ public class EyeHealthEvaluator {
             // may not be alive if the opponent has a lot of kos and gets to play lots of times in a row
             health = BEST_ALMOST_TWO_EYED_HEALTH * side;
         }
-        GoProfiler.getInstance().stopBensonsCheck();
         return health;
     }
 

@@ -2,7 +2,6 @@
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
@@ -93,11 +92,9 @@ public class NeighborAnalyzer {
      */
     public GoBoardPositionList findStringFromInitialPosition(GoBoardPosition stone, boolean friendOwnedByP1,
                                                              boolean returnToUnvisitedState, NeighborType type, Box box) {
-        GoProfiler.getInstance().startFindStrings();
         GoBoardPositionList stones =
                 stringNbrAnalyzer_.findStringFromInitialPosition(stone, friendOwnedByP1, returnToUnvisitedState,
                         type, box);
-        GoProfiler.getInstance().stopFindStrings();
 
         return stones;
     }

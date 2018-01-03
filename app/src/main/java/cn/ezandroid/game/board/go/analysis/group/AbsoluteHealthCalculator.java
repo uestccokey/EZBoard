@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.analysis.group;
 
 import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.group.eye.EyeHealthEvaluator;
 import cn.ezandroid.game.board.go.analysis.group.eye.GroupEyeCache;
 import cn.ezandroid.game.board.go.elements.eye.GoEyeSet;
@@ -110,9 +109,7 @@ class AbsoluteHealthCalculator {
 
         absoluteHealth_ = eyeEvaluator.determineHealth(side, numEyes, numLiberties, numStones);
 
-        GoProfiler.getInstance().startUpdateEyes();
         eyeCache_.updateEyes(board);  // expensive
-        GoProfiler.getInstance().stopUpdateEyes();
 
         float eyePotential = eyeCache_.getEyePotential();
         float revisedNumEyes = eyeCache_.calcNumEyes();

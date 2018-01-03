@@ -2,7 +2,6 @@
 package cn.ezandroid.game.board.go.analysis.territory;
 
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
@@ -55,20 +54,15 @@ public class TerritoryUpdater {
     public float updateTerritory(boolean isEndOfGame) {
         clearScores();
 
-        GoProfiler prof = GoProfiler.getInstance();
-        prof.startUpdateTerritory();
         analyzerMap_.clear();  /// need?
 
         float delta = calcAbsoluteHealth();
-        delta = calcRelativeHealth(prof, delta);
-        prof.startUpdateEmpty();
+        delta = calcRelativeHealth(delta);
         if (isEndOfGame) {
             EmptyRegionUpdater emptyUpdater = new EmptyRegionUpdater(board_, analyzerMap_);
             delta += emptyUpdater.updateEmptyRegions();
         }
-        prof.stopUpdateEmpty();
 
-        prof.stopUpdateTerritory();
         territoryDelta_ = delta;
 
         return delta;
@@ -99,11 +93,9 @@ public class TerritoryUpdater {
      */
     private float calcAbsoluteHealth() {
         float delta = 0;
-        GoProfiler.getInstance().startAbsoluteTerritory();
         for (IGoGroup g : board_.getGroups()) {
             analyzerMap_.getAnalyzer(g).calculateAbsoluteHealth(board_);
         }
-        GoProfiler.getInstance().stopAbsoluteTerritory();
 
         return delta;
     }
@@ -112,15 +104,13 @@ public class TerritoryUpdater {
      * @param initDelta initial value.
      * @return total health of all stones in all groups in relative terms.
      */
-    private float calcRelativeHealth(GoProfiler prof, float initDelta) {
+    private float calcRelativeHealth(float initDelta) {
         float delta = initDelta;
-        prof.startRelativeTerritory();
         for (IGoGroup g : board_.getGroups()) {
             float health = analyzerMap_.getAnalyzer(g).calculateRelativeHealth(board_);
             g.updateTerritory(health);
             delta += health * g.getNumStones();
         }
-        prof.stopRelativeTerritory();
 
         return delta;
     }

@@ -61,7 +61,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @return list of captured stones.  Empty if no captures.
      */
     private GoCaptureList determineCaptures(GoBoardPosition stone) {
-        profiler_.startFindCaptures();
         assert (stone != null);
         GoBoardPositionSet nbrs = nbrAnalyzer_.getNobiNeighbors(stone, NeighborType.ENEMY);
         GoCaptureList captureList = new GoCaptureList();
@@ -84,7 +83,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
                 captureList.addCaptures(str.getMembers());
             }
         }
-        profiler_.stopFindCaptures();
         return captureList;
     }
 
@@ -97,7 +95,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @param stone the stone that was just placed on the board.
      */
     private void updateStringsAfterMove(GoBoardPosition stone) {
-        profiler_.startUpdateStringsAfterMove();
 
         GoBoardPositionSet nbrs = nbrAnalyzer_.getNobiNeighbors(stone, NeighborType.FRIEND);
 
@@ -108,7 +105,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
             updateNeighborStringsAfterMove(stone, nbrs);
         }
         cleanupGroups();
-        profiler_.stopUpdateStringsAfterMove();
     }
 
     /**
@@ -150,14 +146,11 @@ public class PostMoveUpdater extends PostChangeUpdater {
      * @param pos the stone that was just placed on the board.
      */
     private void updateGroupsAfterMove(GoBoardPosition pos) {
-        profiler_.startUpdateGroupsAfterMove();
 
         if (GameContext.getDebugMode() > 1) {
             getAllGroups().confirmAllStonesInUniqueGroups();
         }
-        profiler_.startRecreateGroupsAfterMove();
         recreateGroupsAfterChange();
-        profiler_.stopRecreateGroupsAfterMove();
 
         // verify that the string to which we added the stone has at least one liberty
         assert (pos.getString().getNumLiberties(getBoard()) > 0) :
@@ -166,6 +159,5 @@ public class PostMoveUpdater extends PostChangeUpdater {
         ////if ( GameContext.getDebugMode() > 1 )
         ////validator_.consistencyCheck(pos);
 
-        profiler_.stopUpdateGroupsAfterMove();
     }
 }

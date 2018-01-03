@@ -4,7 +4,6 @@ package cn.ezandroid.game.board.go.analysis.group;
 import java.util.Set;
 
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
 import cn.ezandroid.game.board.go.elements.group.GoGroup;
 import cn.ezandroid.game.board.go.elements.group.GoGroupSet;
@@ -65,7 +64,6 @@ class WeakestGroupFinder {
      * note: has intentional side effect of marking stones with enemy group nbrs as visited (within groupStones).
      */
     private Set getEnemyGroupNeighbors(GoBoardPositionSet groupStones, boolean isPlayer1) {
-        GoProfiler.getInstance().startGetEnemyGroupNbrs();
         GoGroupSet enemyNbrs = new GoGroupSet();
         NeighborAnalyzer nbrAnalyzer = new NeighborAnalyzer(board);
 
@@ -74,7 +72,6 @@ class WeakestGroupFinder {
             GoBoardPositionSet nbrs = nbrAnalyzer.findGroupNeighbors(stone, false);
             addEnemyNeighborsForStone(enemyNbrs, stone, nbrs, isPlayer1);
         }
-        GoProfiler.getInstance().stopGetEnemyGroupNbrs();
         return enemyNbrs;
     }
 

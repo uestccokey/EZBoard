@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.update;
 
 import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
-import cn.ezandroid.game.board.go.GoProfiler;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborType;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
@@ -33,7 +32,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
      */
     @Override
     public void update(GoMove move) {
-        profiler_.startUpdateGroupsAfterRemove();
 
         // first make sure that there are no references to obsolete groups.
         clearEyes();
@@ -48,12 +46,9 @@ public class PostRemoveUpdater extends PostChangeUpdater {
         updateStringsAfterRemove(stone, stringThatItBelongedTo);
         restoreCaptures(move.getCaptures());
 
-        profiler_.startRecreateGroupsAfterRemove();
         recreateGroupsAfterChange();
-        profiler_.stopRecreateGroupsAfterRemove();
 
         captureCounter_.updateCaptures(move, false);
-        profiler_.stopUpdateGroupsAfterRemove();
     }
 
     /**
@@ -64,9 +59,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
      * @param string that the stone belonged to.
      */
     private void updateStringsAfterRemove(GoBoardPosition stone, IGoString string) {
-        GoProfiler profiler = GoProfiler.getInstance();
-        profiler.startUpdateStringsAfterRemove();
-
         // avoid error when calling from treeDlg
         if (string == null) return;
 
@@ -76,7 +68,6 @@ public class PostRemoveUpdater extends PostChangeUpdater {
             getAllGroups().confirmNoEmptyStrings();
             validator_.confirmStonesInValidGroups();
         }
-        profiler.stopUpdateStringsAfterRemove();
     }
 
     /**

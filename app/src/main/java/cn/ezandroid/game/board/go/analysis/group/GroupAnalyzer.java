@@ -8,7 +8,6 @@ import cn.ezandroid.game.board.go.elements.group.GroupChangeListener;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
-import cn.ezandroid.game.common.format.FormatUtil;
 
 /**
  * Analyzes a group to determine how alive it is, and also find other properties like eyes and liberties.
@@ -186,23 +185,5 @@ public class GroupAnalyzer implements GroupChangeListener {
      */
     private boolean isStoneMuchWeakerThanGroup(GoStone stone) {
         return stoneInGroupAnalyzer_.isStoneMuchWeakerThanGroup(stone, getAbsoluteHealth());
-    }
-
-    /**
-     * @return string form.
-     */
-    public String toString() {
-        String newline = "\n";
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(group_.toString());
-        GoEyeSet eyes = getEyes(null);
-        if (eyes != null && !eyes.isEmpty())
-            sb.append(eyes.toString()).append(newline);
-        // make sure that the health and eyes are up to date
-        sb.append("abs health=").append(FormatUtil.formatNumber(getAbsoluteHealth()));
-        sb.append(" rel health=").append(FormatUtil.formatNumber(getRelativeHealth()));
-        sb.append(" group Liberties=").append(getNumLiberties(null)).append('\n');
-        return sb.toString();
     }
 }
