@@ -9,44 +9,40 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * Responsible for determining and updating the dead stones on the board.
+ * 死子更新器
+ * <p>
+ * 负责决定和更新棋盘上的死子
  *
  * @author Barry Becker
  */
 public final class DeadStoneUpdater {
 
-    private GoBoard board_;
+    private GoBoard mBoard;
 
-    /** keeps track of dead stones. */
-    private DeadStones deadStones_;
+    private DeadStones mDeadStones;
 
-    /**
-     * Construct the Go game controller.
-     */
     public DeadStoneUpdater(GoBoard board) {
-        board_ = board;
-        deadStones_ = new DeadStones();
+        mBoard = board;
+        mDeadStones = new DeadStones();
     }
 
     public int getNumDeadStonesOnBoard(boolean forPlayer1) {
-        return deadStones_.getNumberOnBoard(forPlayer1);
+        return mDeadStones.getNumberOnBoard(forPlayer1);
     }
 
     public LinkedList<GoBoardPosition> getDeadStonesOnBoard(boolean forPlayer1) {
-        return deadStones_.getDeadStonesOnBoard(forPlayer1);
+        return mDeadStones.getDeadStonesOnBoard(forPlayer1);
     }
 
     /**
-     * Update the final life and death status of all the stones still on the board.
-     * This method must only be called once at the end of the game or stones will get prematurely marked as dead.
-     * The first can update the health of groups and perhaps remove obviously dead stones.
+     * 根据棋盘上棋子的健康评分确定死子
      */
     public void determineDeadStones() {
-        deadStones_.clear();
+        mDeadStones.clear();
 
-        for (int row = 1; row <= board_.getNumRows(); row++) {
-            for (int col = 1; col <= board_.getNumCols(); col++) {
-                GoBoardPosition space = (GoBoardPosition) board_.getPosition(row, col);
+        for (int row = 1; row <= mBoard.getNumRows(); row++) {
+            for (int col = 1; col <= mBoard.getNumCols(); col++) {
+                GoBoardPosition space = (GoBoardPosition) mBoard.getPosition(row, col);
                 if (space.isOccupied()) {
                     GoStone stone = (GoStone) space.getPiece();
                     int side = (stone.isOwnedByPlayer1() ? 1 : -1);
@@ -54,18 +50,17 @@ public final class DeadStoneUpdater {
                     if (side * stone.getHealth() < 0) {
                         // then the stone is more dead than alive, so mark it so
                         GameContext.log(0, "setting " + space + " to dead");
-                        stone.setDead(true);
-                        deadStones_.increment(space, space.getPiece().isOwnedByPlayer1());
+                        mDeadStones.increment(space, space.getPiece().isOwnedByPlayer1());
                     }
 //                    if (stone.isOwnedByPlayer1() && stone.getHealth() <= 0.1 || !stone.isOwnedByPlayer1() && stone.getHealth() >= -0.1) {
 //                        // then the stone is more dead than alive, so mark it so
 //                        GameContext.log(0, "setting " + space + " to dead");
-//                        stone.setDead(true);
-//                        deadStones_.increment(space.getPiece().isOwnedByPlayer1());
+//                        mDeadStones.increment(space, space.getPiece().isOwnedByPlayer1());
 //                    }
                 }
             }
         }
-        GameContext.log(0, deadStones_.toString());
+
+        GameContext.log(0, mDeadStones.toString());
     }
 }

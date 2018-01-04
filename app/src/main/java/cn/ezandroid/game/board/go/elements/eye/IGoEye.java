@@ -8,9 +8,7 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * 眼位模型
- * <p>
- * 眼位由一组强连接的空点组成（有时也包含敌方死子）
+ * 眼位接口
  *
  * @author Barry Becker
  */

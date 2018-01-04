@@ -16,15 +16,6 @@ public class GoEyeList extends LinkedList<IGoEye> {
         super(eyeList);
     }
 
-    public String toString(String title) {
-        StringBuilder buf = new StringBuilder(title);
-        buf.append("\n  ");
-        for (IGoEye eye : this) {
-            buf.append(eye.toString()).append(", ");
-        }
-        return buf.substring(0, buf.length() - 2);
-    }
-
     @Override
     public IGoEye getFirst() {
         return super.getFirst();

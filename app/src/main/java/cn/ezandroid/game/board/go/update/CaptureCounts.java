@@ -4,7 +4,7 @@ package cn.ezandroid.game.board.go.update;
 import cn.ezandroid.game.board.go.move.GoMove;
 
 /**
- * 保存每个玩家的提子数
+ * 跟踪并记录每方的提子数
  *
  * @author Barry Becker
  */

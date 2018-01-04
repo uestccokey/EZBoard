@@ -15,7 +15,7 @@ import cn.ezandroid.game.board.go.move.GoCaptureList;
 import cn.ezandroid.game.board.go.move.GoMove;
 
 /**
- * Responsible for updating a go board after undoing a move.
+ * 悔棋后的棋盘更新器
  *
  * @author Barry Becker
  */
@@ -25,14 +25,8 @@ public class PostRemoveUpdater extends PostChangeUpdater {
         super(board, captures);
     }
 
-    /**
-     * Update strings and groups after a move was undone.
-     *
-     * @param move move that was just removed.
-     */
     @Override
     public void update(GoMove move) {
-
         // first make sure that there are no references to obsolete groups.
         clearEyes();
 
@@ -41,23 +35,16 @@ public class PostRemoveUpdater extends PostChangeUpdater {
         IGoString stringThatItBelongedTo = stone.getString();
         // clearing a stone may cause a string to split into smaller strings
         stone.clear(getBoard());
-        board_.adjustLiberties(stone);
+        mBoard.adjustLiberties(stone);
 
         updateStringsAfterRemove(stone, stringThatItBelongedTo);
         restoreCaptures(move.getCaptures());
 
         recreateGroupsAfterChange();
 
-        captureCounter_.updateCaptures(move, false);
+        mCaptureCounts.updateCaptures(move, false);
     }
 
-    /**
-     * update the strings after a stone has been removed.
-     * Some friendly strings may have been split by the removal.
-     *
-     * @param stone  that was removed.
-     * @param string that the stone belonged to.
-     */
     private void updateStringsAfterRemove(GoBoardPosition stone, IGoString string) {
         // avoid error when calling from treeDlg
         if (string == null) return;
@@ -66,29 +53,23 @@ public class PostRemoveUpdater extends PostChangeUpdater {
 
         if (GameContext.getDebugMode() > 1) {
             getAllGroups().confirmNoEmptyStrings();
-            validator_.confirmStonesInValidGroups();
+            mValidator.confirmStonesInValidGroups();
         }
     }
 
-    /**
-     * Make new string(s) if removing the stone has caused a larger string to be split.
-     *
-     * @param stone  that was removed.
-     * @param string that the stone belonged to.
-     */
     private void splitStringsIfNeeded(GoBoardPosition stone, IGoString string) {
         IGoGroup group = string.getGroup();
         GoBoardPositionSet nbrs =
-                nbrAnalyzer_.getNobiNeighbors(stone, group.isOwnedByPlayer1(), NeighborType.FRIEND);
+                mNeighborAnalyzer.getNobiNeighbors(stone, group.isOwnedByPlayer1(), NeighborType.FRIEND);
 
         if (nbrs.size() > 1) {
             GoBoardPositionLists lists = new GoBoardPositionLists();
             GoBoardPosition firstNbr = nbrs.getOneMember();
-            GoBoardPositionList stones = nbrAnalyzer_.findStringFromInitialPosition(firstNbr, false);
+            GoBoardPositionList stones = mNeighborAnalyzer.findStringFromInitialPosition(firstNbr, false);
             lists.add(stones);
             for (GoBoardPosition nbrStone : nbrs) {
                 if (!nbrStone.isVisited()) {
-                    GoBoardPositionList stones1 = nbrAnalyzer_.findStringFromInitialPosition(nbrStone, false);
+                    GoBoardPositionList stones1 = mNeighborAnalyzer.findStringFromInitialPosition(nbrStone, false);
                     IGoString newString = new GoString(stones1, getBoard());
                     group.addMember(newString);
                     lists.add(stones1);
@@ -99,16 +80,16 @@ public class PostRemoveUpdater extends PostChangeUpdater {
     }
 
     /**
-     * restore this moves captures stones on the board
+     * 恢复被提到的棋子列表
      *
-     * @param captures list of captures to remove.
+     * @param captures
      */
     private void restoreCaptures(GoCaptureList captures) {
         if (captures == null || captures.isEmpty()) return;
 
-        captures.restoreOnBoard(board_);
+        captures.restoreOnBoard(mBoard);
         if (GameContext.getDebugMode() > 1) {
-            validator_.confirmStonesInValidGroups();
+            mValidator.confirmStonesInValidGroups();
             getAllGroups().confirmAllStonesInUniqueGroups();
             GameContext.log(3, "GoBoard: undoInternalMove: " + getBoard() + "  groups after restoring captures:");
         }

@@ -38,7 +38,7 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
     }
 
     /**
-     * 对棋盘上的每个棋子，确保它只属于一个棋群
+     * 对棋盘上的每个棋子，验证它只属于一个棋群
      */
     public void confirmAllStonesInUniqueGroups() {
         for (IGoGroup g : this) {
@@ -62,7 +62,7 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
     }
 
     /**
-     * 确保棋盘上没有空棋串
+     * 验证棋盘上没有空棋串
      */
     public void confirmNoEmptyStrings() {
         for (IGoGroup g : this) {
@@ -73,7 +73,7 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
     }
 
     /**
-     * 确保指定棋子所在的棋串和棋群不为空
+     * 验证指定棋子所在的棋串和棋群不为空
      *
      * @param stone
      */

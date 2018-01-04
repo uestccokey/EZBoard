@@ -14,9 +14,6 @@ public class GoStone extends GamePiece implements IGoMember {
     // 棋子的健康评分，取值范围是(-1,1)，一个活着的黑棋评分为正值，死去的黑棋的评分为负值，白棋相反
     private float mHealth;
 
-    // 是否当前棋子是死子
-    private boolean mIsDead;
-
     public GoStone(boolean player1) {
         super(player1, REGULAR_PIECE);
         mHealth = 0.0f;
@@ -25,7 +22,6 @@ public class GoStone extends GamePiece implements IGoMember {
     protected GoStone(GoStone stone) {
         super(stone);
         this.mHealth = stone.mHealth;
-        this.mIsDead = stone.mIsDead;
     }
 
     @Override
@@ -48,14 +44,6 @@ public class GoStone extends GamePiece implements IGoMember {
 
     public String getLabel() {
         return this.isOwnedByPlayer1() ? "B" : "W";
-    }
-
-    public boolean isDead() {
-        return mIsDead;
-    }
-
-    public void setDead(boolean dead) {
-        mIsDead = dead;
     }
 
     @Override

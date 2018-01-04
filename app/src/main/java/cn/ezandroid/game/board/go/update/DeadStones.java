@@ -6,55 +6,56 @@ import java.util.LinkedList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 
 /**
- * Keeps track of the number of dead stones of each color that are on the board.
- * At the very end of the game we visibly mark dead stones dead.
+ * 跟踪并记录每方的死子
  *
  * @author Barry Becker
  */
 final class DeadStones {
 
-//    private int numDeadBlackStonesOnBoard_ = 0;
-//    private int numDeadWhiteStonesOnBoard_ = 0;
-
     private LinkedList<GoBoardPosition> mDeadBlackStonesOnBoard = new LinkedList<>();
     private LinkedList<GoBoardPosition> mDeadWhiteStonesOnBoard = new LinkedList<>();
 
-    /**
-     * Constructor.
-     */
     public DeadStones() {
     }
 
+    /**
+     * 清空记录的死子信息
+     */
     public void clear() {
-//        numDeadBlackStonesOnBoard_ = 0;
-//        numDeadWhiteStonesOnBoard_ = 0;
         mDeadBlackStonesOnBoard.clear();
         mDeadWhiteStonesOnBoard.clear();
     }
 
+    /**
+     * 获取指定玩家的死子
+     *
+     * @param player1
+     * @return
+     */
     public LinkedList<GoBoardPosition> getDeadStonesOnBoard(boolean player1) {
         return player1 ? mDeadBlackStonesOnBoard : mDeadWhiteStonesOnBoard;
     }
 
     /**
-     * @param player1 black player if true
-     * @return the number of dead stones on the board for the specified player
+     * 获取指定玩家的死子数
+     *
+     * @param player1
+     * @return
      */
     public int getNumberOnBoard(boolean player1) {
         return player1 ? mDeadBlackStonesOnBoard.size() : mDeadWhiteStonesOnBoard.size();
     }
 
     /**
-     * Add to the dead stone count for the specified player
+     * 记录指定玩家的死子
      *
-     * @param player1 player to add a dead stone for.
+     * @param position
+     * @param player1
      */
     public void increment(GoBoardPosition position, boolean player1) {
         if (player1) {
-//            numDeadBlackStonesOnBoard_++;
             mDeadBlackStonesOnBoard.add(position);
         } else {
-//            numDeadWhiteStonesOnBoard_++;
             mDeadWhiteStonesOnBoard.add(position);
         }
     }

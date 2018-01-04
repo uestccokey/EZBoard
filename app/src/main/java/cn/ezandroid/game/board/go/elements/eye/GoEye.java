@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.elements.eye;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.eye.EyeTypeAnalyzer;
 import cn.ezandroid.game.board.go.analysis.eye.information.EyeInformation;
@@ -14,106 +13,94 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.string.GoString;
 
 /**
- * A GoEye is composed of a strongly connected set of empty spaces (and possibly some dead enemy stones).
- * By strongly connected I mean nobi connections only.
- * A GoEye may be one of several different eye types enumerated below
- * A group needs 2 provably true eyes to live.
+ * 眼位模型
+ * <p>
+ * 眼位由一组强连接的空点组成（有时也包含敌方死子）
+ * 一般来说一个棋群需要两个真眼才能保证活棋
  *
  * @author Barry Becker
  */
 public class GoEye extends GoString implements IGoEye {
 
-    /** A set of positions that are in the eye space. Need not be empty. */
-    private GoBoardPositionSet members_;
+    // 眼位中的位置点集合
+    private GoBoardPositionSet mMembers;
 
-    /** The kind of eye that this is. */
-    private final EyeInformation information_;
+    // 眼位类型
+    private final EyeInformation mInformation;
 
-    /** In addition to the type, an eye can have a status like nakade, unsettled, or aliveInAtari. */
-    private final EyeStatus status_;
+    // 眼位状态
+    private final EyeStatus mStatus;
 
-    private int numCornerPoints_;
-    private int numEdgePoints_;
+    // 眼位包含的角落3角点数量
+    private int mNumCornerPoints;
 
-    /**
-     * Constructor.
-     * Immutable after construction.
-     * Create a new eye shape containing the specified list of stones/spaces.
-     * Some of the spaces may be occupied by dead opponent stones.
-     */
+    // 眼位包含的边界点数量
+    private int mNumEdgePoints;
+
     public GoEye(GoBoardPositionList spaces, GoBoard board, IGoGroup g, GroupAnalyzer groupAnalyzer) {
         super(spaces, board);
         mGroup = g;
         mIsOwnedByPlayer1 = g.isOwnedByPlayer1();
 
         EyeTypeAnalyzer eyeAnalyzer = new EyeTypeAnalyzer(this, board, groupAnalyzer);
-        information_ = eyeAnalyzer.determineEyeInformation();
-        status_ = information_.determineStatus(this, board);
+        mInformation = eyeAnalyzer.determineEyeInformation();
+        mStatus = mInformation.determineStatus(this, board);
         initializePositionCounts(board);
     }
 
     @Override
     public EyeInformation getInformation() {
-        return information_;
+        return mInformation;
     }
 
     @Override
     public EyeStatus getStatus() {
-        return status_;
+        return mStatus;
     }
 
     @Override
     public String getEyeTypeName() {
-        if (information_ == null)
+        if (mInformation == null)
             return "unknown eye type";
-        return information_.getTypeName();
+        return mInformation.getTypeName();
     }
 
     @Override
     public int getNumCornerPoints() {
-        return numCornerPoints_;
+        return mNumCornerPoints;
     }
 
     @Override
     public int getNumEdgePoints() {
-        return numEdgePoints_;
+        return mNumEdgePoints;
     }
 
     @Override
     protected void initializeMembers() {
-        members_ = new GoBoardPositionSet();
+        mMembers = new GoBoardPositionSet();
     }
 
     private void initializePositionCounts(GoBoard board) {
-        numCornerPoints_ = 0;
-        numEdgePoints_ = 0;
+        mNumCornerPoints = 0;
+        mNumEdgePoints = 0;
         for (GoBoardPosition pos : getMembers()) {
             if (board.isCornerTriple(pos)) {
-                numCornerPoints_++;
+                mNumCornerPoints++;
             }
             if (board.isOnEdge(pos)) {
-                numEdgePoints_++;
+                mNumEdgePoints++;
             }
         }
     }
 
-    /**
-     * @return the hashSet containing the members
-     */
     @Override
     public GoBoardPositionSet getMembers() {
-        return members_;
+        return mMembers;
     }
 
-    /**
-     * Add a space to the eye string.
-     * The space is either blank or a dead enemy stone.
-     * Called only during initial construction.
-     */
     @Override
     protected void addMemberInternal(GoBoardPosition space, GoBoard board) {
         if (getMembers().contains(space)) {
-            GameContext.log(1, "Warning: the eye, " + this + ", already contains " + space);
             assert ((space.getString() == null) || (this == space.getString())) :
                     "bad space or bad owning string" + space.getString();
         }
@@ -131,12 +118,16 @@ public class GoEye extends GoString implements IGoEye {
         getMembers().clear();
     }
 
-    public String toString() {
-        return new EyeSerializer(this).serialize();
-    }
-
     @Override
-    protected String getPrintPrefix() {
-        return " Eye: " + getEyeTypeName() + ": ";
+    public String toString() {
+        StringBuilder bldr = new StringBuilder("GoEye: ");
+        bldr.append(" ownedByPlayer1=").append(isOwnedByPlayer1());
+        bldr.append(" status=").append(getStatus());
+        bldr.append(" info=").append("[").append(getInformation()).append("]");
+        bldr.append(" num corner pts=").append(getNumCornerPoints());
+        bldr.append(" num edge pts=").append(getNumEdgePoints());
+        bldr.append(" UnconditionallyAlive=").append(isUnconditionallyAlive());
+        bldr.append(" num members=").append(size());
+        return bldr.toString();
     }
 }

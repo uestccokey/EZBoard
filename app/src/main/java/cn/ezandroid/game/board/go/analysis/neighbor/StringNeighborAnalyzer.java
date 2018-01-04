@@ -1,7 +1,6 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.geometry.Box;
 import cn.ezandroid.game.board.go.BoardValidator;
 import cn.ezandroid.game.board.go.GoBoard;
@@ -56,8 +55,6 @@ class StringNeighborAnalyzer {
         }
         if (returnToUnvisitedState) {
             stones.unvisitPositions();
-            if (GameContext.getDebugMode() > 1)
-                validator_.confirmAllUnvisited();
         }
 
         return stones;

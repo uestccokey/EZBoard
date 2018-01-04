@@ -193,10 +193,6 @@ public class GoString extends GoSet implements IGoString {
         }
     }
 
-    protected String getPrintPrefix() {
-        return " STRING(";
-    }
-
     @Override
     public boolean isUnconditionallyAlive() {
         return mIsUnconditionallyAlive;
@@ -209,7 +205,7 @@ public class GoString extends GoSet implements IGoString {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(getPrintPrefix());
+        StringBuilder sb = new StringBuilder(" STRING(");
         sb.append(" UA=").append(isUnconditionallyAlive()).append(" ");
         Iterator it = getMembers().iterator();
         if (it.hasNext()) {
