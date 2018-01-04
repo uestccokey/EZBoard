@@ -2,29 +2,28 @@
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
 /**
- * Enum for the different possible Neighbor types.
- * These constants represent the types of possible neighbors that can be searched for.
+ * 邻居类型的枚举
  *
  * @author Barry Becker
  */
 public enum NeighborType {
 
-    /** Has a stone in the space */
+    /** 已被占用 */
     OCCUPIED,
 
-    /** No stone at the nbr position. */
+    /** 未被占用 */
     UNOCCUPIED,
 
-    /** nbr stone same color as current stone. */
+    /** 友方棋子 */
     FRIEND,
 
-    /** nbr stone enemy of current stone. */
+    /** 敌方棋子 */
     ENEMY,
 
-    /** Enemy or unoccupied. */
+    /** 非己方棋子 */
     NOT_FRIEND,
 
-    /** any kind of nbr. */
+    /** 任意类型. */
     ANY
 }
 

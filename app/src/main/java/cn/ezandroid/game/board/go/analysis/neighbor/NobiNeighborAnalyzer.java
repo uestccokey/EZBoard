@@ -8,22 +8,23 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * Performs static analysis of a go board to determine
- * immediately adjacent, strongly connected (nobi) neighbor locations.
+ * 对棋盘进行静态分析，以确定邻接的邻居
  *
  * @author Barry Becker
  */
 public class NobiNeighborAnalyzer {
 
-    private GoBoard board_;
+    private GoBoard mBoard;
 
     public NobiNeighborAnalyzer(GoBoard board) {
-        board_ = board;
+        mBoard = board;
     }
 
     /**
-     * @param empties a list of unoccupied positions.
-     * @return a list of stones bordering the set of empty board positions.
+     * 查找指定空位置点列表周围的棋子位置集合
+     *
+     * @param empties
+     * @return
      */
     GoBoardPositionSet findOccupiedNobiNeighbors(GoBoardPositionList empties) {
         GoBoardPositionSet allNbrs = new GoBoardPositionSet();
@@ -38,13 +39,12 @@ public class NobiNeighborAnalyzer {
     }
 
     /**
-     * get neighboring stones of the specified stone.
+     * 获取指定位置的周围的指定类型邻居的位置集合
      *
-     * @param stone           the stone (or space) whose neighbors we are to find.
-     * @param friendOwnedByP1 need to specify this in the case that the stone is a blank space
-     *                        and has undefined ownership.
-     * @param neighborType    (EYE, NOT_FRIEND etc)
-     * @return a set of stones that are immediate (nobi) neighbors.
+     * @param stone
+     * @param friendOwnedByP1
+     * @param neighborType
+     * @return
      */
     GoBoardPositionSet getNobiNeighbors(GoBoardPosition stone, boolean friendOwnedByP1,
                                         NeighborType neighborType) {
@@ -53,29 +53,21 @@ public class NobiNeighborAnalyzer {
         int col = stone.getCol();
 
         if (row > 1)
-            addNobiNeighbor((GoBoardPosition) board_.getPosition(row - 1, col),
+            addNobiNeighbor((GoBoardPosition) mBoard.getPosition(row - 1, col),
                     friendOwnedByP1, nbrs, neighborType);
-        if (row + 1 <= board_.getNumRows())
-            addNobiNeighbor((GoBoardPosition) board_.getPosition(row + 1, col),
+        if (row + 1 <= mBoard.getNumRows())
+            addNobiNeighbor((GoBoardPosition) mBoard.getPosition(row + 1, col),
                     friendOwnedByP1, nbrs, neighborType);
         if (col > 1)
-            addNobiNeighbor((GoBoardPosition) board_.getPosition(row, col - 1),
+            addNobiNeighbor((GoBoardPosition) mBoard.getPosition(row, col - 1),
                     friendOwnedByP1, nbrs, neighborType);
-        if (col + 1 <= board_.getNumCols())
-            addNobiNeighbor((GoBoardPosition) board_.getPosition(row, col + 1),
+        if (col + 1 <= mBoard.getNumCols())
+            addNobiNeighbor((GoBoardPosition) mBoard.getPosition(row, col + 1),
                     friendOwnedByP1, nbrs, neighborType);
 
         return nbrs;
     }
 
-    /**
-     * Get an adjacent neighbor stones restricted to the desired type.
-     *
-     * @param nbrStone        the neighbor to check
-     * @param friendOwnedByP1 type of the center stone (can't use center.owner since center may be unnoccupied)
-     * @param nbrs            hashset of the ngbors matching the criteria.
-     * @param neighborType    one of the defined neighbor types.
-     */
     private static void addNobiNeighbor(GoBoardPosition nbrStone, boolean friendOwnedByP1,
                                         GoBoardPositionSet nbrs, NeighborType neighborType) {
         boolean correctNeighborType = true;

@@ -2,38 +2,36 @@
 package cn.ezandroid.game.board.go.analysis.neighbor;
 
 import cn.ezandroid.game.board.common.geometry.Box;
-import cn.ezandroid.game.board.go.BoardValidator;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 
 /**
- * Performs static analysis of a go board to determine strings.
+ * 对棋盘进行静态分析，以确定棋串
  *
  * @author Barry Becker
  */
 class StringNeighborAnalyzer {
 
-    private GoBoard board_;
-    private BoardValidator validator_;
+    private GoBoard mBoard;
 
-    /**
-     * Constructor
-     *
-     * @param board the board
-     */
     StringNeighborAnalyzer(GoBoard board) {
-        board_ = board;
-        validator_ = new BoardValidator(board);
+        mBoard = board;
     }
 
     /**
-     * Determines a string connected from a seed stone within a specified bounding area
-     * Perform a breadth first search until all neighbors found.
-     * Use the visited flag to indicate that a stone has been added to the string.
+     * 查找指定范围内的指定种子棋子连接的棋串的位置列表
+     * <p>
+     * 执行广度优先搜索，直到找到所有邻居
+     * 使用访问标志来表示棋子已被添加到棋串
      *
-     * @return string from seed stone
+     * @param stone
+     * @param friendOwnedByP1
+     * @param returnToUnvisitedState
+     * @param type
+     * @param box
+     * @return
      */
     GoBoardPositionList findStringFromInitialPosition(GoBoardPosition stone, boolean friendOwnedByP1,
                                                       boolean returnToUnvisitedState, NeighborType type,
@@ -61,8 +59,10 @@ class StringNeighborAnalyzer {
     }
 
     /**
-     * @param stone stone to find string neighbors for.
-     * @return list of string neighbors of specified position.
+     * 获取指定位置邻接的棋串集合
+     *
+     * @param stone
+     * @return
      */
     GoStringSet findStringNeighbors(GoBoardPosition stone) {
         GoStringSet stringNbrs = new GoStringSet();
@@ -77,22 +77,12 @@ class StringNeighborAnalyzer {
         return stringNbrs;
     }
 
-    /**
-     * @return all string neighbors of specified position.
-     */
     int pushStringNeighbors(GoBoardPosition s, boolean friendIsPlayer1, GoBoardPositionList stack,
                             boolean samePlayerOnly) {
         return pushStringNeighbors(s, friendIsPlayer1, stack, samePlayerOnly, NeighborType.OCCUPIED,
-                new Box(1, 1, board_.getNumRows(), board_.getNumCols()));
+                new Box(1, 1, mBoard.getNumRows(), mBoard.getNumCols()));
     }
 
-    /**
-     * Check all nobi neighbors (at most 4).
-     *
-     * @param s     the stone of which to check the neighbors of
-     * @param stack the stack to add unvisited neighbors
-     * @return number of stones added to the stack
-     */
     private int pushStringNeighbors(GoBoardPosition s, boolean friendPlayer1,
                                     GoBoardPositionList stack, boolean samePlayerOnly,
                                     NeighborType type, Box bbox) {
@@ -112,17 +102,11 @@ class StringNeighborAnalyzer {
         return numPushed;
     }
 
-    /**
-     * return 1 if this is a valid neighbor according to specification.
-     * These are the immediately adjacent (nobi) nbrs within the specified rectangular bounds
-     *
-     * @return number of neighbors added (0 or 1).
-     */
     private int checkNeighbor(int r, int c, int rowOffset, int colOffset,
                               boolean friendOwnedByPlayer1, GoBoardPositionList stack,
                               boolean samePlayerOnly, NeighborType type,
                               Box bbox) {
-        GoBoardPosition nbr = (GoBoardPosition) board_.getPosition(r + rowOffset, c + colOffset);
+        GoBoardPosition nbr = (GoBoardPosition) mBoard.getPosition(r + rowOffset, c + colOffset);
         if (bbox.contains(nbr.getLocation())) {
             return checkNeighbor(r, c, rowOffset, colOffset, friendOwnedByPlayer1, stack, samePlayerOnly, type);
         } else {
@@ -130,24 +114,10 @@ class StringNeighborAnalyzer {
         }
     }
 
-    /**
-     * Check an immediately adjacent (nobi) nbr.
-     *
-     * @param r                    row
-     * @param c                    column
-     * @param rowOffset            offset from row indicating position of ngbor to check
-     * @param colOffset            offset from column indicating position of ngbor to check
-     * @param friendOwnedByPlayer1 need to specify this when the position checked, s,
-     *                             is empty and has undefined ownership.
-     * @param stack                if nbr fits criteria then add to stack
-     * @param samePlayerOnly       mus the nbr be owned by the same player only
-     * @param type                 one of REGULAR_PIECE, UNOCCUPIED, or NOT_FRIEND
-     * @return 1 if this is a valid neighbor of the type that we want
-     */
     private int checkNeighbor(int r, int c, int rowOffset, int colOffset,
                               boolean friendOwnedByPlayer1, GoBoardPositionList stack,
                               boolean samePlayerOnly, NeighborType type) {
-        GoBoardPosition nbr = (GoBoardPosition) board_.getPosition(r + rowOffset, c + colOffset);
+        GoBoardPosition nbr = (GoBoardPosition) mBoard.getPosition(r + rowOffset, c + colOffset);
 
         switch (type) {
             case FRIEND:

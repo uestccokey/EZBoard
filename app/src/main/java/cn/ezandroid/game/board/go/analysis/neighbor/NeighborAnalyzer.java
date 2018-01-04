@@ -12,185 +12,152 @@ import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * Performs static analysis of a go board to determine strings and
- * other analysis involving neighbor locations.
- * Also acts as a facade to the other neighbor analyzers in this class.
+ * 对棋盘进行静态分析，确定棋群，棋串及紧邻的邻居位置
+ * 也作为其他邻居分析器的外观（facade模式）
  *
  * @author Barry Becker
  */
 public class NeighborAnalyzer {
 
-    private GoBoard board_;
-    private GroupNeighborAnalyzer groupNbrAnalyzer_;
-    private StringNeighborAnalyzer stringNbrAnalyzer_;
-    private NobiNeighborAnalyzer nobiAnalyzer_;
+    private GoBoard mBoard;
+    private GroupNeighborAnalyzer mGroupNeighborAnalyzer;
+    private StringNeighborAnalyzer mStringNeighborAnalyzer;
+    private NobiNeighborAnalyzer mNobiNeighborAnalyzer;
 
-    /**
-     * Constructor
-     *
-     * @param board needed to find neighbors.
-     */
     public NeighborAnalyzer(GoBoard board) {
-        board_ = board;
-        groupNbrAnalyzer_ = new GroupNeighborAnalyzer(board);
-        stringNbrAnalyzer_ = new StringNeighborAnalyzer(board);
-        nobiAnalyzer_ = new NobiNeighborAnalyzer(board);
+        mBoard = board;
+        mGroupNeighborAnalyzer = new GroupNeighborAnalyzer(board);
+        mStringNeighborAnalyzer = new StringNeighborAnalyzer(board);
+        mNobiNeighborAnalyzer = new NobiNeighborAnalyzer(board);
     }
 
     /**
-     * @param empties a list of unoccupied positions.
-     * @return a list of stones bordering the set of empty board positions.
+     * 查找指定空位置点列表周围的棋子位置集合
+     *
+     * @param empties
+     * @return
      */
     public GoBoardPositionSet findOccupiedNobiNeighbors(GoBoardPositionList empties) {
-        return nobiAnalyzer_.findOccupiedNobiNeighbors(empties);
+        return mNobiNeighborAnalyzer.findOccupiedNobiNeighbors(empties);
     }
 
-    /**
-     * get neighboring stones of the specified stone.
-     *
-     * @param stone        the stone (or space) whose neighbors we are to find (it must contain a piece).
-     * @param neighborType (EYE, NOT_FRIEND etc)
-     * @return a set of stones that are immediate (nobi) neighbors.
-     */
     public GoBoardPositionSet getNobiNeighbors(GoBoardPosition stone, NeighborType neighborType) {
         return getNobiNeighbors(stone, stone.getPiece().isOwnedByPlayer1(), neighborType);
     }
 
     /**
-     * get neighboring stones of the specified stone.
+     * 获取指定位置的周围的指定类型邻居的位置集合
      *
-     * @param stone           the stone (or space) whose neighbors we are to find.
-     * @param friendOwnedByP1 need to specify this in the case that the stone is a blank space and has undefined ownership.
-     * @param neighborType    (EYE, NOT_FRIEND etc)
-     * @return a set of stones that are immediate (nobi) neighbors.
+     * @param stone
+     * @param friendOwnedByP1
+     * @param neighborType
+     * @return
      */
     public GoBoardPositionSet getNobiNeighbors(GoBoardPosition stone, boolean friendOwnedByP1,
                                                NeighborType neighborType) {
-        return nobiAnalyzer_.getNobiNeighbors(stone, friendOwnedByP1, neighborType);
+        return mNobiNeighborAnalyzer.getNobiNeighbors(stone, friendOwnedByP1, neighborType);
     }
 
-    /**
-     * determine a set of stones that are tightly connected to the specified stone.
-     * This set of stones constitutes a string, but since stones cannot belong to more than
-     * one string we must return a List.
-     *
-     * @param stone                  he stone from which to begin searching for the string
-     * @param returnToUnvisitedState if true then the stones will all be marked unvisited when done searching
-     * @return find string.
-     */
     public GoBoardPositionList findStringFromInitialPosition(GoBoardPosition stone,
                                                              boolean returnToUnvisitedState) {
         return findStringFromInitialPosition(
                 stone, stone.getPiece().isOwnedByPlayer1(), returnToUnvisitedState, NeighborType.OCCUPIED,
-                new Box(1, 1, board_.getNumRows(), board_.getNumCols()));
+                new Box(1, 1, mBoard.getNumRows(), mBoard.getNumCols()));
     }
 
     /**
-     * Determines a string connected from a seed stone within a specified bounding area.
+     * 查找指定范围内的指定种子棋子连接的棋串的位置列表
+     * <p>
+     * 执行广度优先搜索，直到找到所有邻居
+     * 使用访问标志来表示棋子已被添加到棋串
      *
-     * @return string from seed stone.
+     * @param stone
+     * @param friendOwnedByP1
+     * @param returnToUnvisitedState
+     * @param type
+     * @param box
+     * @return
      */
     public GoBoardPositionList findStringFromInitialPosition(GoBoardPosition stone, boolean friendOwnedByP1,
                                                              boolean returnToUnvisitedState, NeighborType type, Box box) {
-        GoBoardPositionList stones =
-                stringNbrAnalyzer_.findStringFromInitialPosition(stone, friendOwnedByP1, returnToUnvisitedState,
-                        type, box);
-
-        return stones;
+        return mStringNeighborAnalyzer.findStringFromInitialPosition(stone, friendOwnedByP1, returnToUnvisitedState, type, box);
     }
 
     /**
-     * @param position stone or space to find string neighbors of.
-     * @return string neighbors
+     * 获取指定位置邻接的棋串集合
+     *
+     * @param position
+     * @return
      */
     public GoStringSet findStringNeighbors(GoBoardPosition position) {
-        return stringNbrAnalyzer_.findStringNeighbors(position);
+        return mStringNeighborAnalyzer.findStringNeighbors(position);
     }
 
-    /**
-     * This version assumes that the stone is occupied.
-     *
-     * @return the list of stones in the group that was found.
-     */
     public GoBoardPositionSet findGroupNeighbors(GoBoardPosition position, boolean samePlayerOnly) {
         assert (position.getPiece() != null) : "Position " + position + " does not have a piece!";
         return findGroupNeighbors(position, position.getPiece().isOwnedByPlayer1(), samePlayerOnly);
     }
 
     /**
-     * return a set of stones which are loosely connected to this stone.
-     * Check the 16 purely group neighbors and 4 string neighbors
-     * ***
-     * **S**
-     * *SXS*
-     * **S**
-     * ***
+     * 获取与指定棋子松散连接的棋子的集合
+     * 包括如下*所示的16个标准棋群邻居和S所示的4个棋串邻居
+     * <p>
+     * __***
+     * _**S**
+     * _*SXS*
+     * _**S**
+     * __***
      *
-     * @param stone          (not necessarily occupied)
-     * @param friendPlayer1  typically stone.isOwnedByPlayer1 value of stone unless it is blank.
-     * @param samePlayerOnly if true then find group nbrs that are have same ownership as friendPlayer1
-     * @return group neighbors
+     * @param stone
+     * @param friendPlayer1
+     * @param samePlayerOnly
+     * @return
      */
     public GoBoardPositionSet findGroupNeighbors(GoBoardPosition stone, boolean friendPlayer1,
                                                  boolean samePlayerOnly) {
-        return groupNbrAnalyzer_.findGroupNeighbors(stone, friendPlayer1, samePlayerOnly);
+        return mGroupNeighborAnalyzer.findGroupNeighbors(stone, friendPlayer1, samePlayerOnly);
     }
 
-    /**
-     * determine a set of stones that are loosely connected to the specified stone.
-     * This set of stones constitutes a group, but since stones cannot belong to more than
-     * one group (or string) we must return a List.
-     *
-     * @param stone the stone to search from for group neighbors.
-     * @return the list of stones in the group that was found.
-     */
     public GoBoardPositionList findGroupFromInitialPosition(GoBoardPosition stone) {
         return findGroupFromInitialPosition(stone, true);
     }
 
     /**
-     * determine a set of stones that have group connections to the specified stone.
-     * This set of stones constitutes a group, but since stones cannot belong to more than
-     * one group (or string) we must return a List.
-     * Group connections include nobi, ikken tobi, and kogeima.
+     * 查找与指定棋子有棋群连接的所有棋子位置列表
      *
-     * @param stone                  the stone to search from for group neighbors.
-     * @param returnToUnvisitedState if true, then mark everything unvisited when done.
-     * @return the list of stones in the group that was found.
+     * @param stone
+     * @param returnToUnvisitedState
+     * @return
      */
     public GoBoardPositionList findGroupFromInitialPosition(GoBoardPosition stone, boolean returnToUnvisitedState) {
-        return groupNbrAnalyzer_.findGroupFromInitialPosition(stone, returnToUnvisitedState);
+        return mGroupNeighborAnalyzer.findGroupFromInitialPosition(stone, returnToUnvisitedState);
     }
 
     /**
-     * Finds all the groups.
-     * Careful about running this without running findAllStringsOnBoard() first
-     * Otherwise you could end up with board positions in multiple groups.
+     * 查找棋盘上的所有棋群
      *
-     * @return all the groups on the board
+     * @return
      */
     public GoGroupSet findAllGroupsOnBoard() {
-        return groupNbrAnalyzer_.findAllGroups();
+        return mGroupNeighborAnalyzer.findAllGroups();
     }
 
     /**
-     * This is an expensive operation because it clears everything we know on the board
-     * and recreates all the string from first principals.
-     * It has the side effect of updating the board state. Careful.
-     * You will need to run findAllGroups on
+     * 这是一个昂贵的操作，因为它清除了棋盘上的所有已知信息，并且重新创建了所有棋串
+     * 它有更新棋盘状态的副作用，调用时需要小心
      *
-     * @return all the strings on the board
+     * @return
      */
     public GoStringSet determineAllStringsOnBoard() {
         clearEyes();
         GoStringSet strings = new GoStringSet();
-        for (int i = 1; i <= board_.getNumRows(); i++) {
-            for (int j = 1; j <= board_.getNumCols(); j++) {
-                GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
+        for (int i = 1; i <= mBoard.getNumRows(); i++) {
+            for (int j = 1; j <= mBoard.getNumCols(); j++) {
+                GoBoardPosition pos = (GoBoardPosition) mBoard.getPosition(i, j);
                 if (pos.isOccupied()) {
                     IGoString existingString = strings.findStringContainingPosition(pos);
                     if (existingString == null) {
-                        GoString str = new GoString(findStringFromInitialPosition(pos, true), board_);
+                        GoString str = new GoString(findStringFromInitialPosition(pos, true), mBoard);
                         strings.add(str);
                         pos.setString(str);
                     } else {
@@ -202,13 +169,10 @@ public class NeighborAnalyzer {
         return strings;
     }
 
-    /**
-     * Gets rid of everything we know about the board. Careful.
-     */
     private void clearEyes() {
-        for (int i = 1; i <= board_.getNumRows(); i++) {
-            for (int j = 1; j <= board_.getNumCols(); j++) {
-                GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
+        for (int i = 1; i <= mBoard.getNumRows(); i++) {
+            for (int j = 1; j <= mBoard.getNumCols(); j++) {
+                GoBoardPosition pos = (GoBoardPosition) mBoard.getPosition(i, j);
                 pos.setEye(null);
                 pos.setString(null);
                 pos.setVisited(false);

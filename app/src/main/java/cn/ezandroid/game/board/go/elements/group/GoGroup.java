@@ -18,7 +18,14 @@ import cn.ezandroid.game.board.go.elements.string.IGoString;
 /**
  * 棋群模型
  * <p>
- * 棋群由一些松散连接的同色棋子组成，比如邻接，斜接，跳接等
+ * 棋群由一些松散连接的同色棋子组成，比如通过尖，一间跳，飞等可以连接的棋子
+ * 如图
+ * __***
+ * _**S**
+ * _*SXS*
+ * _**S**
+ * __***
+ * X与周围20个点属于棋群关系
  *
  * @author Barry Becker
  */
