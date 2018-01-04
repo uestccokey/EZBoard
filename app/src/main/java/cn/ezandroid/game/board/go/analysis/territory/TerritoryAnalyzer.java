@@ -8,55 +8,40 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 
 /**
- * Analyzes territory on board.
+ * 形势分析器
  *
  * @author Barry Becker
  */
 public class TerritoryAnalyzer {
 
-    private GoBoard board_;
-    private GroupAnalyzerMap analyzerMap_;
+    private GoBoard mBoard;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     *
-     * @param board board to analyze
-     */
     public TerritoryAnalyzer(GoBoard board, GroupAnalyzerMap analyzerMap) {
-        board_ = board;
-        analyzerMap_ = analyzerMap;
+        mBoard = board;
+        mAnalyzerMap = analyzerMap;
     }
 
     /**
-     * Get an estimate of the territory for the specified player.
-     * This estimate is computed by summing all spaces in eyes with dead opponent stones that are still on the board.
-     * Empty spaces are weighted by how likely they are to eventually be territory of one side or the other.
-     * At the end of the game this + the number of pieces captured so far should give the true score.
+     * 获取指定玩家的当前形势
      *
-     * @param forPlayer1  player to get the estimate for.
-     * @param isEndOfGame use 0 or 1 instead of pos.scoreContribution if true.
-     * @return estimate of territory for forPlayer1
+     * @param forPlayer1
+     * @param isEndOfGame
+     * @return
      */
     public int getTerritoryEstimate(boolean forPlayer1, boolean isEndOfGame) {
         float territoryEstimate = 0;
-
         // we should be able to just sum all the position scores now.
-        for (int i = 1; i <= board_.getNumRows(); i++) {
-            for (int j = 1; j <= board_.getNumCols(); j++) {
-                GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
+        for (int i = 1; i <= mBoard.getNumRows(); i++) {
+            for (int j = 1; j <= mBoard.getNumCols(); j++) {
+                GoBoardPosition pos = (GoBoardPosition) mBoard.getPosition(i, j);
                 double val = getTerritoryEstimateForPosition(pos, forPlayer1, isEndOfGame);
                 territoryEstimate += val;
-//                if (forPlayer1 && val > 0) {
-//                    Log.e("TA", pos + " " + val + " " + territoryEstimate);
-//                }
             }
         }
         return (int) territoryEstimate;
     }
 
-    /**
-     * @return the estimate for a single position.
-     */
     private float getTerritoryEstimateForPosition(GoBoardPosition pos, boolean forPlayer1,
                                                   boolean isEndOfGame) {
         double val = isEndOfGame ? (forPlayer1 ? 1.0 : -1.0) : pos.getScore();
@@ -69,23 +54,19 @@ public class TerritoryAnalyzer {
             } else if (!forPlayer1 && pos.getScore() < 0) {
                 territoryEstimate -= val;  // will be positive
             }
+            // TODO 如果眼位所属的棋群是死棋，则计算到该棋串的对手的分数中
         } else { // occupied
             GamePiece piece = pos.getPiece();
             IGoGroup group = pos.getGroup();
             assert (piece != null);
             if (group != null) {
                 // add credit for probable captured stones.
-                double relHealth = analyzerMap_.getAnalyzer(group).getRelativeHealth(board_, isEndOfGame);
+                double relHealth = mAnalyzerMap.getAnalyzer(group).getRelativeHealth(mBoard, isEndOfGame);
                 if (forPlayer1 && !piece.isOwnedByPlayer1() && relHealth >= 0) {
                     territoryEstimate += val;
                 } else if (!forPlayer1 && piece.isOwnedByPlayer1() && relHealth <= 0) {
                     territoryEstimate -= val;
                 }
-//                if (forPlayer1 && !piece.isOwnedByPlayer1() && relHealth >= -0.1) {
-//                    territoryEstimate += val;
-//                } else if (!forPlayer1 && piece.isOwnedByPlayer1() && relHealth <= 0.1) {
-//                    territoryEstimate -= val;
-//                }
             }
         }
         return territoryEstimate;

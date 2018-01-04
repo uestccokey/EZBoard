@@ -5,39 +5,35 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.GroupAnalyzerMap;
 
 /**
- * Responsible for evaluating groups and territory on a go board.
- * we keep a cache of the score for each unique board position to avoid recalculating.
+ * 静态评估棋盘的形势
  *
  * @author Barry Becker
  */
 public final class BoardEvaluator {
 
-    private WorthCalculator worthCalculator_;
-    private GroupAnalyzerMap analyzerMap_;
+    private WorthCalculator mWorthCalculator;
 
-    /**
-     * Constructor.
-     */
     public BoardEvaluator(GoBoard board) {
-        analyzerMap_ = new GroupAnalyzerMap();
-        worthCalculator_ = new WorthCalculator(board, analyzerMap_);
+        mWorthCalculator = new WorthCalculator(board, new GroupAnalyzerMap());
     }
 
     /**
-     * Get estimate of territory for specified player.
+     * 获取指定玩家的形势
      *
-     * @param forPlayer1  the player to get the estimate for
-     * @param isEndOfGame then we need the estimate to be more accurate.
-     * @return estimate of size of territory for specified player.
+     * @param forPlayer1
+     * @param isEndOfGame
+     * @return
      */
     public int getTerritoryEstimate(boolean forPlayer1, boolean isEndOfGame) {
-        return worthCalculator_.getTerritoryEstimate(forPlayer1, isEndOfGame);
+        return mWorthCalculator.getTerritoryEstimate(forPlayer1, isEndOfGame);
     }
 
     /**
-     * @return the estimated difference in territory between the 2 sides.
+     * 更新双方形势，并获取形势的差距
+     *
+     * @return
      */
     public float updateTerritoryAtEndOfGame() {
-        return worthCalculator_.updateTerritoryAtEndOfGame();
+        return mWorthCalculator.updateTerritoryAtEndOfGame();
     }
 }

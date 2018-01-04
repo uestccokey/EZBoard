@@ -8,73 +8,62 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * Analyzes territory on board.
+ * 形势更新器
  *
  * @author Barry Becker
  */
 public class TerritoryUpdater {
 
-    private GoBoard board_;
+    private GoBoard mBoard;
 
     /**
-     * The difference between the 2 player's territory.
-     * It is computed as black-white = sum(health of stone i)
+     * 两个玩家形势的差距
+     * <p>
+     * black-white = sum(health of stone i)
      */
-    private float territoryDelta_ = 0;
+    private float mTerritoryDelta = 0;
 
-    private GroupAnalyzerMap analyzerMap_;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     *
-     * @param board board to analyze
-     */
     public TerritoryUpdater(GoBoard board, GroupAnalyzerMap analyzerMap) {
-        board_ = board;
-        analyzerMap_ = analyzerMap;
+        mBoard = board;
+        mAnalyzerMap = analyzerMap;
     }
 
     public float getTerritoryDelta() {
-        return territoryDelta_;
+        return mTerritoryDelta;
     }
 
     /**
-     * Loops through the groups to determine the territorial difference between the players.
-     * Then it loops through and determines a score for positions that are not part of groups.
-     * If a position is part of an area that borders only a living group, then it is considered
-     * territory for that group's side. If, however, the position borders living groups from
-     * both sides, then the score is weighted according to the proportion of the perimeter
-     * that borders each living group and how alive those bordering groups are.
-     * This is the primary factor in evaluating the board position for purposes of search.
-     * This method and the methods it calls are the crux of this go playing program.
+     * 计算当前形势
      *
-     * @return the estimated difference in territory between the 2 sides.
-     * A large positive number indicates black is winning, while a negative number indicates that white has the edge.
+     * @param isEndOfGame 为true时会计算空点分数
+     * @return 两个玩家形势的差距
      */
     public float updateTerritory(boolean isEndOfGame) {
         clearScores();
 
-        analyzerMap_.clear();  /// need?
+        mAnalyzerMap.clear();  /// need?
 
-        float delta = calcAbsoluteHealth();
-        delta = calcRelativeHealth(delta);
+        calcAbsoluteHealth();
+        float delta = calcRelativeHealth();
         if (isEndOfGame) {
-            EmptyRegionUpdater emptyUpdater = new EmptyRegionUpdater(board_, analyzerMap_);
+            EmptyRegionUpdater emptyUpdater = new EmptyRegionUpdater(mBoard, mAnalyzerMap);
             delta += emptyUpdater.updateEmptyRegions();
         }
 
-        territoryDelta_ = delta;
+        mTerritoryDelta = delta;
 
         return delta;
     }
 
     /**
-     * Clear whatever cached score state we might have before recomputing.
+     * 先清除之前的分数和健康信息
      */
     private void clearScores() {
-        for (int i = 1; i <= board_.getNumRows(); i++) {
-            for (int j = 1; j <= board_.getNumCols(); j++) {
-                GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
+        for (int i = 1; i <= mBoard.getNumRows(); i++) {
+            for (int j = 1; j <= mBoard.getNumCols(); j++) {
+                GoBoardPosition pos = (GoBoardPosition) mBoard.getPosition(i, j);
                 pos.setScore(0);
 
                 if (pos.isOccupied()) {
@@ -86,32 +75,26 @@ public class TerritoryUpdater {
     }
 
     /**
-     * First calculate the absolute health of the groups so that measure can
-     * be used in the more accurate relative health computation.
-     *
-     * @return total health of all stones in all groups in absolute terms.
+     * 遍历所有棋群，计算绝对健康评分，为后面计算相对健康评分做准备
      */
-    private float calcAbsoluteHealth() {
-        float delta = 0;
-        for (IGoGroup g : board_.getGroups()) {
-            analyzerMap_.getAnalyzer(g).calculateAbsoluteHealth(board_);
+    private void calcAbsoluteHealth() {
+        for (IGoGroup g : mBoard.getGroups()) {
+            mAnalyzerMap.getAnalyzer(g).calculateAbsoluteHealth(mBoard);
         }
-
-        return delta;
     }
 
     /**
-     * @param initDelta initial value.
-     * @return total health of all stones in all groups in relative terms.
+     * 遍历所有棋群，计算相对健康评分
+     *
+     * @return
      */
-    private float calcRelativeHealth(float initDelta) {
-        float delta = initDelta;
-        for (IGoGroup g : board_.getGroups()) {
-            float health = analyzerMap_.getAnalyzer(g).calculateRelativeHealth(board_);
+    private float calcRelativeHealth() {
+        float delta = 0;
+        for (IGoGroup g : mBoard.getGroups()) {
+            float health = mAnalyzerMap.getAnalyzer(g).calculateRelativeHealth(mBoard);
             g.updateTerritory(health);
             delta += health * g.getNumStones();
         }
-
         return delta;
     }
 }

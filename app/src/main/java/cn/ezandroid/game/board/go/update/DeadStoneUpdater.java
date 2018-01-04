@@ -46,17 +46,12 @@ public final class DeadStoneUpdater {
                 if (space.isOccupied()) {
                     GoStone stone = (GoStone) space.getPiece();
                     int side = (stone.isOwnedByPlayer1() ? 1 : -1);
-                    GameContext.log(1, "life & death: " + space + " health=" + stone.getHealth());
                     if (side * stone.getHealth() < 0) {
-                        // then the stone is more dead than alive, so mark it so
-                        GameContext.log(0, "setting " + space + " to dead");
                         mDeadStones.increment(space, space.getPiece().isOwnedByPlayer1());
+                        GameContext.log(1, space + " Health:" + stone.getHealth() + " Dead");
+                    } else {
+                        GameContext.log(1, space + " Health:" + stone.getHealth() + " Alive");
                     }
-//                    if (stone.isOwnedByPlayer1() && stone.getHealth() <= 0.1 || !stone.isOwnedByPlayer1() && stone.getHealth() >= -0.1) {
-//                        // then the stone is more dead than alive, so mark it so
-//                        GameContext.log(0, "setting " + space + " to dead");
-//                        mDeadStones.increment(space, space.getPiece().isOwnedByPlayer1());
-//                    }
                 }
             }
         }

@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
+import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.common.board.BoardPosition;
 import cn.ezandroid.game.board.common.board.GamePiece;
 import cn.ezandroid.game.board.common.geometry.IntLocation;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
         mScoreButton = findViewById(R.id.score);
         mScoreButton.setOnClickListener(v -> score());
 
+        GameContext.setDebugMode(1);
         mGoBoard = new GoBoard(19, 0);
         mBoardEvaluator = new BoardEvaluator(mGoBoard);
         mDeadStoneUpdater = new DeadStoneUpdater(mGoBoard);

@@ -133,5 +133,15 @@ public class BoardPosition {
     public void clear() {
         setPiece(null);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (mPiece != null) {
+            sb.append(mPiece.toString());
+        }
+        sb.append(mLocation.toString());
+        return sb.toString();
+    }
 }
 

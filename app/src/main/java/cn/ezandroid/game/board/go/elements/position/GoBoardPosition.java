@@ -132,4 +132,9 @@ public final class GoBoardPosition extends BoardPosition implements IGoMember {
     public void setScore(double score) {
         this.mScore = score;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + " Score:" + mScore;
+    }
 }

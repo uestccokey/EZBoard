@@ -13,61 +13,49 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionLists;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Updates the empty regions on the board at the end of the game.
- * Used to determine ownership of those empty regions.
- * Does it handle dame's correctly?
+ * 空点归属更新器
  *
  * @author Barry Becker
  */
 public class EmptyRegionUpdater {
 
-    /**
-     * How much score to attribute to a stone that is in an eye.
-     * I'm really not sure what this should be. Perhaps -0.1 instead of 0.1.
-     */
+    // 眼位的默认分数
     private static final float STONE_IN_EYE_CONTRIB = 0.1f;
 
-    private GoBoard board_;
-    private NeighborAnalyzer nbrAnalyzer_;
-    private GroupAnalyzerMap analyzerMap_;
+    private GoBoard mBoard;
+    private NeighborAnalyzer mNeighborAnalyzer;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     *
-     * @param board board to analyze
-     */
     public EmptyRegionUpdater(GoBoard board, GroupAnalyzerMap analyzerMap) {
-        board_ = board;
-        nbrAnalyzer_ = new NeighborAnalyzer(board);
-        analyzerMap_ = analyzerMap;
+        mBoard = board;
+        mNeighborAnalyzer = new NeighborAnalyzer(board);
+        mAnalyzerMap = analyzerMap;
     }
 
     /**
-     * Need to loop over the board and determine for each space if it is territory for the specified player.
-     * We will first mark visited all the stones that are "controlled" by the specified player.
-     * The unoccupied "controlled" positions will be territory.
+     * 遍历所有空点，计算它的得分
      *
-     * @return the change in score after updating the empty regions.
+     * @return
      */
     public float updateEmptyRegions() {
         float diffScore = 0;
 
-        if (board_.getMoveList().getNumMoves() <= 2 * board_.getNumRows()) {
+        if (mBoard.getMoveList().getNumMoves() <= 2 * mBoard.getNumRows()) {
             return diffScore;
         }
         // later in the game we can take the analysis all the way to the edge.
-        //float ratio = (float)board_.getMoveList().getNumMoves() / board_.getTypicalNumMoves();
+        //float ratio = (float)mBoard.getMoveList().getNumMoves() / mBoard.getTypicalNumMoves();
 
         int min = 1;
-        int rMax = board_.getNumRows();
-        int cMax = board_.getNumCols();
+        int rMax = mBoard.getNumRows();
+        int cMax = mBoard.getNumCols();
         Box box = new Box(min, min, rMax, cMax);
 
         GoBoardPositionLists emptyLists = new GoBoardPositionLists();
 
         for (int i = min; i <= rMax; i++) {
             for (int j = min; j <= cMax; j++) {
-                GoBoardPosition pos = (GoBoardPosition) board_.getPosition(i, j);
+                GoBoardPosition pos = (GoBoardPosition) mBoard.getPosition(i, j);
                 diffScore += updateEmptyRegionFromSeed(box, emptyLists, pos);
             }
         }
@@ -77,10 +65,14 @@ public class EmptyRegionUpdater {
     }
 
     /**
-     * Update diffScore for the string connected to pos and mark it visited.
-     * If pos is in an eye, update the score contribution for that eye space.
+     * 如果一个空点是眼位，则直接设置其相应分数
+     * 如果不是眼位，则首先找出该空点所属的最大空点空间，及其空间周围的棋子集合
+     * 并遍历该棋子集合，计算出平均分数，设置给该空点空间的所有空点
      *
-     * @return diffScore value.
+     * @param box
+     * @param emptyLists
+     * @param pos
+     * @return
      */
     private float updateEmptyRegionFromSeed(Box box, GoBoardPositionLists emptyLists,
                                             GoBoardPosition pos) {
@@ -88,14 +80,13 @@ public class EmptyRegionUpdater {
         if (pos.getString() == null && !pos.isInEye()) {
             assert pos.isUnoccupied();
             if (!pos.isVisited()) {
-
                 // don't go all the way to the borders (until the end of the game),
                 // since otherwise we will likely get only one big empty region.
                 GoBoardPositionList empties =
-                        nbrAnalyzer_.findStringFromInitialPosition(pos, false, false, NeighborType.UNOCCUPIED, box);
+                        mNeighborAnalyzer.findStringFromInitialPosition(pos, false, false, NeighborType.UNOCCUPIED, box);
                 emptyLists.add(empties);
 
-                GoBoardPositionSet nbrs = nbrAnalyzer_.findOccupiedNobiNeighbors(empties);
+                GoBoardPositionSet nbrs = mNeighborAnalyzer.findOccupiedNobiNeighbors(empties);
                 float avg = calcAverageScore(nbrs);
 
                 float score = avg * (float) nbrs.size() / Math.max(1, Math.max(nbrs.size(), empties.size()));
@@ -112,17 +103,12 @@ public class EmptyRegionUpdater {
         return diffScore;
     }
 
-    /**
-     * @param stones actually the positions containing the stones.
-     * @return the average scores of the stones in the list.
-     */
     private float calcAverageScore(GoBoardPositionSet stones) {
         float totalScore = 0;
-
         for (GoBoardPosition stone : stones) {
             IGoGroup group = stone.getString().getGroup();
             boolean useCached = false;
-            totalScore += analyzerMap_.getAnalyzer(group).getRelativeHealth(board_, useCached);
+            totalScore += mAnalyzerMap.getAnalyzer(group).getRelativeHealth(mBoard, useCached);
         }
         return totalScore / stones.size();
     }

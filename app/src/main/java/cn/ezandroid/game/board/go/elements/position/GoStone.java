@@ -49,7 +49,7 @@ public class GoStone extends GamePiece implements IGoMember {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("");
-        sb.append(mIsOwnedByPlayer1 ? 'B' : 'W');
+        sb.append(getLabel());
         return sb.toString();
     }
 }

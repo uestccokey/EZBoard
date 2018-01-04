@@ -7,39 +7,37 @@ import cn.ezandroid.game.board.go.analysis.territory.TerritoryAnalyzer;
 import cn.ezandroid.game.board.go.analysis.territory.TerritoryUpdater;
 
 /**
- * For statically evaluating the current state of a GoBoard.
+ * 静态评估棋盘的形势
  *
  * @author Barry Becker
  */
-@SuppressWarnings("HardCodedStringLiteral")
 public class WorthCalculator {
 
-    private TerritoryAnalyzer territoryAnalyzer;
-    private TerritoryUpdater territoryUpdater;
+    private TerritoryAnalyzer mTerritoryAnalyzer;
+    private TerritoryUpdater mTerritoryUpdater;
 
-    /**
-     * Constructor.
-     */
     public WorthCalculator(GoBoard board, GroupAnalyzerMap analyzerMap) {
-        territoryAnalyzer = new TerritoryAnalyzer(board, analyzerMap);
-        territoryUpdater = new TerritoryUpdater(board, analyzerMap);
+        mTerritoryAnalyzer = new TerritoryAnalyzer(board, analyzerMap);
+        mTerritoryUpdater = new TerritoryUpdater(board, analyzerMap);
     }
 
     /**
-     * Get estimate of territory for specified player.
+     * 获取指定玩家的形势
      *
-     * @param forPlayer1  the player to get the estimate for
-     * @param isEndOfGame then we need the estimate to be more accurate.
-     * @return estimate of size of territory for specified player.
+     * @param forPlayer1
+     * @param isEndOfGame
+     * @return
      */
     public int getTerritoryEstimate(boolean forPlayer1, boolean isEndOfGame) {
-        return territoryAnalyzer.getTerritoryEstimate(forPlayer1, isEndOfGame);
+        return mTerritoryAnalyzer.getTerritoryEstimate(forPlayer1, isEndOfGame);
     }
 
     /**
-     * @return the estimated difference in territory between the 2 sides.
+     * 更新双方形势，并获取形势的差距
+     *
+     * @return
      */
     public float updateTerritoryAtEndOfGame() {
-        return territoryUpdater.updateTerritory(true);
+        return mTerritoryUpdater.updateTerritory(true);
     }
 }
