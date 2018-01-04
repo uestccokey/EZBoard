@@ -2,11 +2,13 @@
 package cn.ezandroid.game.board.go.elements.group;
 
 /**
- * Called when the group changes (stones added or removed).
+ * 棋群变化监听器
+ * <p>
+ * 当有棋子添加或者删除时回调
  *
  * @author Barry Becker
  */
-public interface GroupChangeListener {
+public interface GoGroupChangeListener {
 
-    void groupChanged();
+    void onGoGroupChanged();
 }

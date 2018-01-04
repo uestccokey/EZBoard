@@ -117,7 +117,6 @@ public class PostMoveUpdater extends PostChangeUpdater {
         GoBoardPosition nbrStone = nbrs.getOneMember();
         GoString str = (GoString) nbrStone.getString();
         str.addMember(stone, getBoard());
-        getAllGroups().debugPrint(3, "groups before merging:", true, true);
 
         if (nbrs.size() > 1) {
             mergeStringsIfNeeded(str, nbrs);

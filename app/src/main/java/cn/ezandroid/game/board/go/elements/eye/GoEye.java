@@ -43,7 +43,7 @@ public class GoEye extends GoString implements IGoEye {
      */
     public GoEye(GoBoardPositionList spaces, GoBoard board, IGoGroup g, GroupAnalyzer groupAnalyzer) {
         super(spaces, board);
-        group_ = g;
+        mGroup = g;
         mIsOwnedByPlayer1 = g.isOwnedByPlayer1();
 
         EyeTypeAnalyzer eyeAnalyzer = new EyeTypeAnalyzer(this, board, groupAnalyzer);

@@ -35,7 +35,7 @@ public final class GameContext {
     }
 
     /**
-     * 打印
+     * 打印日志
      *
      * @param logLevel
      * @param message

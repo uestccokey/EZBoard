@@ -55,5 +55,10 @@ public interface IGoString extends IGoSet {
 
     void remove(GoBoardPosition stone, GoBoard board);
 
+    /**
+     * 更新棋串成员的健康评分为指定值
+     *
+     * @param health 取值[-1~1]
+     */
     void updateTerritory(float health);
 }

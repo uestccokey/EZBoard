@@ -3,7 +3,6 @@ package cn.ezandroid.game.board.go.elements.string;
 
 import java.util.Iterator;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.StringLibertyAnalyzer;
 import cn.ezandroid.game.board.go.elements.GoSet;
@@ -14,44 +13,35 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * A GoString is composed of a strongly connected set of one or more same color stones.
- * By strongly connected I mean nobi connections only.
- * A GoGroup by comparison, is composed of a set of one or more same color strings.
- * Groups may be connected by diagonals, or ikken tobi, or kogeima (knight's move).
+ * 棋串模型
+ * <p>
+ * 棋串由邻接的同色棋子组成
  *
  * @author Barry Becker
  */
-public class GoString extends GoSet
-        implements IGoString {
+public class GoString extends GoSet implements IGoString {
 
-    /** a set of the stones that are in the string */
-    private GoBoardPositionSet members_;
+    // 棋串中的棋子集合
+    private GoBoardPositionSet mMembers;
 
-    /** The group to which this string belongs. */
-    protected IGoGroup group_;
+    // 棋串所属的棋群
+    protected IGoGroup mGroup;
 
-    /** If true, then we are an eye in an unconditionally alive group (according to Benson's algorithm). */
-    private boolean unconditionallyAlive_;
+    // 是否无条件存活
+    private boolean mIsUnconditionallyAlive;
 
-    /** Keep track of number of liberties instead of computing each time (for performance). */
-    private StringLibertyAnalyzer libertyAnalyzer_;
+    // 跟踪气的数量，防止每次都进行计算，以提高性能
+    private StringLibertyAnalyzer mLibertyAnalyzer;
 
-    /**
-     * Constructor. Create a new string containing the specified stone.
-     */
     public GoString(GoBoardPosition stone, GoBoard board) {
         assert (stone.isOccupied());
         mIsOwnedByPlayer1 = stone.getPiece().isOwnedByPlayer1();
         getMembers().add(stone);
         stone.setString(this);
-        group_ = null;
-        libertyAnalyzer_ = new StringLibertyAnalyzer(board, this);
+        mGroup = null;
+        mLibertyAnalyzer = new StringLibertyAnalyzer(board, this);
     }
 
-    /**
-     * Constructor.
-     * Create a new string containing the specified list of stones
-     */
     public GoString(GoBoardPositionList stones, GoBoard board) {
         assert (stones != null && stones.size() > 0) : "Tried to create list from empty list";
         GoStone stone = (GoStone) stones.getFirst().getPiece();
@@ -61,52 +51,39 @@ public class GoString extends GoSet
         for (GoBoardPosition pos : stones) {
             addMemberInternal(pos, board);
         }
-        libertyAnalyzer_ = new StringLibertyAnalyzer(board, this);
+        mLibertyAnalyzer = new StringLibertyAnalyzer(board, this);
     }
 
-    /**
-     * @return the set of member positions
-     */
     @Override
     public GoBoardPositionSet getMembers() {
-        return members_;
+        return mMembers;
     }
 
-    /**
-     * @param pos position to look for.
-     * @return true if we contain the specified position.
-     */
     @Override
     public boolean contains(GoBoardPosition pos) {
-        return members_.contains(pos);
+        return mMembers.contains(pos);
     }
 
     @Override
     protected void initializeMembers() {
-        members_ = new GoBoardPositionSet();
+        mMembers = new GoBoardPositionSet();
     }
 
     @Override
     public final void setGroup(IGoGroup group) {
-        group_ = group;
+        mGroup = group;
     }
 
     @Override
     public IGoGroup getGroup() {
-        return group_;
+        return mGroup;
     }
 
-    /**
-     * add a stone to the string
-     */
     public void addMember(GoBoardPosition stone, GoBoard board) {
         addMemberInternal(stone, board);
-        libertyAnalyzer_.invalidate();
+        mLibertyAnalyzer.invalidate();
     }
 
-    /**
-     * Add a stone to the string
-     */
     protected void addMemberInternal(GoBoardPosition stone, GoBoard board) {
         assert (stone.isOccupied()) : "trying to add empty space to string. stone=" + stone;
         assert (stone.getPiece().isOwnedByPlayer1() == this.isOwnedByPlayer1()) :
@@ -114,7 +91,6 @@ public class GoString extends GoSet
         if (getMembers().contains(stone)) {
             // this case can happen sometimes.
             // For example if the new stone completes a loop and self-joins the string to itself
-            //GameContext.log( 2, "Warning: the string, " + this + ", already contains the stone " + stone );
             assert (stone.getString() == null) || (this == stone.getString()) :
                     "bad stone " + stone + " or bad owning string " + stone.getString();
         }
@@ -128,11 +104,10 @@ public class GoString extends GoSet
     }
 
     /**
-     * merge a string into this one
+     * 将该棋串与另外一个棋串合并
      */
     public final void merge(IGoString string, GoBoard board) {
         if (this == string) {
-            GameContext.log(1, "Warning: merging " + string + " into itself");
             // its a self join
             return;
         }
@@ -155,18 +130,19 @@ public class GoString extends GoSet
             addMemberInternal(stone, board);
         }
         stringMembers.clear();
-        libertyAnalyzer_.invalidate();
+        mLibertyAnalyzer.invalidate();
     }
 
     /**
-     * remove a stone from this string.
-     * What happens if the string gets split as a result?
-     * The caller should handle this case since we cannot create new strings here.
+     * 从该棋串中删除一个棋子
+     * <p>
+     * 删除棋子后，棋串断裂怎么处理？
+     * 调用者应该处理这种情况，因为我们不能再这里创建一个新的棋串
      */
     @Override
     public final void remove(GoBoardPosition stone, GoBoard board) {
         removeInternal(stone);
-        libertyAnalyzer_.invalidate();
+        mLibertyAnalyzer.invalidate();
     }
 
     void removeInternal(GoBoardPosition stone) {
@@ -174,8 +150,13 @@ public class GoString extends GoSet
         assert (removed) : "failed to remove " + stone + " from" + this;
         stone.setString(null);
         if (getMembers().isEmpty()) {
-            group_.remove(this);
+            mGroup.remove(this);
         }
+    }
+
+    @Override
+    public final GoBoardPositionSet getLiberties(GoBoard board) {
+        return mLibertyAnalyzer.getLiberties();
     }
 
     @Override
@@ -184,28 +165,18 @@ public class GoString extends GoSet
     }
 
     /**
-     * return the set of liberty positions that the string has
+     * 更新棋串的气点
      *
-     * @param board the go board
-     */
-    @Override
-    public final GoBoardPositionSet getLiberties(GoBoard board) {
-        return libertyAnalyzer_.getLiberties();
-    }
-
-    /**
-     * If the libertyPos is occupied, then we subtract this liberty, else add it.
-     *
-     * @param libertyPos position to check for liberty
+     * @param libertyPos
      */
     public void changedLiberty(GoBoardPosition libertyPos) {
-        libertyAnalyzer_.invalidate();
+        mLibertyAnalyzer.invalidate();
     }
 
     /**
-     * Set the health of members equal to the specified value
+     * 更新棋串成员的健康评分为指定值
      *
-     * @param health range = [0-1]
+     * @param health 取值[-1~1]
      */
     @Override
     public final void updateTerritory(float health) {
@@ -215,9 +186,6 @@ public class GoString extends GoSet
         }
     }
 
-    /**
-     * make sure all the stones in the string are visited/unvisited as specified.
-     */
     @Override
     public final void setVisited(boolean visited) {
         for (GoBoardPosition stone : getMembers()) {
@@ -229,33 +197,16 @@ public class GoString extends GoSet
         return " STRING(";
     }
 
-    /**
-     * @return true if unconditionally alive.
-     */
     @Override
     public boolean isUnconditionallyAlive() {
-        return unconditionallyAlive_;
+        return mIsUnconditionallyAlive;
     }
 
     @Override
     public void setUnconditionallyAlive(boolean unconditionallyAlive) {
-        this.unconditionallyAlive_ = unconditionallyAlive;
+        this.mIsUnconditionallyAlive = unconditionallyAlive;
     }
 
-    /**
-     * @return true if any of the stones in the string are blank (should never happen)
-     */
-    public final boolean areAnyBlank() {
-        for (GoBoardPosition stone : getMembers()) {
-            if (stone.isUnoccupied())
-                return true;
-        }
-        return false;
-    }
-
-    /**
-     * @return a string representation for the string.
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(getPrintPrefix());
@@ -274,6 +225,3 @@ public class GoString extends GoSet
         return sb.toString();
     }
 }
-
-
-

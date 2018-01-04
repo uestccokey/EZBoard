@@ -4,31 +4,18 @@ package cn.ezandroid.game.board.go.elements.eye;
 import java.util.LinkedList;
 
 /**
- * A list of GoEyes.
+ * 眼位列表
  *
  * @author Barry Becker
  */
 public class GoEyeList extends LinkedList<IGoEye> {
 
-    /**
-     * Default constructor.
-     */
     public GoEyeList() {}
 
-    /**
-     * Copy constructor.
-     *
-     * @param eyeList list to initialize with
-     */
     public GoEyeList(GoEyeList eyeList) {
         super(eyeList);
     }
 
-    /**
-     * pretty print a list of all the current groups (and the strings they contain)
-     *
-     * @return string form of list of stones.
-     */
     public String toString(String title) {
         StringBuilder buf = new StringBuilder(title);
         buf.append("\n  ");

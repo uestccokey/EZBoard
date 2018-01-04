@@ -6,7 +6,9 @@ import java.util.LinkedHashSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 
 /**
- * A set of GoStrings.
+ * 棋串集合
+ * <p>
+ * 使用LinkedHashSet可以支持按插入顺序遍历
  *
  * @author Barry Becker
  */
@@ -14,18 +16,15 @@ public class GoStringSet extends LinkedHashSet<IGoString> {
 
     public GoStringSet() {}
 
-    /**
-     * Copy constructor.
-     *
-     * @param set set of strings to initialize with
-     */
     public GoStringSet(GoStringSet set) {
         super(set);
     }
 
     /**
-     * @param pos position
-     * @return the string that contains pos if any. Null if none.
+     * 获取包含指定点位的棋串
+     *
+     * @param pos
+     * @return
      */
     public IGoString findStringContainingPosition(GoBoardPosition pos) {
         for (IGoString str : this) {

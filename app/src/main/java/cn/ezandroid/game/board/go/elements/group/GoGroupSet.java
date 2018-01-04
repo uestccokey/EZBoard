@@ -4,28 +4,25 @@ package cn.ezandroid.game.board.go.elements.group;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 
-import cn.ezandroid.game.board.common.GameContext;
-import cn.ezandroid.game.board.go.elements.IGoSet;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * A set of GoGroups.
+ * 棋群集合
+ * <p>
+ * 使用LinkedHashSet可以支持按插入顺序遍历
  *
  * @author Barry Becker
  */
 public class GoGroupSet extends LinkedHashSet<IGoGroup> {
 
-    /**
-     * Default constructor.
-     */
     public GoGroupSet() {}
 
     /**
-     * Check all the groups of the same color to see if the stone is already in one of them
+     * 检查是否指定点位的棋子在棋群中
      *
-     * @param pos position on the board to check
-     * @return true if the specified position is in one of our groups.
+     * @param pos
+     * @return
      */
     public boolean containsPosition(GoBoardPosition pos) {
         // if there is no stone in the position, then it cannot be part of a group
@@ -41,63 +38,7 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
     }
 
     /**
-     * create a nice list of all the current groups (and the strings they contain)
-     *
-     * @return String containing the current groups
-     */
-    public String toString() {
-        return toString(true, true);
-    }
-
-    /**
-     * create a nice list of all the current groups (and the strings they contain)
-     *
-     * @return String containing the current groups
-     */
-    String toString(boolean showBlack, boolean showWhite) {
-        StringBuilder groupText = new StringBuilder("");
-        StringBuilder blackGroupsText = new StringBuilder(showBlack ? "The black groups are :\n" : "");
-        StringBuilder whiteGroupsText =
-                new StringBuilder((showBlack ? "\n" : "") + (showWhite ? "The white groups are :\n" : ""));
-
-        for (Object group1 : this) {
-            IGoGroup group = (IGoGroup) group1;
-            if (group.isOwnedByPlayer1() && (showBlack)) {
-                //blackGroupsText.append( "black group owner ="+ group.isOwnedByPlayer1());
-                blackGroupsText.append(group);
-            } else if (!group.isOwnedByPlayer1() && showWhite) {
-                //whiteGroupsText.append( "white group owner ="+ group.isOwnedByPlayer1());
-                whiteGroupsText.append(group);
-            }
-        }
-        groupText.append(blackGroupsText);
-        groupText.append(whiteGroupsText);
-
-        return groupText.toString();
-    }
-
-    /**
-     * pretty print a list of all the current groups (and the strings they contain)
-     */
-    void debugPrint(int logLevel) {
-        debugPrint(logLevel, "---The groups are:", true, true);
-    }
-
-    /**
-     * pretty print a list of all the current groups (and the strings they contain)
-     */
-    public void debugPrint(int logLevel, String title, boolean showBlack, boolean showWhite) {
-        if (logLevel <= GameContext.getDebugMode()) {
-            GameContext.log(logLevel, title);
-            GameContext.log(logLevel, this.toString(showBlack, showWhite));
-            GameContext.log(logLevel, "----");
-        }
-    }
-
-    // --- methods for ensuring internal consistency ----
-
-    /**
-     * for every stone one the board verify that it belongs to exactly one group
+     * 对棋盘上的每个棋子，确保它只属于一个棋群
      */
     public void confirmAllStonesInUniqueGroups() {
         for (IGoGroup g : this) {
@@ -105,17 +46,12 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
         }
     }
 
-    /**
-     * confirm that the stones in this group are not contained in any other group.
-     */
-    public void confirmStonesInOneGroup(IGoGroup group) {
+    private void confirmStonesInOneGroup(IGoGroup group) {
         for (IGoString string : group.getMembers()) {
             for (IGoGroup g : this) {  // for each group on the board
-
                 if (!g.equals(group)) {
                     for (IGoString s : g.getMembers()) {   // for each string in that group
                         if (string.equals(s)) {
-                            debugPrint(0);
                             assert false : "ERROR: " + s + " contained by 2 groups";
                         }
                         confirmStoneInStringAlsoInGroup(s, g);
@@ -126,19 +62,20 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
     }
 
     /**
-     * verify that we contain no empty strings.
+     * 确保棋盘上没有空棋串
      */
     public void confirmNoEmptyStrings() {
-        for (Object g : this) {
-            for (Object s : ((IGoSet) g).getMembers()) {
-                IGoString string = (IGoString) s;
-                assert (string.size() > 0) : "There is an empty string in " + string.getGroup();
+        for (IGoGroup g : this) {
+            for (IGoString s : g.getMembers()) {
+                assert (s.size() > 0) : "There is an empty string in " + s.getGroup();
             }
         }
     }
 
     /**
-     * @param stone verify that this stone has a valid string and a group in the board's member list.
+     * 确保指定棋子所在的棋串和棋群不为空
+     *
+     * @param stone
      */
     public void confirmStoneInValidGroup(GoBoardPosition stone) {
         IGoString str = stone.getString();
@@ -152,24 +89,20 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
             valid = g.equals(g1);
         }
         if (!valid) {
-            this.debugPrint(0, "Confirm stones in valid groups failed. The groups are:",
-                    g.isOwnedByPlayer1(), !g.isOwnedByPlayer1());
-            assert false :
-                    "Error: This " + stone + " does not belong to a valid group: " +
-                            g + " \nThe valid groups are:" + this;
+            assert false : "Error: This " + stone + " does not belong to a valid group: " +
+                    g + " \nThe valid groups are:" + this;
         }
     }
 
     /**
-     * Make sure that every stone in the string belongs in this group
+     * 确保指定棋串中的所有棋子都属于指定棋群
      *
-     * @param str   every stone in this string should also be in the specified group
-     * @param group group that contains all the stones in the string.
+     * @param str
+     * @param group
      */
     private void confirmStoneInStringAlsoInGroup(IGoString str, IGoGroup group) {
         for (GoBoardPosition pos : str.getMembers()) {
             if (pos.getGroup() != null && !group.equals(pos.getGroup())) {
-                this.debugPrint(0, "Confirm stones in one group failed. Groups are:", true, true);
                 assert false : pos + " does not just belong to " + pos.getGroup()
                         + " as its ancestry indicates. It also belongs to " + group;
             }

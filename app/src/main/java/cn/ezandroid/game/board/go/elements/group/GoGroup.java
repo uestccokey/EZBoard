@@ -1,6 +1,7 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.elements.group;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,33 +16,23 @@ import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * A GoGroup is composed of a loosely connected set of one or more same color strings.
- * A GoString by comparison, is composed of a strongly connected set of one or more same color stones.
- * Groups may be connected by diagonals or one space jumps, or uncut knights moves, but not nikken tobi.
+ * 棋群模型
+ * <p>
+ * 棋群由一些松散连接的同色棋子组成，比如邻接，斜接，跳接等
  *
  * @author Barry Becker
  */
+public final class GoGroup extends GoSet implements IGoGroup {
 
-public final class GoGroup extends GoSet
-        implements IGoGroup {
+    // 棋群中所有棋串集合
+    private GoStringSet mMembers;
 
-    /** a set of same color strings that are in the group. */
-    private GoStringSet members_;
+    // 缓存的气点集合
+    private GoBoardPositionSet mCachedLiberties;
 
-    /**
-     * This is the cached number of liberties.
-     * It updates whenever something has changed.
-     */
-    private GoBoardPositionSet cachedLiberties_;
+    // 棋群变化监听器列表
+    private List<GoGroupChangeListener> mChangeListeners;
 
-    /** listeners to notify in the event that we change. */
-    private List<GroupChangeListener> changeListeners;
-
-    /**
-     * Constructor. Create a new group containing the specified string.
-     *
-     * @param string make the group from this string.
-     */
     public GoGroup(IGoString string) {
         mIsOwnedByPlayer1 = string.isOwnedByPlayer1();
 
@@ -50,42 +41,35 @@ public final class GoGroup extends GoSet
         commonInit();
     }
 
-    /**
-     * Constructor.
-     * Create a new group containing the specified list of stones
-     * Every stone in the list passed in must say that it is owned by this new group,
-     * and every string must be wholly owned by this new group.
-     *
-     * @param stones list of stones to create a group from.
-     */
     public GoGroup(GoBoardPositionList stones) {
         mIsOwnedByPlayer1 = (stones.getFirst()).getPiece().isOwnedByPlayer1();
         for (GoBoardPosition stone : stones) {
-            assimilateStone(stones, stone);
+            assimilateStone(stone);
         }
         commonInit();
     }
 
     private void commonInit() {
-        changeListeners = new LinkedList<>();
+        mChangeListeners = new LinkedList<>();
     }
 
     @Override
-    public void addChangeListener(GroupChangeListener listener) {
-        changeListeners.add(listener);
+    public void addChangeListener(GoGroupChangeListener listener) {
+        mChangeListeners.add(listener);
     }
 
-    public void removeChangeListener(GroupChangeListener listener) {
-        changeListeners.remove(listener);
+    public void removeChangeListener(GoGroupChangeListener listener) {
+        mChangeListeners.remove(listener);
     }
 
     /**
-     * @param stones stones to assimilate
-     * @param stone  the new stone to add to the group.
+     * 将一个棋子及所在的棋串加入到该棋群中
+     *
+     * @param stone
      */
-    private void assimilateStone(GoBoardPositionList stones, GoBoardPosition stone) {
+    private void assimilateStone(GoBoardPosition stone) {
         assert stone.getPiece().isOwnedByPlayer1() == mIsOwnedByPlayer1 :
-                "Stones in group must all be owned by the same player. stones=" + stones;
+                "Stones in group must all be owned by the same player.";
         // actually this is ok - sometimes happens legitimately
         // assert isFalse(stone.isVisited(), stone+" is marked visited in "+stones+" when it should not be.");
         IGoString string = stone.getString();
@@ -98,25 +82,16 @@ public final class GoGroup extends GoSet
         string.setGroup(this);
     }
 
-    /**
-     * Must be ordered (i.e. LinkedHashSet
-     */
     @Override
     protected void initializeMembers() {
-        members_ = new GoStringSet();
+        mMembers = new GoStringSet();
     }
 
-    /**
-     * @return the hashSet containing the members
-     */
     @Override
     public GoStringSet getMembers() {
-        return members_;
+        return mMembers;
     }
 
-    /**
-     * make sure all the stones in the string are unvisited or visited, as specified
-     */
     @Override
     public void setVisited(boolean visited) {
         for (IGoString str : getMembers()) {
@@ -125,9 +100,9 @@ public final class GoGroup extends GoSet
     }
 
     /**
-     * add a string to the group.
+     * 添加棋串到该棋群中
      *
-     * @param string the string to add
+     * @param string
      */
     @Override
     public void addMember(IGoString string) {
@@ -151,9 +126,9 @@ public final class GoGroup extends GoSet
     }
 
     /**
-     * remove a string from this group
+     * 删除该棋群中的指定棋串
      *
-     * @param string the string to remove from the group
+     * @param string
      */
     @Override
     public void remove(IGoString string) {
@@ -169,39 +144,25 @@ public final class GoGroup extends GoSet
         broadcastChange();
     }
 
-    /**
-     * Get the number of liberties that the group has.
-     *
-     * @return the number of liberties that the group has
-     */
     @Override
     public GoBoardPositionSet getLiberties(GoBoard board) {
         if (board == null) {
-            return cachedLiberties_;
+            return mCachedLiberties;
         }
 
         GoBoardPositionSet liberties = new GoBoardPositionSet();
         for (IGoString str : getMembers()) {
             liberties.addAll(str.getLiberties(board));
         }
-        cachedLiberties_ = liberties;
+        mCachedLiberties = liberties;
         return liberties;
     }
 
-    /**
-     * Get number of liberties for our groups. If nothing cached, this may not be accurate.
-     *
-     * @param board if null, then the number of liberties returned is just what is in the cache and may not be accurate.
-     * @return number of cached liberties if board is null, else exact number of liberties for group.
-     */
     @Override
     public int getNumLiberties(GoBoard board) {
         return getLiberties(board).size();
     }
 
-    /**
-     * @return a list of the stones in this group.
-     */
     @Override
     public GoBoardPositionSet getStones() {
         GoBoardPositionSet stones = new GoBoardPositionSet();
@@ -211,20 +172,15 @@ public final class GoGroup extends GoSet
         return stones;
     }
 
-    /**
-     * Calculate the number of stones in the group.
-     *
-     * @return number of stones in the group.
-     */
     @Override
     public int getNumStones() {
         return getStones().size();
     }
 
     /**
-     * Set the health of strings in this group
+     * 更新棋群成员的健康评分为指定值
      *
-     * @param health the health of the group
+     * @param health 取值[-1~1]
      */
     @Override
     public void updateTerritory(float health) {
@@ -237,12 +193,6 @@ public final class GoGroup extends GoSet
         }
     }
 
-    /**
-     * returns true if this group contains the specified stone
-     *
-     * @param stone the stone to check for containment of
-     * @return true if the stone is in this group
-     */
     @Override
     public boolean containsStone(GoBoardPosition stone) {
         for (IGoString string : getMembers()) {
@@ -253,7 +203,9 @@ public final class GoGroup extends GoSet
     }
 
     /**
-     * @return bounding box of set of stones/positions passed in
+     * 获取能包围棋群中所有棋子的最小包围框
+     *
+     * @return
      */
     @Override
     public Box findBoundingBox() {
@@ -264,7 +216,6 @@ public final class GoGroup extends GoSet
 
         // first determine a bounding rectangle for the group.
         for (IGoString string : this.getMembers()) {
-
             for (GoBoardPosition stone : string.getMembers()) {
                 int row = stone.getRow();
                 int col = stone.getCol();
@@ -277,12 +228,30 @@ public final class GoGroup extends GoSet
         return (rMin > rMax) ? new Box(0, 0, 0, 0) : new Box(rMin, cMin, rMax, cMax);
     }
 
-    /**
-     * Notify our listeners (if any) that we have changed
-     */
     private void broadcastChange() {
-        for (GroupChangeListener listener : changeListeners) {
-            listener.groupChanged();
+        for (GoGroupChangeListener listener : mChangeListeners) {
+            listener.onGoGroupChanged();
         }
+    }
+
+    @Override
+    public String toString() {
+        return toString("\n");
+    }
+
+    private String toString(String newline) {
+        StringBuilder sb = new StringBuilder(" GROUP {" + newline);
+        Iterator it = getMembers().iterator();
+        // print the member strings
+        if (it.hasNext()) {
+            IGoString p = (IGoString) it.next();
+            sb.append("    ").append(p.toString());
+        }
+        while (it.hasNext()) {
+            IGoString p = (IGoString) it.next();
+            sb.append(',').append(newline).append("    ").append(p.toString());
+        }
+        sb.append(newline).append('}');
+        return sb.toString();
     }
 }

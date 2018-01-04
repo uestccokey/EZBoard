@@ -6,6 +6,8 @@ import java.util.Set;
 
 /**
  * 围棋位置点集合
+ * <p>
+ * 使用LinkedHashSet可以支持按插入顺序遍历
  *
  * @author Barry Becker
  */

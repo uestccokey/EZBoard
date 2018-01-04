@@ -4,7 +4,7 @@ package cn.ezandroid.game.board.go.analysis.group;
 import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.GoEyeSet;
-import cn.ezandroid.game.board.go.elements.group.GroupChangeListener;
+import cn.ezandroid.game.board.go.elements.group.GoGroupChangeListener;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
@@ -14,7 +14,7 @@ import cn.ezandroid.game.board.go.elements.position.GoStone;
  *
  * @author Barry Becker
  */
-public class GroupAnalyzer implements GroupChangeListener {
+public class GroupAnalyzer implements GoGroupChangeListener {
 
     /** The group of go stones that we are analyzing. */
     private IGoGroup group_;
@@ -57,7 +57,7 @@ public class GroupAnalyzer implements GroupChangeListener {
      * Called when the group we are maintaining info about changes.
      * It changes by having stones added or removed.
      */
-    public void groupChanged() {
+    public void onGoGroupChanged() {
         invalidate();
     }
 

@@ -23,7 +23,7 @@ public interface IGoGroup extends IGoSet {
     @Override
     boolean isOwnedByPlayer1();
 
-    void addChangeListener(GroupChangeListener listener);
+    void addChangeListener(GoGroupChangeListener listener);
 
     int getNumStones();
 
@@ -33,6 +33,11 @@ public interface IGoGroup extends IGoSet {
 
     GoBoardPositionSet getStones();
 
+    /**
+     * 更新棋群成员的健康评分为指定值
+     *
+     * @param health 取值[-1~1]
+     */
     void updateTerritory(float health);
 
     Box findBoundingBox();
