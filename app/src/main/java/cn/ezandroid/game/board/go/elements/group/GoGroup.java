@@ -243,11 +243,7 @@ public final class GoGroup extends GoSet implements IGoGroup {
 
     @Override
     public String toString() {
-        return toString("\n");
-    }
-
-    private String toString(String newline) {
-        StringBuilder sb = new StringBuilder(" GROUP {" + newline);
+        StringBuilder sb = new StringBuilder("GROUP {" + "\n");
         Iterator it = getMembers().iterator();
         // print the member strings
         if (it.hasNext()) {
@@ -256,9 +252,9 @@ public final class GoGroup extends GoSet implements IGoGroup {
         }
         while (it.hasNext()) {
             IGoString p = (IGoString) it.next();
-            sb.append(',').append(newline).append("    ").append(p.toString());
+            sb.append(',').append("\n").append("    ").append(p.toString());
         }
-        sb.append(newline).append('}');
+        sb.append("\n").append('}');
         return sb.toString();
     }
 }

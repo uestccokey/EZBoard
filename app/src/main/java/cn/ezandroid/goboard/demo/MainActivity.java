@@ -325,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
         if (add) {
             GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1), 0, new GoStone(user));
             mGoBoard.makeMove(goMove);
+            Log.e("MainActivity", mGoBoard.getGroups().toString());
 
             mBoardView.setHighlightIntersection(null);
 

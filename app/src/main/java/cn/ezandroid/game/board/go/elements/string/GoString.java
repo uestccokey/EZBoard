@@ -205,8 +205,8 @@ public class GoString extends GoSet implements IGoString {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(" STRING(");
-        sb.append(" UA=").append(isUnconditionallyAlive()).append(" ");
+        StringBuilder sb = new StringBuilder("STRING (");
+        sb.append("UA = ").append(isUnconditionallyAlive()).append(" ");
         Iterator it = getMembers().iterator();
         if (it.hasNext()) {
             GoBoardPosition p = (GoBoardPosition) it.next();

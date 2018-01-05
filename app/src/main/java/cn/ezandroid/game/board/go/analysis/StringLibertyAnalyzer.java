@@ -8,58 +8,55 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 import cn.ezandroid.game.board.go.elements.string.GoString;
 
 /**
- * Determines number of liberties on a string.
+ * 棋串气点分析器
+ * <p>
+ * 跟踪气的数量，防止每次都进行计算，以提高性能
  *
  * @author Barry Becker
  */
 public class StringLibertyAnalyzer {
 
-    /** Keep track of number of liberties instead of computing each time (for performance). */
-    private GoBoardPositionSet liberties_;
+    private GoBoardPositionSet mLiberties;
 
-    private GoBoard board;
-    private GoString string;
-    private boolean cacheValid;
+    private GoBoard mBoard;
+    private GoString mString;
+    private boolean mCacheValid;
 
-    /**
-     * Constructor.
-     *
-     * @param board  game board
-     * @param string the initial set of liberties.
-     */
     public StringLibertyAnalyzer(GoBoard board, GoString string) {
-        this.board = board;
-        this.string = string;
-        cacheValid = false;
+        this.mBoard = board;
+        this.mString = string;
+        mCacheValid = false;
     }
 
     /**
-     * @return number of liberties that the string has
+     * 获取棋串气点集合
+     *
+     * @return
      */
     public final GoBoardPositionSet getLiberties() {
-        if (!cacheValid) {
+        if (!mCacheValid) {
             initializeLiberties();
         }
-        return liberties_;
+        return mLiberties;
     }
 
+    /**
+     * 当棋串或者棋串邻接的点有变化时，调用此方法，刷新棋串气点集合
+     */
     public void invalidate() {
-        cacheValid = false;
+        mCacheValid = false;
     }
 
     private void initializeLiberties() {
-        liberties_ = new GoBoardPositionSet();
-        GoBoardPositionSet members = string.getMembers();
+        mLiberties = new GoBoardPositionSet();
+        GoBoardPositionSet members = mString.getMembers();
 
         for (GoBoardPosition stone : members) {
-            addLiberties(stone, board);
+            addLiberties(stone, mBoard);
         }
-        cacheValid = true;
+        mCacheValid = true;
     }
 
-    /**
-     * only add liberties for this stone if they are not already in the set
-     */
     private void addLiberties(GoBoardPosition stone, GoBoard board) {
         int r = stone.getRow();
         int c = stone.getCol();
@@ -77,13 +74,8 @@ public class StringLibertyAnalyzer {
         }
     }
 
-    /**
-     * This assumes a HashSet will not allow you to add the same object twice (no dupes)
-     *
-     * @param libertySpace the position of the liberty to add.
-     */
     private void addLiberty(BoardPosition libertySpace) {
         if (libertySpace.isUnoccupied())
-            liberties_.add((GoBoardPosition) libertySpace);
+            mLiberties.add((GoBoardPosition) libertySpace);
     }
 }

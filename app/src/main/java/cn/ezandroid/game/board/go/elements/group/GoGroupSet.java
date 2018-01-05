@@ -108,4 +108,21 @@ public class GoGroupSet extends LinkedHashSet<IGoGroup> {
             }
         }
     }
+
+    public String toString() {
+        StringBuilder groupText = new StringBuilder("");
+        StringBuilder blackGroupsText = new StringBuilder("The black groups are :\n");
+        StringBuilder whiteGroupsText = new StringBuilder("\nThe white groups are :\n");
+        for (Object group1 : this) {
+            IGoGroup group = (IGoGroup) group1;
+            if (group.isOwnedByPlayer1()) {
+                blackGroupsText.append(group).append("\n");
+            } else if (!group.isOwnedByPlayer1()) {
+                whiteGroupsText.append(group).append("\n");
+            }
+        }
+        groupText.append(blackGroupsText);
+        groupText.append(whiteGroupsText);
+        return groupText.toString();
+    }
 }
