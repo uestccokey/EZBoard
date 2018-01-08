@@ -2,7 +2,7 @@
 package cn.ezandroid.game.board.go.analysis.eye.information;
 
 /**
- * Two space eye - **
+ * 双空间眼位
  *
  * @author Barry Becker
  */

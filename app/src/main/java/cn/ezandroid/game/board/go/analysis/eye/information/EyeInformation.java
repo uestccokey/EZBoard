@@ -12,36 +12,42 @@ import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 public interface EyeInformation {
 
     /**
-     * A list of vital points described by indices.
+     * 获取编码后的关键点数组
+     * <p>
+     * 关键点被编码后，以<紧邻的棋子数量>.<邻接棋子的邻接棋子的数量之和/100>的float型数字表示
+     * 比如金字塔型的眼位关键点为3.03，因为金字塔中间关键点有3个邻接棋子，并且它的每个邻接棋子只有一个邻接棋子
+     * 其他的比如星型眼位关键点为4.04，直三眼位的关键点位1.02
      *
-     * @return list of vital points where a point is described by an index created by adding the number of
-     * neighbors to (those neighbor's neighbors)/100. so for example, 2.03 means the space has 2 nobi neighbors
-     * and those 2 neighbors have a total of 3 neighbors.
-     * Returns an empty array if we have no vitals or the type has the life property.
+     * @return
      */
     float[] getVitalPoints();
 
     /**
-     * A list of end points described by indices.  End points are bad to play by either side until all the other eye
-     * spaces have been played. If the opponent plays them they are not playing in the nakade (big eye) shape, and
-     * hence missing a likely opportunity to kill the group. If the same color plays them they are helping to create a
-     * nakade eye shape.  End points are the spaces left after the nakade shape of size n-1 fills the eye.
+     * 获取编码后的坏点数组
+     * <p>
+     * 坏点被编码后，以<紧邻的棋子数量>.<邻接棋子的邻接棋子的数量之和/100>的float型数字表示
+     * 坏点表示此点被眼位同色的玩家落子后会变成一个可点杀眼的情况
+     * 比如
+     * > X
+     * >XXXX
+     * > X
+     * 此种眼位，第二行最右边的点位坏点，编码后为1.02
      *
-     * @return list of end points where a point is described by an index created by adding the number of
-     * neighbors to (those neighbor's neighbors)/100. so for example, 2.03 means the space has 2 nobi neighbors
-     * and those 2 neighbors have a total of 3 neighbors.
-     * Returns an empty array if we have no vitals or the type has the life property.
+     * @return
      */
     float[] getEndPoints();
 
     /**
-     * @return eye status
+     * 确定眼位状态
+     *
+     * @return
      */
     EyeStatus determineStatus(IGoEye eye, GoBoard board);
 
     /**
-     * @return Name of the eye type (a descriptive string line like E112233 where the numbers are the eye
-     * neighbors for each space int eh eye in sorted order.
+     * 获取眼位类型名称
+     *
+     * @return
      */
     String getTypeName();
 }

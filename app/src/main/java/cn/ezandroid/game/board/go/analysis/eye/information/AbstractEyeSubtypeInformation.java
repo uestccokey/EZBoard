@@ -24,16 +24,18 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
 
     AbstractEyeSubtypeInformation() {}
 
+    /**
+     * 初始化眼位子类型信息
+     *
+     * @param life    死活属性
+     * @param eyeSize 眼位大小
+     */
     void initialize(boolean life, int eyeSize) {
         initialize(life, eyeSize, EMPTY_POINTS, EMPTY_POINTS);
     }
 
     /**
      * 初始化眼位子类型信息
-     * <p>
-     * 关键点被编码后，以<紧邻的棋子数量>.<邻接棋子的邻接棋子的数量之和>的float型数字表示
-     * 比如金字塔型的眼位关键点为3.03，因为金字塔中间关键点有3个邻接棋子，并且它的每个邻接棋子只有一个邻接棋子
-     * 其他的比如星型眼位关键点为4.04，直三眼位的关键点位1.02
      *
      * @param life     死活属性
      * @param eyeSize  眼位大小
@@ -43,6 +45,14 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
         initialize(life, eyeSize, vitalPts, EMPTY_POINTS);
     }
 
+    /**
+     * 初始化眼位子类型信息
+     *
+     * @param life     死活属性
+     * @param eyeSize  眼位大小
+     * @param vitalPts 编码后的关键点数组
+     * @param endPts   编码后的坏点数组
+     */
     void initialize(boolean life, int eyeSize, final float[] vitalPts, final float[] endPts) {
         this.mLife = life;
         this.mSize = (byte) eyeSize;
@@ -69,24 +79,17 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
         return mEndPoints;
     }
 
-    /**
-     * We only need to consider the non-life property status.
-     *
-     * @param eye   eye
-     * @param board board
-     * @return status of the eye shape.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         return EyeStatus.NAKADE;
     }
 
     /**
-     * If all the vital points have been filled, then we have nakade status (one big eye).
-     * If all but one vital point has been filled, then we are unsettles - could be on eor two eyes.
-     * If 2 or more vitals are still open, then we assume that this will become 2 eyes.
+     * 假如所有的关键点被占据，则该眼位设置为可点杀状态（NAKADE）
+     * 假如还有一个关键点未被占据，则该眼位设置为不稳定状态（UNSETTLED）
+     * 假如有两个或更多关键点未被占据，则该眼位设置为无条件活棋状态（ALIVE）
      *
-     * @return status of shape with numVitals vital points.
+     * @return
      */
     EyeStatus handleVitalPointCases(EyeNeighborMap nbrMap, IGoEye eye, final int numVitals) {
         GoBoardPositionList vitalFilledSpaces = findSpecialFilledSpaces(nbrMap, getVitalPoints(), eye);
@@ -104,11 +107,25 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
     }
 
     /**
-     * I suppose, in very rare cases, there could be a same side stone among the enemy filled spaces in the eye.
+     * 处理ALIVE与ALIVE_IN_ATARI状态的区别
      *
-     * @return the eye spaces that have enemy stones in them.
+     * @return
      */
-    GoBoardPositionList findFilledSpaces(IGoEye eye) {
+    EyeStatus handleAliveOrAliveInAtari(IGoEye eye, GoBoard board) {
+        GoBoardPositionList filledSpaces = findFilledSpaces(eye);
+        if (eye.size() - filledSpaces.size() == 1 && eye.getGroup().getLiberties(board).size() == 1) {
+            return EyeStatus.ALIVE_IN_ATARI;
+        }
+        return EyeStatus.ALIVE;
+    }
+
+    /**
+     * 获取眼位中已经被棋子占据的点位列表
+     *
+     * @param eye
+     * @return
+     */
+    private GoBoardPositionList findFilledSpaces(IGoEye eye) {
         GoBoardPositionList filledSpaces = new GoBoardPositionList();
         for (GoBoardPosition space : eye.getMembers()) {
             if (space.isOccupied()) {
@@ -120,7 +137,12 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
     }
 
     /**
-     * @return the set of special spaces (vital or end) that have enemy stones in them.
+     * 获取眼位中指定位置被棋子占据的点位列表
+     *
+     * @param nbrMap
+     * @param specialPoints
+     * @param eye
+     * @return
      */
     GoBoardPositionList findSpecialFilledSpaces(EyeNeighborMap nbrMap, float[] specialPoints, IGoEye eye) {
         GoBoardPositionList specialFilledSpaces = new GoBoardPositionList();
@@ -133,19 +155,6 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
             }
         }
         return specialFilledSpaces;
-    }
-
-    /**
-     * When the eye type has the life property, we can only be alive or alive in atari.
-     *
-     * @return either alive or alive in atari (rare)
-     */
-    EyeStatus handleSubtypeWithLifeProperty(IGoEye eye, GoBoard board) {
-        GoBoardPositionList filledSpaces = findFilledSpaces(eye);
-        if (eye.size() - filledSpaces.size() == 1 && eye.getGroup().getLiberties(board).size() == 1) {
-            return EyeStatus.ALIVE_IN_ATARI;
-        }
-        return EyeStatus.ALIVE;
     }
 
     @Override

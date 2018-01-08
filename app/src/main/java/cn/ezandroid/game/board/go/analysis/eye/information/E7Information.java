@@ -8,29 +8,22 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 
 /**
- * Eye6Type containing MetaData for the different possible Eye shapes of size 7.
- * There are 14 different subtypes to consider (if you count the 2 sub-subtypes of E1112234).
+ * 包含14种不同类型的7空间眼位
  *
  * @author Barry Becker
  */
 public class E7Information extends AbstractEyeSubtypeInformation {
 
-    /** Different sorts of eye with 7 spaces. */
     public enum Eye7Type {
         E1122222, E1112223, E1122233, E1111233, E1222223, E1111224, E1112333,
         E1222333, E1112234, E1112234a, E1112234b, E1222234, E1122224, E2222224
     }
 
-    private Eye7Type type;
+    private Eye7Type mE7Type;
 
-    /**
-     * Constructor
-     *
-     * @param subTypeDesc description of the type - something like "E112223".
-     */
     E7Information(String subTypeDesc) {
-        type = Eye7Type.valueOf(subTypeDesc);
-        switch (type) {
+        mE7Type = Eye7Type.valueOf(subTypeDesc);
+        switch (mE7Type) {
             case E1122222:
                 initialize(true, 7);
                 break;
@@ -81,13 +74,10 @@ public class E7Information extends AbstractEyeSubtypeInformation {
         }
     }
 
-    /**
-     * @return eye status for E7 types.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);
-        switch (type) {
+        switch (mE7Type) {
             case E1122222:
             case E1112223:
             case E1122233:
@@ -96,7 +86,7 @@ public class E7Information extends AbstractEyeSubtypeInformation {
             case E1111224:
             case E1112333:
             case E1222333:
-                return handleSubtypeWithLifeProperty(eye, board);
+                return handleAliveOrAliveInAtari(eye, board);
             case E1112234:
                 Eye7Type E112233Subtype = determineE1112234Subtype(nbrMap);
                 if (E112233Subtype == Eye7Type.E1112234a) {
@@ -115,10 +105,9 @@ public class E7Information extends AbstractEyeSubtypeInformation {
     }
 
     /**
-     * find the 2 spaces with only 1 nbr
-     * if the box defined by those 2 positions contains the other 4 spaces, then case b, else a
+     * 区分E1112234a or E1112234b
      *
-     * @return the subtype E112233a or E112233b
+     * @return
      */
     private Eye7Type determineE1112234Subtype(EyeNeighborMap nbrMap) {
 
@@ -146,6 +135,6 @@ public class E7Information extends AbstractEyeSubtypeInformation {
 
     @Override
     public String getTypeName() {
-        return type.toString();
+        return mE7Type.toString();
     }
 }

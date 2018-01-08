@@ -5,28 +5,21 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 
 /**
- * Eye6Type containing MetaData for the different possible Eye shapes of size 5.
- * There are 4 different subtypes to consider.
+ * 包含4种不同类型的5空间眼位
  *
  * @author Barry Becker
  */
 public class E5Information extends AbstractEyeSubtypeInformation {
 
-    /** Different sorts of eye with 5 spaces. */
     public enum Eye5Type {
         E11222, E11123, E11114, E12223
     }
 
-    private Eye5Type e5Type;
+    private Eye5Type mE5Type;
 
-    /**
-     * Constructor
-     *
-     * @param subTypeDesc description of the type - something like "E11223".
-     */
     E5Information(String subTypeDesc) {
-        e5Type = Eye5Type.valueOf(subTypeDesc);
-        switch (e5Type) {
+        mE5Type = Eye5Type.valueOf(subTypeDesc);
+        switch (mE5Type) {
             case E11222:
                 initialize(true, 5);
                 break;
@@ -42,15 +35,12 @@ public class E5Information extends AbstractEyeSubtypeInformation {
         }
     }
 
-    /**
-     * @return eye status for E5 types.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);
-        switch (e5Type) {
+        switch (mE5Type) {
             case E11222:
-                return handleSubtypeWithLifeProperty(eye, board);
+                return handleAliveOrAliveInAtari(eye, board);
             case E11123:
                 return handleVitalPointCases(nbrMap, eye, 2);
             case E11114:
@@ -63,6 +53,6 @@ public class E5Information extends AbstractEyeSubtypeInformation {
 
     @Override
     public String getTypeName() {
-        return e5Type.toString();
+        return mE5Type.toString();
     }
 }

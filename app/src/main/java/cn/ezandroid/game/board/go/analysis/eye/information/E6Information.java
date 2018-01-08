@@ -8,28 +8,21 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 
 /**
- * Eye6Type containing MetaData for the different possible Eye shapes of size 6.
- * There are 8 different subtypes to consider.
+ * 包含8种不同类型的6空间眼位
  *
  * @author Barry Becker
  */
 public class E6Information extends AbstractEyeSubtypeInformation {
 
-    /** Different sorts of eye with 6 spaces. */
     public enum Eye6Type {
         E112222, E111223, E111133, E112233, E112233a, E112233b, E122223, E112224, E111124, E222233
     }
 
-    private Eye6Type type;
+    private Eye6Type mE6Type;
 
-    /**
-     * Constructor
-     *
-     * @param subTypeDesc description of the type - something like "E112223".
-     */
     E6Information(String subTypeDesc) {
-        type = Eye6Type.valueOf(subTypeDesc);
-        switch (type) {
+        mE6Type = Eye6Type.valueOf(subTypeDesc);
+        switch (mE6Type) {
             case E112222:
                 initialize(true, 6);
                 break;
@@ -66,17 +59,14 @@ public class E6Information extends AbstractEyeSubtypeInformation {
         }
     }
 
-    /**
-     * @return eye status for E6 types.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);
-        switch (type) {
+        switch (mE6Type) {
             case E112222:
             case E111223:
             case E111133:
-                return handleSubtypeWithLifeProperty(eye, board);
+                return handleAliveOrAliveInAtari(eye, board);
             case E112233:
                 Eye6Type E112233Subtype = determineE112233Subtype(nbrMap);
 
@@ -107,13 +97,11 @@ public class E6Information extends AbstractEyeSubtypeInformation {
     }
 
     /**
-     * find the 2 spaces with only 1 nbr
-     * if the box defined by those 2 positions contains the other 4 spaces, then case b, else a
+     * 区分E112233a or E112233b
      *
      * @return the subtype E112233a or E112233b
      */
     private Eye6Type determineE112233Subtype(EyeNeighborMap nbrMap) {
-
         GoBoardPositionList oneNbrPoints = new GoBoardPositionList();
         GoBoardPositionList otherPoints = new GoBoardPositionList();
 
@@ -138,6 +126,6 @@ public class E6Information extends AbstractEyeSubtypeInformation {
 
     @Override
     public String getTypeName() {
-        return type.toString();
+        return mE6Type.toString();
     }
 }

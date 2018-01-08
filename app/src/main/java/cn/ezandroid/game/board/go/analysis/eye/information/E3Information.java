@@ -5,8 +5,10 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 
 /**
- * Three space eye *** - there is only one type.
- * The vital point may or may not be filled - determining its status.
+ * 三空间眼位
+ * <p>
+ * 只有一种类型
+ * 关键点位置有没有被填充决定了它的死活状态
  *
  * @author Barry Becker
  */
@@ -16,9 +18,6 @@ public class E3Information extends AbstractEyeSubtypeInformation {
         initialize(false, 3, new float[]{2.02f});
     }
 
-    /**
-     * @return eye status for E3 type.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);

@@ -5,27 +5,21 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 
 /**
- * Eye6Type containing MetaData for the different possible Eye shapes of size 4.
+ * 包含3种不同类型的4空间眼位
  *
  * @author Barry Becker
  */
 public class E4Information extends AbstractEyeSubtypeInformation {
 
-    /** Different sorts of eye with 4 spaces. */
     public enum Eye4Type {
         E1122, E1113, E2222
     }
 
-    private Eye4Type e4Type;
+    private Eye4Type mE4Type;
 
-    /**
-     * Constructor
-     *
-     * @param subTypeDesc description of the type - something like "E1122".
-     */
     E4Information(String subTypeDesc) {
-        e4Type = Eye4Type.valueOf(subTypeDesc);
-        switch (e4Type) {
+        mE4Type = Eye4Type.valueOf(subTypeDesc);
+        switch (mE4Type) {
             case E1122:
                 initialize(false, 4, new float[]{2.03f, 2.03f});
                 break;
@@ -38,13 +32,10 @@ public class E4Information extends AbstractEyeSubtypeInformation {
         }
     }
 
-    /**
-     * @return eye status for E4 types.
-     */
     @Override
     public EyeStatus determineStatus(IGoEye eye, GoBoard board) {
         EyeNeighborMap nbrMap = new EyeNeighborMap(eye);
-        switch (e4Type) {
+        switch (mE4Type) {
             case E1122:
                 return handleVitalPointCases(nbrMap, eye, 2);
             case E1113:
@@ -57,6 +48,6 @@ public class E4Information extends AbstractEyeSubtypeInformation {
 
     @Override
     public String getTypeName() {
-        return e4Type.toString();
+        return mE4Type.toString();
     }
 }

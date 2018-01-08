@@ -2,7 +2,7 @@
 package cn.ezandroid.game.board.go.analysis.eye.information;
 
 /**
- * Single space eye  - *
+ * 单一空间的眼位
  *
  * @author Barry Becker
  */
