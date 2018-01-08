@@ -1,21 +1,12 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.eye.information;
 
-import cn.ezandroid.game.board.go.elements.eye.GoEye;
-
 /**
- * Enum for the different possible Eye shapes.
- * See http://www.ai.univ-paris8.fr/~cazenave/eyeLabelling.pdf
- *
- * @author Barry Becker
- * @see GoEye
+ * 眼型枚举
  * <p>
- * We define the Neighbour Classification of  an eye as a number
- * of  digits sorted from low to high, where every intersection in the eye space is associated
- * to a digit that indicates the number of neighbors (adjacent intersections)
- * to that intersection that belong to the eye space.
+ * http://www.lamsade.dauphine.fr/~cazenave/papers/eyeLabelling.pdf
  * <p>
- * For example, here are all the possible pentomino classifications (independent of symmetry).
+ * 眼位中每个交叉点的邻接眼位点数量进行由低到高排序
  * <p>
  * E11222: XXXXX      XXXX      XXX      XX     XX    X       X
  * >                     X        XX      X      X    X      XX
@@ -32,10 +23,12 @@ import cn.ezandroid.game.board.go.elements.eye.GoEye;
  * <p>
  * E12223: XX
  * >       XXX
+ *
+ * @author Barry Becker
  */
 public enum EyeType {
 
-    /** False eye always have the potential to become no eyes */
+    /** 假眼总是有变成无眼的可能 */
     FalseEye(0) {
         @Override
         public EyeInformation getInformation(String name) { return new FalseEyeInformation(); }
@@ -70,30 +63,32 @@ public enum EyeType {
         public EyeInformation getInformation(String name) { return new E7Information(name); }
     },
 
-    /** Usually 2 or more eyes, but may be none or one in some rare cases. */
+    /** 通常有两个或更多的眼，但是有一些罕见情况下只有一个眼或者没有眼 */
     TerritorialEye(8) {
         @Override
         public EyeInformation getInformation(String name) { return new TerritorialEyeInformation(); }
     };
 
-    private byte size;
+    private byte mSize;
 
-    /**
-     * constructor
-     */
     EyeType(int eyeSize) {
-        this.size = (byte) eyeSize;
+        this.mSize = (byte) eyeSize;
     }
 
     /**
-     * @return the number of spaces in they eye (maybe be filled with some enemy stones).
+     * 获取眼位空间大小（眼位中敌方棋子也包含在内）
+     *
+     * @return
      */
     public byte getSize() {
-        return size;
+        return mSize;
     }
 
     /**
-     * @return true if the shape has the life property
+     * 获取指定类型名称的眼位信息
+     *
+     * @param name
+     * @return
      */
     public abstract EyeInformation getInformation(String name);
 }

@@ -59,13 +59,6 @@ public class GoEye extends GoString implements IGoEye {
     }
 
     @Override
-    public String getEyeTypeName() {
-        if (mInformation == null)
-            return "unknown eye type";
-        return mInformation.getTypeName();
-    }
-
-    @Override
     public int getNumCornerPoints() {
         return mNumCornerPoints;
     }

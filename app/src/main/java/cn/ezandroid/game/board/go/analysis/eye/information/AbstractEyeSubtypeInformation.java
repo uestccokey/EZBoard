@@ -9,23 +9,19 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 
 /**
- * Enum for the different possible Eye shapes.
- * See http://www.ai.univ-paris8.fr/~cazenave/eyeLabelling.pdf
+ * 眼位子类型信息抽像类
  *
  * @author Barry Becker
  */
 public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformation {
 
-    private boolean life;
-    private byte size;
-    private float[] vitalPoints;
-    private float[] endPoints;
+    private boolean mLife;
+    private byte mSize;
+    private float[] mVitalPoints; // 关键点
+    private float[] mEndPoints;
 
     private static final float[] EMPTY_POINTS = new float[]{};
 
-    /**
-     * Constructor
-     */
     AbstractEyeSubtypeInformation() {}
 
     void initialize(boolean life, int eyeSize) {
@@ -33,53 +29,44 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
     }
 
     /**
-     * Initialize the subtype information.
-     * Vital points are encoded as a floating point number of the form <num nobi neighbors>.<num neighbor neighbors>
-     * where the number of neighbor neighbors is the total of all the nobie neighbors nobi neighbors.
-     * For example the encoded vital point for a pyramid shaped eye is 3.03 because
-     * - the central key point position has 3 neighbors and
-     * - each of those neighbors has only one neighbor (the center)
-     * A few other examples:
-     * For a star shape, the vital point is 4.04.
-     * For three in a row, the vital point is 1.02.
+     * 初始化眼位子类型信息
+     * <p>
+     * 关键点被编码后，以<紧邻的棋子数量>.<邻接棋子的邻接棋子的数量之和>的float型数字表示
+     * 比如金字塔型的眼位关键点为3.03，因为金字塔中间关键点有3个邻接棋子，并且它的每个邻接棋子只有一个邻接棋子
+     * 其他的比如星型眼位关键点为4.04，直三眼位的关键点位1.02
      *
-     * @param life     true if this shape has the life property.
-     * @param eyeSize  number of spaces in the eye (e.g. 4 for a pyramid eye shape)
-     * @param vitalPts Encoded location of the vital points
+     * @param life     死活属性
+     * @param eyeSize  眼位大小
+     * @param vitalPts 编码后的关键点数组
      */
     void initialize(boolean life, int eyeSize, float[] vitalPts) {
         initialize(life, eyeSize, vitalPts, EMPTY_POINTS);
     }
 
-    @SuppressWarnings({"AssignmentToCollectionOrArrayFieldFromParameter"})
-    void initialize(boolean life, int eyeSize,
-                    final float[] vitalPts, final float[] endPts) {
-        this.life = life;
-        this.size = (byte) eyeSize;
-        this.vitalPoints = vitalPts;
-        this.endPoints = endPts;
+    void initialize(boolean life, int eyeSize, final float[] vitalPts, final float[] endPts) {
+        this.mLife = life;
+        this.mSize = (byte) eyeSize;
+        this.mVitalPoints = vitalPts;
+        this.mEndPoints = endPts;
     }
 
     /**
-     * @return the number of spaces in they eye (maybe be filled with some enemy stones).
+     * 获取眼位空间大小（眼位中敌方棋子也包含在内）
+     *
+     * @return
      */
     public byte getSize() {
-        return size;
-    }
-
-    @Override
-    public boolean hasLifeProperty() {
-        return life;
+        return mSize;
     }
 
     @Override
     public float[] getVitalPoints() {
-        return vitalPoints;
+        return mVitalPoints;
     }
 
     @Override
     public float[] getEndPoints() {
-        return endPoints;
+        return mEndPoints;
     }
 
     /**
@@ -169,18 +156,18 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
         AbstractEyeSubtypeInformation that = (AbstractEyeSubtypeInformation) o;
 
         if (!getTypeName().equals(that.getTypeName())) return false;
-        if (life != that.life) return false;
-        if (size != that.size) return false;
-        if (!Arrays.equals(endPoints, that.endPoints)) return false;
-        return Arrays.equals(vitalPoints, that.vitalPoints);
+        if (mLife != that.mLife) return false;
+        if (mSize != that.mSize) return false;
+        if (!Arrays.equals(mEndPoints, that.mEndPoints)) return false;
+        return Arrays.equals(mVitalPoints, that.mVitalPoints);
     }
 
     @Override
     public int hashCode() {
-        int result = (life ? 1 : 0);
-        result = 31 * result + (int) size;
-        result = 31 * result + (vitalPoints != null ? Arrays.hashCode(vitalPoints) : 0);
-        result = 31 * result + (endPoints != null ? Arrays.hashCode(endPoints) : 0);
+        int result = (mLife ? 1 : 0);
+        result = 31 * result + (int) mSize;
+        result = 31 * result + (mVitalPoints != null ? Arrays.hashCode(mVitalPoints) : 0);
+        result = 31 * result + (mEndPoints != null ? Arrays.hashCode(mEndPoints) : 0);
         result = 31 * result + getTypeName().hashCode();
         return result;
     }
@@ -188,8 +175,8 @@ public abstract class AbstractEyeSubtypeInformation extends AbstractEyeInformati
     public String toString() {
         StringBuilder bldr = new StringBuilder();
         bldr.append(this.getTypeName());
-        bldr.append(" lifeProp=").append(life);
-        bldr.append(" size=").append(size);
+        bldr.append(" Life:").append(mLife);
+        bldr.append(" Size:").append(mSize);
         return bldr.toString();
     }
 }

@@ -28,8 +28,6 @@ public interface IGoEye extends IGoSet {
 
     EyeInformation getInformation();
 
-    String getEyeTypeName();
-
     int getNumCornerPoints();
 
     int getNumEdgePoints();

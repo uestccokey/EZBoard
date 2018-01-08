@@ -5,7 +5,7 @@ import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.elements.eye.IGoEye;
 
 /**
- * Info about a false eye
+ * 假眼眼位信息
  *
  * @author Barry Becker
  */
