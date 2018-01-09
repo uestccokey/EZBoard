@@ -20,33 +20,33 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Determine the type of an eye on the board.
+ * 眼位类型分析器
  *
  * @author Barry Becker
  */
 public class EyeTypeAnalyzer {
 
-    private IGoEye eye_;
-    private GoBoard board_;
-    private NeighborAnalyzer nbrAnalyzer_;
-    private GroupAnalyzer groupAnalyzer_;
+    private IGoEye mEye;
+    private GoBoard mBoard;
+    private NeighborAnalyzer mNeighborAnalyzer;
+    private GroupAnalyzer mGroupAnalyzer;
 
     public EyeTypeAnalyzer(IGoEye eye, GoBoard board, GroupAnalyzer analyzer) {
-        eye_ = eye;
-        board_ = board;
-        groupAnalyzer_ = analyzer;
-        nbrAnalyzer_ = new NeighborAnalyzer(board);
+        mEye = eye;
+        mBoard = board;
+        mGroupAnalyzer = analyzer;
+        mNeighborAnalyzer = new NeighborAnalyzer(board);
     }
 
     /**
-     * @return the eye type determined based on the properties and
-     * nbrs of the positions in the spaces_ list.
+     * 分析眼位信息
+     *
+     * @return
      */
     public EyeInformation determineEyeInformation() {
-        GoBoardPositionSet spaces = eye_.getMembers();
+        GoBoardPositionSet spaces = mEye.getMembers();
         assert (spaces != null) : "spaces_ is null";
         int size = spaces.size();
-
         if (isFalseEye()) {
             return new FalseEyeInformation();
         }
@@ -60,20 +60,19 @@ public class EyeTypeAnalyzer {
             return new E3Information();
         }
         if (size > 3 && size < 8) {
-            BigEyeAnalyzer bigEyeAnalyzer = new BigEyeAnalyzer(eye_);
+            BigEyeAnalyzer bigEyeAnalyzer = new BigEyeAnalyzer(mEye);
             return bigEyeAnalyzer.determineEyeInformation();
         }
         return new TerritorialEyeInformation();
     }
 
     /**
-     * Iterate through the spaces_ in the eye.
-     * if any are determined to be a false-eye, then return false-eye for the eye type.
+     * 判断眼位中是否包含假眼位
      *
-     * @return true if we are a false eye.
+     * @return
      */
     private boolean isFalseEye() {
-        GoBoardPositionSet spaces = eye_.getMembers();
+        GoBoardPositionSet spaces = mEye.getMembers();
         for (GoBoardPosition space : spaces) {
             if (isFalseEye(space)) {
                 return true;
@@ -83,29 +82,26 @@ public class EyeTypeAnalyzer {
     }
 
     /**
-     * Generally if 3 or more of the nobi neighbors are friendly,
-     * and 2 or more of the diagonal nbrs are not, then it is a false eye.
-     * However, if against the edge or in the corner, then 2 or more friendly nobi nbrs
-     * and 1 or more enemy diagonal nbrs are needed in order to call a false eye.
-     * Those enemy diagonal neighbors need to be stronger otherwise they
-     * should be considered too weak to cause a false eye.
+     * 假眼判断规则：
+     * 1，在棋盘中间，有3个或更多邻接点位被己方棋子占据，并且有2个或更多斜接点位被敌方棋子占据
+     * 2，在边上或者角上，如果有2个或更多邻接点位被己方棋子占据，并且有1个或更多斜接点位被敌方棋子占据
+     * 另外这些斜接的敌方棋子如果快死了或者已经死亡，则不构成假眼
      *
-     * @param space check to see if this space is part of a false eye.
-     * @return true if htis is a false eye.
+     * @param space
+     * @return
      */
     private boolean isFalseEye(GoBoardPosition space) {
-        IGoGroup ourGroup = eye_.getGroup();
+        IGoGroup ourGroup = mEye.getGroup();
         boolean groupP1 = ourGroup.isOwnedByPlayer1();
-        Set nbrs = nbrAnalyzer_.getNobiNeighbors(space, groupP1, NeighborType.FRIEND);
+        Set nbrs = mNeighborAnalyzer.getNobiNeighbors(space, groupP1, NeighborType.FRIEND);
 
         if (nbrs.size() >= 2) {
-
             int numOppDiag = getNumOpponentDiagonals(space, groupP1);
 
             // now decide if false eye based on nbrs and proximity to edge.
             if (numOppDiag >= 2 && (nbrs.size() >= 3))
                 return true;
-            else if (board_.isOnEdge(space) && numOppDiag >= 1) {
+            else if (mBoard.isOnEdge(space) && numOppDiag >= 1) {
                 return true;
             }
         }
@@ -113,11 +109,11 @@ public class EyeTypeAnalyzer {
     }
 
     /**
-     * Check the diagonals for > 2 of the opponents pieces.
-     * there are 2 cases: both opponent pieces on the same vertical or horizontal, or
-     * the opponents pieces are on the opposite diagonals
+     * 获取斜接的合格敌方棋子数量
      *
-     * @return The number of diagonal points that are occupied by opponent stones (0, 1, or 2)
+     * @param space
+     * @param groupP1
+     * @return
      */
     private int getNumOpponentDiagonals(GoBoardPosition space, boolean groupP1) {
         int numOppDiag = 0;
@@ -136,18 +132,25 @@ public class EyeTypeAnalyzer {
     }
 
     /**
-     * @return true of the enemy piece on the diagonal is relatively strong and there are group stones adjacent.
+     * 判断是否是合格的敌方棋子
+     *
+     * @param rowOffset
+     * @param colOffset
+     * @param r
+     * @param c
+     * @param groupP1
+     * @return
      */
     private boolean qualifiedOpponentDiagonal(int rowOffset, int colOffset, int r, int c, boolean groupP1) {
-        GoBoardPosition diagPos = (GoBoardPosition) board_.getPosition(r + rowOffset, c + colOffset);
+        GoBoardPosition diagPos = (GoBoardPosition) mBoard.getPosition(r + rowOffset, c + colOffset);
         if (diagPos == null || diagPos.isUnoccupied() || diagPos.getPiece().isOwnedByPlayer1() == groupP1)
             return false;
 
-        BoardPosition pos1 = board_.getPosition(r + rowOffset, c);
-        BoardPosition pos2 = board_.getPosition(r, c + colOffset);
+        BoardPosition pos1 = mBoard.getPosition(r + rowOffset, c);
+        BoardPosition pos2 = mBoard.getPosition(r, c + colOffset);
 
         return (pos1.isOccupied() && (pos1.getPiece().isOwnedByPlayer1() == groupP1) &&
                 pos2.isOccupied() && (pos2.getPiece().isOwnedByPlayer1() == groupP1) &&
-                groupAnalyzer_.isTrueEnemy(diagPos));
+                mGroupAnalyzer.isTrueEnemy(diagPos));
     }
 }

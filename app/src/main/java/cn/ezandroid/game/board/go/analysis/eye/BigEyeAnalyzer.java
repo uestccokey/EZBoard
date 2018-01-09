@@ -30,23 +30,16 @@ class BigEyeAnalyzer {
     }
 
     /**
-     * For some eyes (like big eyes) there are one or more key points that will make a single eye if
-     * the opponent plays first (or first and second if 2 key points), or 2 eyes if you play first.
-     * We refer to the paper "When One Eye is Sufficient: A Static Classification"
-     * to classify the different eye types based solely on eye-point neighbors.
-     * <p>
-     * The pattern formed by the sorted list of neighbor counts uniquely determines the type.
+     * 根据眼位中各点的邻接眼位数分析眼位信息
      *
-     * @return the eye type determined based on the properties and neighbors of the positions in the mSpaces list.
+     * @return
      */
     EyeInformation determineEyeInformation() {
         List<Integer> counts = new ArrayList<>(7);
-
         for (GoBoardPosition space : mSpaces) {
             counts.add(getNumEyeNobiNeighbors(space));
         }
         Collections.sort(counts);
-
         return getEyeInformation(counts);
     }
 
@@ -56,19 +49,18 @@ class BigEyeAnalyzer {
             bldr.append(num);
         }
         EyeType type = EyeType.valueOf("E" + counts.size());
-
         return type.getInformation(bldr.toString());
     }
 
     /**
-     * @param space eye space to check
-     * @return number of eye-space nobi neighbors.
-     * these neighbors may either be blanks or dead stones of the opponent
+     * 获取大眼中指定位置眼位的邻接眼位数量
+     *
+     * @param space
+     * @return
      */
     private int getNumEyeNobiNeighbors(GoBoardPosition space) {
         int numNbrs = 0;
         for (GoBoardPosition eyeSpace : mSpaces) {
-
             if (space.isNeighbor(eyeSpace))
                 numNbrs++;
         }

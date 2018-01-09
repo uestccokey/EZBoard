@@ -55,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int mBlackScore;
     private int mWhiteScore;
-
-    private float mBlackWinRatio;
+    private float mBlackWinRatio = 0.5f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +116,12 @@ public class MainActivity extends AppCompatActivity {
 
         mTerrainMapView.setTerrainMap(null);
         mHeatMapView.setHeatMap(null);
+
+        mBlackScore = 0;
+        mWhiteScore = 0;
+        mBlackWinRatio = 0.5f;
+
+        updateDetail();
     }
 
     private void undo() {
