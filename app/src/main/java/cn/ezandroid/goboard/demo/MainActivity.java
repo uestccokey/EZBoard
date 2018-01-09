@@ -39,10 +39,6 @@ public class MainActivity extends AppCompatActivity {
     private Button mScoreButton;
     private TextView mDetailView;
 
-    private int mBoardSize = 19;
-
-    private Game mGame;
-
     private IPolicyNetwork mPolicyNetwork;
     private IValueNetwork mValueNetwork;
     private FeatureBoard mFeatureBoard;
@@ -65,19 +61,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGame = new Game(mBoardSize);
-
         mPolicyNetwork = new Roc57Policy(this);
         mValueNetwork = new AQValue(this);
         mFeatureBoard = new FeatureBoard();
 
         mBoardView = findViewById(R.id.board);
-        mBoardView.setBoardSize(mBoardSize);
         mBoardView.setOnTouchListener((v, event) -> {
             Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
             if (intersection != null) {
                 Intersection highlight = mBoardView.getHighlightIntersection();
-                if (intersection.equals(highlight) && !mGame.taken(intersection)) {
+                if (intersection.equals(highlight) && !mFeatureBoard.taken(intersection)) {
                     putStone(intersection, mCurrentColor, true);
                 } else {
                     mBoardView.setHighlightIntersection(intersection);
@@ -87,10 +80,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mHeatMapView = findViewById(R.id.heat_map);
-        mHeatMapView.setBoardSize(mBoardSize);
 
         mTerrainMapView = findViewById(R.id.terrain_map);
-        mTerrainMapView.setBoardSize(mBoardSize);
 
         mDetailView = findViewById(R.id.detail);
 
@@ -115,6 +106,12 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+
+        mFeatureBoard.reset();
+        mGoBoard.reset();
+        mBoardView.reset();
+        mTerrainMapView.setTerrainMap(null);
+        mHeatMapView.setHeatMap(null);
     }
 
     private void undo() {
@@ -123,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         }
         mTerrainMapView.setTerrainMap(null);
 
-        Pair<Move, Chain> pair = mGame.undo();
+        Pair<Move, Chain> pair = mFeatureBoard.undo();
         mGoBoard.undoMove();
 
         if (pair != null) {
@@ -139,10 +136,9 @@ public class MainActivity extends AppCompatActivity {
                     mBoardView.addStone(stone);
                 }
             }
-            mFeatureBoard.undo();
 
             // 双重撤销
-            Pair<Move, Chain> pair2 = mGame.undo();
+            Pair<Move, Chain> pair2 = mFeatureBoard.undo();
             mGoBoard.undoMove();
 
             if (pair2 != null) {
@@ -155,10 +151,9 @@ public class MainActivity extends AppCompatActivity {
                         mBoardView.addStone(stone);
                     }
                 }
-                mFeatureBoard.undo();
             }
 
-            Move latest = mGame.getHistory().readLatest();
+            Move latest = mFeatureBoard.getCurrentMove();
             if (latest != null) {
                 mBoardView.setHighlightStone(latest.getStone());
             }
@@ -187,9 +182,9 @@ public class MainActivity extends AppCompatActivity {
         LinkedList<GoBoardPosition> blackDeads = mDeadStoneUpdater.getDeadStonesOnBoard(true);
         LinkedList<GoBoardPosition> whiteDeads = mDeadStoneUpdater.getDeadStonesOnBoard(false);
 
-        int[][] board = new int[mBoardSize][mBoardSize];
-        for (int i = 0; i < mBoardSize; i++) {
-            for (int j = 0; j < mBoardSize; j++) {
+        int[][] board = new int[19][19];
+        for (int i = 0; i < 19; i++) {
+            for (int j = 0; j < 19; j++) {
                 BoardPosition position = mGoBoard.getPosition(i + 1, j + 1);
                 if (position != null) {
                     GamePiece piece = position.getPiece();
@@ -212,9 +207,9 @@ public class MainActivity extends AppCompatActivity {
         float[][] state = TerrainAnalyze.terrainAnalyze(board);
         int blackScore = 0;
         int whiteScore = 0;
-        float[] rate = new float[mBoardSize * mBoardSize];
-        for (int i = 0; i < mBoardSize; i++) {
-            System.arraycopy(state[i], 0, rate, i * 19, mBoardSize);
+        float[] rate = new float[19 * 19];
+        for (int i = 0; i < 19; i++) {
+            System.arraycopy(state[i], 0, rate, i * 19, 19);
         }
         printRate(rate);
 
@@ -317,28 +312,28 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         Set<Chain> captured = new HashSet<>();
-        Stone stone = new Stone();
-        stone.color = color;
-        stone.intersection = intersection;
-        stone.number = mGame.getHistory().size() + 1;
-        boolean add = mGame.addStone(stone, captured);
+        boolean add = mFeatureBoard.playMove(intersection.x, intersection.y,
+                mCurrentColor == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE, captured);
         if (add) {
+            Stone stone = new Stone();
+            stone.color = color;
+            stone.intersection = intersection;
+            stone.number = mFeatureBoard.getCurrentMoveNumber();
+
             GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1), 0, new GoStone(user));
             mGoBoard.makeMove(goMove);
             Log.e("MainActivity", mGoBoard.getGroups().toString());
 
             mBoardView.setHighlightIntersection(null);
-
             for (Chain chain : captured) {
                 for (Stone stone1 : chain.getStones()) {
                     mBoardView.removeStone(stone1);
                 }
             }
             mBoardView.addStone(stone);
-            mFeatureBoard.playMove(intersection.x, intersection.y,
-                    mCurrentColor == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE);
-            mCurrentColor = mCurrentColor.getOther();
             mBoardView.setHighlightStone(stone);
+
+            mCurrentColor = mCurrentColor.getOther();
 
             if (user) {
                 mIsThinking = true;
@@ -390,6 +385,18 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 byte[][] features48 = mFeatureBoard.generateFeatures48();
                 float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+
+                float maxRate = -1;
+                for (int i = 0; i < policies[0].length; i++) {
+                    if (policies[0][i] > maxRate) {
+                        maxRate = policies[0][i];
+                    }
+                }
+
+                for (int i = 0; i < policies[0].length; i++) {
+                    policies[0][i] = policies[0][i] / maxRate;
+                }
+
                 mHeatMapView.setHeatMap(policies[0]);
             }
         }

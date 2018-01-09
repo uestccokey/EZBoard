@@ -12,28 +12,20 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Determine properties about a big eye on the board.
- * This analyzer is only used by the EyeTypeAnalyzer.
- * It classifies eyes that are not false eye and have between 2 and 8 spaces_.
- * Some of those spaces_ may have enemy stones in them.
- * See EyeTypeAnalyzer
+ * 大眼分析器
+ * <p>
+ * 用来对眼位空间在[4,7]之间的大眼分类
  *
  * @author Barry Becker
  */
 class BigEyeAnalyzer {
 
-    /** spaces_ in the eye */
-    private GoBoardPositionSet spaces_;
+    // 眼位空间
+    private GoBoardPositionSet mSpaces;
 
-    /**
-     * The eye must have between 3 and 8 spaces_.
-     *
-     * @param eye the eye to analyze
-     */
     BigEyeAnalyzer(IGoEye eye) {
-
-        spaces_ = eye.getMembers();
-        int size = spaces_.size();
+        mSpaces = eye.getMembers();
+        int size = mSpaces.size();
         assert (size > 3 && size < 8);
     }
 
@@ -45,12 +37,12 @@ class BigEyeAnalyzer {
      * <p>
      * The pattern formed by the sorted list of neighbor counts uniquely determines the type.
      *
-     * @return the eye type determined based on the properties and neighbors of the positions in the spaces_ list.
+     * @return the eye type determined based on the properties and neighbors of the positions in the mSpaces list.
      */
     EyeInformation determineEyeInformation() {
         List<Integer> counts = new ArrayList<>(7);
 
-        for (GoBoardPosition space : spaces_) {
+        for (GoBoardPosition space : mSpaces) {
             counts.add(getNumEyeNobiNeighbors(space));
         }
         Collections.sort(counts);
@@ -75,7 +67,7 @@ class BigEyeAnalyzer {
      */
     private int getNumEyeNobiNeighbors(GoBoardPosition space) {
         int numNbrs = 0;
-        for (GoBoardPosition eyeSpace : spaces_) {
+        for (GoBoardPosition eyeSpace : mSpaces) {
 
             if (space.isNeighbor(eyeSpace))
                 numNbrs++;

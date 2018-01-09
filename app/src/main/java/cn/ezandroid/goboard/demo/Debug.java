@@ -23,9 +23,9 @@ public class Debug {
                 } else {
                     int player = board[i * 19 + (j - 1)];
                     if (player == FeatureBoard.BLACK) {
-                        System.err.print("●");
-                    } else if (player == FeatureBoard.WHITE) {
                         System.err.print("○");
+                    } else if (player == FeatureBoard.WHITE) {
+                        System.err.print("●");
                     } else {
                         System.err.print("+");
                     }

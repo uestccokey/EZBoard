@@ -2,23 +2,24 @@
 package cn.ezandroid.game.board.go.analysis.eye.information;
 
 /**
- * Scores for various sorts of prototypical eye types.
- * 0 means dead. 1 means unconditionally alive.
+ * 眼型的分数
+ * <p>
+ * 0表示死亡，1表示无条件活
  *
  * @author Barry Becker
  */
 final class EyeShapeScores {
 
-    /** any shape that have a false eye point. */
+    // 有假眼点眼位的分数
     public static final float FALSE_EYE = 0.19f;
 
-    /** one or two points, or clump. */
+    // 单眼的分数
     public static final float SINGLE_EYE = 1.0f;
 
-    /** Can be made one eye if opponent plays first. */
+    // 假如敌方先行，可能变成单眼的分数
     public static final float BIG_EYE = 1.2f;
 
-    /** We are guaranteed to have 2 eyes. */
+    // 保证有两眼的分数
     public static final float GUARANTEED_TWO_EYES = 2.0f;
 
     private EyeShapeScores() {}

@@ -71,8 +71,6 @@ public class FeatureBoard implements Cloneable {
 
     private byte mActivePlayer;
 
-    private final int mBoardSize;
-
     private static final SparseArray<List<Integer>> NEIGHBOR_CACHE = new SparseArray<>();
 
     private static final SparseArray<List<Integer>> DIAGONAL_CACHE = new SparseArray<>();
@@ -121,7 +119,13 @@ public class FeatureBoard implements Cloneable {
     private Set<Intersection> mShouldUpdatePos = new HashSet<>();
 
     public FeatureBoard() {
-        mBoardSize = 361;
+        reset();
+    }
+
+    /**
+     * 重置棋盘
+     */
+    public void reset() {
         mBoardFeature = new byte[361];
         mHistoryFeature = new byte[361];
         mLibertyFeature = new byte[361];
@@ -143,6 +147,8 @@ public class FeatureBoard implements Cloneable {
                 mLibertyAfterFeature[i] = 4;
             }
         }
+
+        mActivePlayer = BLACK;
     }
 
     @Override
@@ -222,7 +228,12 @@ public class FeatureBoard implements Cloneable {
         }
     }
 
-    public Move undo() {
+    /**
+     * 撤销
+     *
+     * @return
+     */
+    public Pair<Move, Chain> undo() {
         Pair<Move, Chain> pair = mGame.undo();
         if (pair != null) {
             Move move = pair.first;
@@ -265,11 +276,15 @@ public class FeatureBoard implements Cloneable {
             updateFeature();
 
             Debug.printBoard(mBoardFeature);
-            return move;
         }
-        return null;
+        return pair;
     }
 
+    /**
+     * 重做
+     *
+     * @return
+     */
     public Move redo() {
         Move move = mGame.redo();
         if (move != null) {
@@ -323,23 +338,59 @@ public class FeatureBoard implements Cloneable {
         return mGame;
     }
 
-    public boolean playMove(int x, int y, byte player) {
-        return playMove(x + y * 19, player);
+    /**
+     * 检查该点是否已有棋子
+     *
+     * @param intersection
+     * @return
+     */
+    public boolean taken(Intersection intersection) {
+        return mGame.taken(intersection);
     }
 
-    public boolean playMove(int pos, byte player) {
+    /**
+     * 获取当前落子
+     *
+     * @return
+     */
+    public Move getCurrentMove() {
+        return mGame.getHistory().readLatest();
+    }
+
+    /**
+     * 获取当前手数
+     *
+     * @return
+     */
+    public int getCurrentMoveNumber() {
+        return mGame.getHistory().getHead() + 1;
+    }
+
+    /**
+     * 在指定位置落子
+     *
+     * @param x
+     * @param y
+     * @param player
+     * @param captured
+     * @return
+     */
+    public boolean playMove(int x, int y, byte player, Set<Chain> captured) {
+        return playMove(x + y * 19, player, captured);
+    }
+
+    private boolean playMove(int pos, byte player, Set<Chain> captured) {
         if (!isLegal(pos, player)) {
             return false;
         }
 
         mActivePlayer = getNextPlayer(player);
 
-        Set<Chain> captured = new HashSet<>();
         Stone stone = new Stone();
         stone.color = getStoneColor(player);
         stone.intersection = new Intersection(pos % 19, pos / 19);
         mGame.addStone(stone, captured);
-        stone.number = mGame.getHistory().getHead();
+        stone.number = mGame.getHistory().getHead() + 1;
 
         // 劫位置更新
         Intersection intersection = mGame.getHistory().readLatest().getKO();
@@ -386,7 +437,7 @@ public class FeatureBoard implements Cloneable {
         for (Chain chain : mGame.getChains()) {
             for (Stone stone : chain.getStones()) {
                 int pos = stone.intersection.x + stone.intersection.y * 19;
-                int turnSince = mGame.getHistory().getHead() - stone.number;
+                int turnSince = mGame.getHistory().getHead() + 1 - stone.number;
                 mHistoryFeature[pos] = turnSince > Byte.MAX_VALUE ?
                         Byte.MAX_VALUE : (byte) turnSince;
             }
@@ -500,7 +551,7 @@ public class FeatureBoard implements Cloneable {
     }
 
     public byte[][] generateFeatures48() {
-        byte features[][] = (byte[][]) Array.newInstance(Byte.TYPE, mBoardSize, 48);
+        byte features[][] = (byte[][]) Array.newInstance(Byte.TYPE, 361, 48);
         int pos = 0;
         while (pos < mBoardFeature.length) {
             if (mBoardFeature[pos] == 0) {
@@ -533,7 +584,7 @@ public class FeatureBoard implements Cloneable {
     }
 
     public byte[][] generateFeatures49() {
-        byte features[][] = (byte[][]) Array.newInstance(Byte.TYPE, mBoardSize, 49);
+        byte features[][] = (byte[][]) Array.newInstance(Byte.TYPE, 361, 49);
         int pos = 0;
         while (pos < mBoardFeature.length) {
             if (mBoardFeature[pos] == 0) {

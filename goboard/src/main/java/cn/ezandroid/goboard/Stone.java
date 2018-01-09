@@ -36,7 +36,6 @@ public class Stone implements Cloneable {
 
         Stone stone = (Stone) o;
 
-        if (number != stone.number) return false;
         if (color != stone.color) return false;
         return intersection != null ? intersection.equals(stone.intersection) : stone.intersection == null;
     }
@@ -45,7 +44,6 @@ public class Stone implements Cloneable {
     public int hashCode() {
         int result = color != null ? color.hashCode() : 0;
         result = 31 * result + (intersection != null ? intersection.hashCode() : 0);
-        result = 31 * result + number;
         return result;
     }
 }

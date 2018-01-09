@@ -10,45 +10,46 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPositionList;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Maps eye positions to lists of neighboring eye spaces_.
+ * 眼位中所有点位的邻接点位图
  *
  * @author Barry Becker
  */
 public class EyeNeighborMap {
 
-    private IGoEye eye_;
-    private Map<GoBoardPosition, GoBoardPositionList> nbrMap_;
+    private IGoEye mEye;
+    private Map<GoBoardPosition, GoBoardPositionList> mNbrMap;
 
-    /**
-     * Constructor
-     *
-     * @param eye we take an IGoString because that is all we need, but typically you want to pass in a GoEye.
-     */
     public EyeNeighborMap(IGoEye eye) {
-        eye_ = eye;
-        nbrMap_ = createMap();
+        mEye = eye;
+        mNbrMap = createMap();
     }
 
     /**
-     * @return list of eye neighbors for the specified eyeSpace position.
+     * 获取眼位中指定点的邻接点位列表
+     *
+     * @return
      */
     GoBoardPositionList getEyeNeighbors(GoBoardPosition eyeSpace) {
-        return nbrMap_.get(eyeSpace);
+        return mNbrMap.get(eyeSpace);
     }
 
     /**
-     * @return number of eye neighbors for the specified eyeSpace position.
+     * 获取眼位中指定点的邻接点位的数量
+     *
+     * @return
      */
     public int getNumEyeNeighbors(GoBoardPosition eyeSpace) {
         return getEyeNeighbors(eyeSpace).size();
     }
 
     public GoBoardPositionSet keySet() {
-        return new GoBoardPositionSet(nbrMap_.keySet());
+        return new GoBoardPositionSet(mNbrMap.keySet());
     }
 
     /**
-     * @return true if identifying index for space is in array of specialPoints.
+     * 判断眼位中指定点的编码值是否在指定数组中
+     *
+     * @return
      */
     public boolean isSpecialPoint(GoBoardPosition space, float[] specialPoints) {
         float index = getEyeNeighborIndex(space);
@@ -61,6 +62,8 @@ public class EyeNeighborMap {
     }
 
     /**
+     * 眼位中指定点的编码值
+     *
      * @return Number of eye neighbors + (the sum of all the neighbors neighbors)/100.
      */
     private float getEyeNeighborIndex(GoBoardPosition eyeSpace) {
@@ -71,35 +74,30 @@ public class EyeNeighborMap {
         return getEyeNeighbors(eyeSpace).size() + nbrNbrSum / 100.0f;
     }
 
-    /**
-     * Do a breadth first search of all the positions in the eye, adding their nbr set to the map as we go.
-     *
-     * @return the new neighbor map
-     */
     private Map<GoBoardPosition, GoBoardPositionList> createMap() {
         Map<GoBoardPosition, GoBoardPositionList> nbrMap = new HashMap<>();
         // we should probably be able to assume that the eye spaces_ are unvisited, but apparently not. assert instead?
-        eye_.setVisited(false);
+        mEye.setVisited(false);
 
         GoBoardPositionList queue = new GoBoardPositionList();
-        GoBoardPosition firstPos = eye_.getMembers().iterator().next();
+        GoBoardPosition firstPos = mEye.getMembers().iterator().next();
         firstPos.setVisited(true);
         queue.add(firstPos);
 
         int count = processSearchQueue(queue, nbrMap);
 
-        if (count != eye_.getMembers().size()) {
+        if (count != mEye.getMembers().size()) {
             throw new IllegalArgumentException("The eye string must not have been nobi connected because " +
-                    "not all memebers were searched. " + eye_);
+                    "not all memebers were searched. " + mEye);
         }
-        eye_.setVisited(false);
+        mEye.setVisited(false);
         return nbrMap;
     }
 
     /**
-     * Do a breadth first search of all the positions in the eye, adding their nbr set to the map as we go.
+     * 广度优先搜索
      *
-     * @return the number of element that were searched.
+     * @return
      */
     private int processSearchQueue(GoBoardPositionList queue, Map<GoBoardPosition, GoBoardPositionList> nbrMap) {
         int count = 0;
@@ -119,14 +117,14 @@ public class EyeNeighborMap {
     }
 
     /**
-     * @param space eye space to check
-     * @return number of eye-space nobi neighbors.
-     * these neighbors may either be blanks or dead stones of the opponent
+     * 获取眼位中指定点邻接点位的列表（要么是空点位，要么是敌方死子）
+     *
+     * @param space
+     * @return
      */
     private GoBoardPositionList getEyeNobiNeighbors(GoBoardPosition space) {
         GoBoardPositionList nbrs = new GoBoardPositionList();
-        for (GoBoardPosition eyeSpace : eye_.getMembers()) {
-
+        for (GoBoardPosition eyeSpace : mEye.getMembers()) {
             if (space.isNeighbor(eyeSpace))
                 nbrs.add(eyeSpace);
         }
@@ -134,6 +132,6 @@ public class EyeNeighborMap {
     }
 
     public String toString() {
-        return nbrMap_.toString();
+        return mNbrMap.toString();
     }
 }
