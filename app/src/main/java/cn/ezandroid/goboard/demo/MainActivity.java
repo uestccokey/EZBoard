@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+        mHeatMapView.setHeatMap(null);
+
         mBoardEvaluator.updateTerritoryAtEndOfGame();
         mDeadStoneUpdater.determineDeadStones();
 
@@ -238,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+        mTerrainMapView.setTerrainMap(null);
 
         byte[][] features48 = mFeatureBoard.generateFeatures48();
         float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
@@ -415,6 +418,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDetail() {
-        mDetailView.setText("形势 黑:" + mBlackScore + " 白:" + mWhiteScore + " 黑胜率:" + mBlackWinRatio);
+        mDetailView.setText("形势 黑:" + mBlackScore + " 白:" + mWhiteScore + "+7.5" + " 黑胜率:" + mBlackWinRatio);
     }
 }
