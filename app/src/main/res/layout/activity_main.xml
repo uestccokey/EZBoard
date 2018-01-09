@@ -57,6 +57,12 @@
         android:layout_centerHorizontal="true">
 
         <Button
+            android:id="@+id/hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提示" />
+
+        <Button
             android:id="@+id/score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

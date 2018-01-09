@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private Button mPassButton;
     private Button mResignButton;
     private Button mScoreButton;
+    private Button mHintButton;
+
     private TextView mDetailView;
 
     private IPolicyNetwork mPolicyNetwork;
@@ -95,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         mResignButton.setOnClickListener(v -> resign());
         mScoreButton = findViewById(R.id.score);
         mScoreButton.setOnClickListener(v -> score());
+        mHintButton = findViewById(R.id.hint);
+        mHintButton.setOnClickListener(v -> hint());
 
         GameContext.setDebugMode(1);
         mGoBoard = new GoBoard(19, 0);
@@ -110,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         mFeatureBoard.reset();
         mGoBoard.reset();
         mBoardView.reset();
+
         mTerrainMapView.setTerrainMap(null);
         mHeatMapView.setHeatMap(null);
     }
@@ -119,12 +124,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         mTerrainMapView.setTerrainMap(null);
+        mHeatMapView.setHeatMap(null);
 
         Pair<Move, Chain> pair = mFeatureBoard.undo();
         mGoBoard.undoMove();
 
         if (pair != null) {
-            mHeatMapView.setHeatMap(null);
             mBoardView.setHighlightIntersection(null);
 
             Move move = pair.first;
@@ -229,6 +234,28 @@ public class MainActivity extends AppCompatActivity {
         updateDetail();
     }
 
+    private void hint() {
+        if (mIsThinking) {
+            return;
+        }
+
+        byte[][] features48 = mFeatureBoard.generateFeatures48();
+        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+
+        float maxRate = -1;
+        for (int i = 0; i < policies[0].length; i++) {
+            if (policies[0][i] > maxRate) {
+                maxRate = policies[0][i];
+            }
+        }
+
+        for (int i = 0; i < policies[0].length; i++) {
+            policies[0][i] = policies[0][i] / maxRate;
+        }
+
+        mHeatMapView.setHeatMap(policies[0]);
+    }
+
     private void printBoard(int[] board) {
         System.err.println("Board:");
         System.err.print("|-");
@@ -311,6 +338,9 @@ public class MainActivity extends AppCompatActivity {
         if (mIsThinking) {
             return;
         }
+        mTerrainMapView.setTerrainMap(null);
+        mHeatMapView.setHeatMap(null);
+
         Set<Chain> captured = new HashSet<>();
         boolean add = mFeatureBoard.playMove(intersection.x, intersection.y,
                 mCurrentColor == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE, captured);
@@ -375,29 +405,11 @@ public class MainActivity extends AppCompatActivity {
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")");
                         runOnUiThread(() -> {
                             updateDetail();
-//                            mHeatMapView.setHeatMap(policies[0]);
-                            mTerrainMapView.setTerrainMap(null);
 
                             putStone(new Intersection(pos % 19, pos / 19), mCurrentColor, false);
                         });
                     }
                 }.start();
-            } else {
-                byte[][] features48 = mFeatureBoard.generateFeatures48();
-                float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
-
-                float maxRate = -1;
-                for (int i = 0; i < policies[0].length; i++) {
-                    if (policies[0][i] > maxRate) {
-                        maxRate = policies[0][i];
-                    }
-                }
-
-                for (int i = 0; i < policies[0].length; i++) {
-                    policies[0][i] = policies[0][i] / maxRate;
-                }
-
-                mHeatMapView.setHeatMap(policies[0]);
             }
         }
     }
