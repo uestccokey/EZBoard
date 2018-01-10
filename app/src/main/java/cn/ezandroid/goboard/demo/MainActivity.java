@@ -1,12 +1,18 @@
 package cn.ezandroid.goboard.demo;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -38,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mResignButton;
     private Button mScoreButton;
     private Button mHintButton;
+    private Button mShareButton;
 
     private TextView mDetailView;
 
@@ -98,6 +105,8 @@ public class MainActivity extends AppCompatActivity {
         mScoreButton.setOnClickListener(v -> score());
         mHintButton = findViewById(R.id.hint);
         mHintButton.setOnClickListener(v -> hint());
+        mShareButton = findViewById(R.id.share);
+        mShareButton.setOnClickListener(v -> share());
 
         GameContext.setDebugMode(1);
         mGoBoard = new GoBoard(19, 0);
@@ -262,6 +271,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mHeatMapView.setHeatMap(policies[0]);
+    }
+
+    private void share() {
+        mBoardView.setDrawingCacheEnabled(true);
+        mBoardView.buildDrawingCache();
+
+        saveBitmap(mBoardView.getDrawingCache());
+
+        mBoardView.destroyDrawingCache();
+        mBoardView.setDrawingCacheEnabled(false);
+    }
+
+    private void saveBitmap(Bitmap bitmap) {
+        String path = Environment.getExternalStorageDirectory().getPath() + "/board.jpg";
+        File saveFile = new File(path);
+        BufferedOutputStream bos = null;
+        try {
+            bos = new BufferedOutputStream(new FileOutputStream(saveFile));
+            Bitmap.CompressFormat format = path.endsWith(".png") ? Bitmap.CompressFormat.PNG : Bitmap.CompressFormat.JPEG;
+            bitmap.compress(format, 100, bos);
+            bos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bos != null) {
+                    bos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveGIF() {
+        // TODO
     }
 
     private void printBoard(int[] board) {

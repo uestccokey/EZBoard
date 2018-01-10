@@ -245,9 +245,14 @@ public class BoardView extends RelativeLayout {
     private void drawBoard(Canvas canvas) {
         int coordinateTextSize = mSquareSize / 2;
 
-        mBoardPaint.setColor(Color.BLACK);
+        mBoardPaint.setColor(Color.WHITE);
         mBoardPaint.setStyle(Paint.Style.FILL);
         mBoardPaint.setTextSize(coordinateTextSize);
+
+        // 清屏
+        canvas.drawRect(0, 0, getWidth(), getHeight(), mBoardPaint);
+
+        mBoardPaint.setColor(Color.BLACK);
 
         canvas.translate(mSquareSize, mSquareSize);
 

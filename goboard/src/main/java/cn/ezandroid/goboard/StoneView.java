@@ -188,6 +188,7 @@ public class StoneView extends TextView {
         } else {
             textSize = getWidth() / 2.5f;
         }
+        mStonePaint.setStyle(Paint.Style.FILL);
         mStonePaint.setTextSize(textSize);
         mStonePaint.setStrokeWidth(0);
         String number = String.valueOf(mStone.number);
