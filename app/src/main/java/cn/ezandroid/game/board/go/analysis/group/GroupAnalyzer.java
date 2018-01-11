@@ -10,71 +10,62 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * Analyzes a group to determine how alive it is, and also find other properties like eyes and liberties.
+ * 分析一个棋群的死活以及眼位和气等属性
  *
  * @author Barry Becker
  */
 public class GroupAnalyzer implements GoGroupChangeListener {
 
-    /** The group of go stones that we are analyzing. */
-    private IGoGroup group_;
+    // 当前正在分析的棋群
+    private IGoGroup mGroup;
 
-    private StoneInGroupAnalyzer stoneInGroupAnalyzer_;
+    private StoneInGroupAnalyzer mStoneInGroupAnalyzer;
 
-    /**
-     * This measure of health is also between -1 and 1 but it should be more
-     * accurate because it takes into account the health of neighboring enemy groups as well.
-     * it uses the absolute health as a base and exaggerates it base on the relative strength of the
-     * weakest enemy nbr group.
-     */
-    private float relativeHealth_;
+    // 这个健康值也在-1~1之间，比绝对健康值更加精确，因为它考虑到了周围棋串的健康值
+    private float mRelativeHealth;
 
-    private AbsoluteHealthCalculator absHealthCalculator_;
+    private AbsoluteHealthCalculator mAbsoluteHealthCalculator;
 
-    /** cached absolute health to avoid needless recalculation. */
-    private float absoluteHealth_;
+    // 缓存绝对健康值，避免不必要的重复计算
+    private float mAbsoluteHealth;
 
-    private GroupAnalyzerMap analyzerMap_;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor.
-     *
-     * @param group group to analyze.
-     */
     public GroupAnalyzer(IGoGroup group, GroupAnalyzerMap analyzerMap) {
-        group_ = group;
-        analyzerMap_ = analyzerMap;
-        absHealthCalculator_ = new AbsoluteHealthCalculator(group, analyzerMap_);
-        stoneInGroupAnalyzer_ = new StoneInGroupAnalyzer(group);
+        mGroup = group;
+        mAnalyzerMap = analyzerMap;
+        mAbsoluteHealthCalculator = new AbsoluteHealthCalculator(group, mAnalyzerMap);
+        mStoneInGroupAnalyzer = new StoneInGroupAnalyzer(group);
         group.addChangeListener(this);
     }
 
     public IGoGroup getGroup() {
-        return group_;
+        return mGroup;
     }
 
     /**
-     * Called when the group we are maintaining info about changes.
-     * It changes by having stones added or removed.
+     * 当棋群增加和删除棋子时调用
      */
+    @Override
     public void onGoGroupChanged() {
         invalidate();
     }
 
     /**
-     * @return health score independent of neighboring groups.
+     * 获取与邻近棋群无关的绝对健康值
+     *
+     * @return
      */
     public float getAbsoluteHealth() {
-        return absoluteHealth_;
+        return mAbsoluteHealth;
     }
 
     /**
-     * We try to use the cached relative health value if we can.
+     * 获取与邻近棋群相关的相对健康值
      *
-     * @param board          needed to calculate new value if not cached
-     * @param useCachedValue if true, just return the cached value instead of checking for validity.
-     *                       Only do this if you are sure the value returned does not have to be perfectly accurate.
-     * @return relative health
+     * @param board
+     * @param useCachedValue
+     * @return
      */
     public float getRelativeHealth(GoBoard board, boolean useCachedValue) {
         if (isValid() || useCachedValue) {
@@ -87,103 +78,81 @@ public class GroupAnalyzer implements GoGroupChangeListener {
     }
 
     /**
-     * @return health score dependent on strength of neighboring groups.
-     */
-    float getRelativeHealth() {
-        return relativeHealth_;
-    }
-
-    public void invalidate() {
-        absHealthCalculator_.invalidate();
-    }
-
-    /**
-     * @return true if the group has changed (structurally) in any way.
-     */
-    public boolean isValid() {
-        return absHealthCalculator_.isValid();
-    }
-
-    /**
-     * If nothing cached, this may not be accurate.
+     * 获取与邻近棋群相关的相对健康值
      *
-     * @return number of cached liberties.
+     * @return
      */
-    public int getNumLiberties(GoBoard board) {
-        return group_.getNumLiberties(board);
+    private float getRelativeHealth() {
+        return mRelativeHealth;
     }
 
-    /**
-     * @return set of eyes currently identified for this group.
-     */
+    private void invalidate() {
+        mAbsoluteHealthCalculator.invalidate();
+    }
+
+    private boolean isValid() {
+        return mAbsoluteHealthCalculator.isValid();
+    }
+
+    public int getNumLiberties(GoBoard board) {
+        return mGroup.getNumLiberties(board);
+    }
+
     public GoEyeSet getEyes(GoBoard board) {
-        return absHealthCalculator_.getEyes(board);
+        return mAbsoluteHealthCalculator.getEyes(board);
     }
 
     public float calculateAbsoluteHealth(GoBoard board) {
-        absoluteHealth_ = absHealthCalculator_.calculateAbsoluteHealth(board);
-        return absoluteHealth_;
+        mAbsoluteHealth = mAbsoluteHealthCalculator.calculateAbsoluteHealth(board);
+        return mAbsoluteHealth;
     }
 
     /**
-     * @return true if the piece is an enemy of the set owner.
-     * If the difference in health between the stones is great, then they are not really enemies
-     * because one of them is dead.
+     * 如果棋子之间健康值差距很大，那它们将不是真正的敌人，因为他们其中的一个已经死了
+     *
+     * @param pos
+     * @return
      */
     public boolean isTrueEnemy(GoBoardPosition pos) {
         assert (pos.isOccupied());
         GoStone stone = (GoStone) pos.getPiece();
         boolean muchWeaker = isStoneMuchWeakerThanGroup(stone);
 
-        return (stone.isOwnedByPlayer1() != group_.isOwnedByPlayer1() && !muchWeaker);
+        return (stone.isOwnedByPlayer1() != mGroup.isOwnedByPlayer1() && !muchWeaker);
     }
 
     /**
-     * used only for test. Remove when tested through AbsoluteGroupHealthCalc
+     * 计算棋群的相对健康值
+     * <p>
+     * 这个方法只能在所有棋群都调用calculateAbsoluteHealth后才能调用
      *
-     * @return eye potential
-     */
-    public float getEyePotential() {
-        return absHealthCalculator_.getEyePotential();
-    }
-
-    /**
-     * Calculate the relative health of a group.
-     * This method must be called only after calculateAbsoluteHealth has be done for all groups.
-     * Good health is positive for a black group.
-     * This measure of the group's health should be much more accurate than the absolute health
-     * because it takes into account the relative health of neighboring groups.
-     * If the health of an opponent bordering group is in worse shape
-     * than our own then we get a boost since we can probably kill that group first.
-     *
-     * @return the overall health of the group.
+     * @param board
+     * @return
      */
     public float calculateRelativeHealth(GoBoard board) {
         if (!isValid()) {
             calculateAbsoluteHealth(board);
         }
 
-        RelativeHealthCalculator relativeCalculator = new RelativeHealthCalculator(group_, analyzerMap_);
-        relativeHealth_ = relativeCalculator.calculateRelativeHealth(board, absoluteHealth_);
-
-        return relativeHealth_;
+        RelativeHealthCalculator relativeCalculator = new RelativeHealthCalculator(mGroup, mAnalyzerMap);
+        mRelativeHealth = relativeCalculator.calculateRelativeHealth(board, mAbsoluteHealth);
+        return mRelativeHealth;
     }
 
-    /**
-     * @return a deep copy of this GroupAnalyzer
-     * @throws CloneNotSupportedException
-     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         Object clone = super.clone();
-        ((GroupAnalyzer) clone).absHealthCalculator_ = new AbsoluteHealthCalculator(group_, analyzerMap_);
+        ((GroupAnalyzer) clone).mAbsoluteHealthCalculator = new AbsoluteHealthCalculator(mGroup, mAnalyzerMap);
         return clone;
     }
 
     /**
-     * @return true if the stone is much weaker than the group
+     * 是否指定棋子比当前棋群更弱
+     *
+     * @param stone
+     * @return
      */
     private boolean isStoneMuchWeakerThanGroup(GoStone stone) {
-        return stoneInGroupAnalyzer_.isStoneMuchWeakerThanGroup(stone, getAbsoluteHealth());
+        return mStoneInGroupAnalyzer.isStoneMuchWeakerThanGroup(stone, getAbsoluteHealth());
     }
 }

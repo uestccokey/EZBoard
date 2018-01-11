@@ -277,13 +277,13 @@ public class MainActivity extends AppCompatActivity {
         mBoardView.setDrawingCacheEnabled(true);
         mBoardView.buildDrawingCache();
 
-        saveBitmap(mBoardView.getDrawingCache());
+        saveJPG(mBoardView.getDrawingCache());
 
         mBoardView.destroyDrawingCache();
         mBoardView.setDrawingCacheEnabled(false);
     }
 
-    private void saveBitmap(Bitmap bitmap) {
+    private void saveJPG(Bitmap bitmap) {
         String path = Environment.getExternalStorageDirectory().getPath() + "/board.jpg";
         File saveFile = new File(path);
         BufferedOutputStream bos = null;

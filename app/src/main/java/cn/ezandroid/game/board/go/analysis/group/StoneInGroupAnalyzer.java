@@ -5,73 +5,57 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.position.GoStone;
 
 /**
- * Analyze the strength of stone relative to the group that it is in.
+ * 分析棋子相对于他所处的棋群的强度
  *
  * @author Barry Becker
  */
 public class StoneInGroupAnalyzer {
 
-    /**
-     * an opponent stone must be at least this much more unhealthy to be considered part of an eye.
-     * if its not that much weaker then we don't really have an eye.
-     *
-     * @@ make this a game parameter .6 - 1.8 that can be optimized.
-     */
+    // 一个敌方棋子考虑为己方眼位的一部分时，相对于己方棋群的健康差距阈值 0.6~1.8
     private static final float DIFFERENCE_THRESHOLD = 0.6f;
 
-    /** used to determine if a stone is dead or alive. */
+    // 用来决定棋子死活的阈值
     private static final float MIN_LIFE_THRESH = 0.2f;
 
-    /** The group of go stones that we are analyzing. */
-    private IGoGroup group_;
+    // 当前正在分析的棋群
+    private IGoGroup mGroup;
 
-    /**
-     * Constructor.
-     *
-     * @param group group to analyze.
-     */
     public StoneInGroupAnalyzer(IGoGroup group) {
-        group_ = group;
+        mGroup = group;
     }
 
     /**
-     * @return true if the stone is much weaker than the group
+     * 是否指定棋子比当前棋群更弱
+     *
+     * @param stone
+     * @param absoluteHealth 棋群的绝对健康值
+     * @return
      */
     public boolean isStoneMuchWeakerThanGroup(GoStone stone, float absoluteHealth) {
         return isStoneWeakerThanGroup(stone, DIFFERENCE_THRESHOLD, absoluteHealth);
     }
 
-    /**
-     * @return return true of the stone is greater than threshold weaker than the group.
-     */
     private boolean isStoneWeakerThanGroup(GoStone stone, float threshold, float groupHealth) {
         float constrainedGroupHealth = getConstrainedGroupHealth(groupHealth);
 
         float stoneHealth = stone.getHealth();
         boolean muchWeaker;
         if (stone.isOwnedByPlayer1()) {
-            assert (!group_.isOwnedByPlayer1());
-
+            assert (!mGroup.isOwnedByPlayer1());
             muchWeaker = (-constrainedGroupHealth - stoneHealth > threshold);
         } else {
-            assert (group_.isOwnedByPlayer1());
+            assert (mGroup.isOwnedByPlayer1());
             muchWeaker = (constrainedGroupHealth + stoneHealth > threshold);
         }
 
         return muchWeaker;
     }
 
-    /**
-     * for purposes of determining relative weakness. Don't allow the outer group to go out of its living range.
-     *
-     * @param rawGroupHealth original group health value
-     * @return group health constrained to between +/- MIN_LIFE_THRESH
-     */
     private float getConstrainedGroupHealth(float rawGroupHealth) {
         float health = rawGroupHealth;
-        if (group_.isOwnedByPlayer1() && rawGroupHealth < MIN_LIFE_THRESH) {
+        if (mGroup.isOwnedByPlayer1() && rawGroupHealth < MIN_LIFE_THRESH) {
             health = MIN_LIFE_THRESH;
-        } else if (!group_.isOwnedByPlayer1() && rawGroupHealth > -MIN_LIFE_THRESH) {
+        } else if (!mGroup.isOwnedByPlayer1() && rawGroupHealth > -MIN_LIFE_THRESH) {
             health = -MIN_LIFE_THRESH;
         }
         return health;
