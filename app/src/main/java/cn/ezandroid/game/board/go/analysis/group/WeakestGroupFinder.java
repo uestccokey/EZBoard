@@ -11,29 +11,27 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Finds the weakest group on the board relative to some other group.
+ * 最弱棋群查找器
+ * <p>
+ * 查找棋盘上相对于其他棋群最弱的一个棋群
  *
  * @author Barry Becker
  */
 class WeakestGroupFinder {
 
-    private GoBoard board;
-    private GroupAnalyzerMap analyzerMap;
+    private GoBoard mBoard;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     */
     public WeakestGroupFinder(GoBoard board, GroupAnalyzerMap analyzerMap) {
-        this.board = board;
-        this.analyzerMap = analyzerMap;
+        this.mBoard = board;
+        this.mAnalyzerMap = analyzerMap;
     }
 
     /**
-     * Given a set of same color stones, find the weakest enemy group that is bordering it.
+     * 给定一组同色的棋子点位集合，找出与之接近的最弱敌方棋群
      *
-     * @param groupStones the stones to find the weakest bordering neighbor of.
-     *                    Note: we assume that the groupStones all have the same color.
-     * @return the weakest bordering enemy group. Returns null if no group found.
+     * @param groupStones
+     * @return
      */
     public GoGroup findWeakestGroup(GoBoardPositionSet groupStones) {
         boolean isPlayer1 = groupStones.getOneMember().getPiece().isOwnedByPlayer1();
@@ -48,7 +46,7 @@ class WeakestGroupFinder {
         GoGroup weakestGroup = null;
         for (Object egroup : enemyNbrGroups) {
             GoGroup enemyGroup = (GoGroup) egroup;
-            double h = analyzerMap.getAnalyzer(enemyGroup).getAbsoluteHealth();
+            double h = mAnalyzerMap.getAnalyzer(enemyGroup).getAbsoluteHealth();
             if ((side * h) > (side * weakestHealth)) {
                 weakestHealth = h;
                 weakestGroup = enemyGroup;
@@ -58,14 +56,17 @@ class WeakestGroupFinder {
     }
 
     /**
-     * @param groupStones the set of stones in the group to find enemies of.
-     * @return a HashSet of the groups that are enemies of this group
-     * @@ may need to make this n^2 method more efficient.
-     * note: has intentional side effect of marking stones with enemy group nbrs as visited (within groupStones).
+     * 获取指定同色棋子点位集合周围的敌方棋群集合
+     * <p>
+     * TODO 目前效率较低，n^2的复杂度
+     *
+     * @param groupStones
+     * @param isPlayer1
+     * @return
      */
     private Set getEnemyGroupNeighbors(GoBoardPositionSet groupStones, boolean isPlayer1) {
         GoGroupSet enemyNbrs = new GoGroupSet();
-        NeighborAnalyzer nbrAnalyzer = new NeighborAnalyzer(board);
+        NeighborAnalyzer nbrAnalyzer = new NeighborAnalyzer(mBoard);
 
         // for every stone in the group.
         for (GoBoardPosition stone : groupStones) {
@@ -75,15 +76,6 @@ class WeakestGroupFinder {
         return enemyNbrs;
     }
 
-    /**
-     * if the stone has any enemy nbrs then mark it visited.
-     * later we will count how many got visited.
-     * this is a bit of a hack to determine how surrounded the group is by enemy groups.
-     *
-     * @param enemyNbrs the enemy neighbors to add.
-     * @param stone     stone that enyNbrs are enemy of.
-     * @param nbrs      set of stones to add enemyNbrs to.
-     */
     private void addEnemyNeighborsForStone(GoGroupSet enemyNbrs, GoBoardPosition stone,
                                            GoBoardPositionSet nbrs, boolean isPlayer1) {
         for (GoBoardPosition possibleEnemy : nbrs) {

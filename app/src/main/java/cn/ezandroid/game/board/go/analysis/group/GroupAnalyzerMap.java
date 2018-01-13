@@ -7,51 +7,41 @@ import java.util.WeakHashMap;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 
 /**
- * Maintains a map from groups to GroupAnalyzers.
- * If we request an analyzer for a group that is not in the map, we add it.
+ * 棋群与棋群分析器的映射图
  *
  * @author Barry Becker
  */
 public class GroupAnalyzerMap {
 
-    private Map<IGoGroup, GroupAnalyzer> analyzerMap;
+    private Map<IGoGroup, GroupAnalyzer> mAnalyzerMap;
 
-    /**
-     * Constructor.
-     * Use a weak HashMap because we do not want this to be the only thing
-     * keeps it around when it is no longer on the board.
-     */
     public GroupAnalyzerMap() {
-        analyzerMap = new WeakHashMap<>();
-        // new LRUCache<IGoGroup, GroupAnalyzer>(2000);
+        mAnalyzerMap = new WeakHashMap<>();
     }
 
     /**
-     * Get an analyzer for a specific group.
-     * If the analyzer is not there yet, it gets added.
+     * 获取指定棋群的棋群分析器
+     * <p>
+     * 如果不存在，则创建一个新的棋群分析器，并添加到该映射图中
      *
-     * @param group the group to analyze.
-     * @return the analyzer for the specified group
+     * @param group
+     * @return
      */
     public GroupAnalyzer getAnalyzer(IGoGroup group) {
-        GroupAnalyzer cachedAnalyzer = analyzerMap.get(group);
+        GroupAnalyzer cachedAnalyzer = mAnalyzerMap.get(group);
         if (cachedAnalyzer != null) {
             return cachedAnalyzer;
         }
         GroupAnalyzer analyzer = new GroupAnalyzer(group, this);
-        analyzerMap.put(group, analyzer);
-
+        mAnalyzerMap.put(group, analyzer);
         return analyzer;
     }
 
     public void clear() {
-        //for (GroupAnalyzer ga : analyzerMap.values()) {
-        //     ga.invalidate();
-        //}
-        analyzerMap.clear();
+        mAnalyzerMap.clear();
     }
 
     public String toString() {
-        return analyzerMap.toString();
+        return mAnalyzerMap.toString();
     }
 }

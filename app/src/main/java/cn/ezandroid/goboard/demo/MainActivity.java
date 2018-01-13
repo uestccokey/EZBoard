@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < policies[0].length; i++) {
             policies[0][i] = policies[0][i] / maxRate;
         }
+        Debug.printRate(policies[0]);
 
         mHeatMapView.setHeatMap(policies[0]);
     }
@@ -422,21 +423,21 @@ public class MainActivity extends AppCompatActivity {
                 mIsThinking = true;
                 new Thread() {
                     public void run() {
-                        long time = System.currentTimeMillis();
+//                        long time = System.currentTimeMillis();
 
                         byte[][] feature49 = mFeatureBoard.generateFeatures49();
-                        Log.e("MainActivity", "FeatureBoard->generateFeatures49:" + (System.currentTimeMillis() - time) + "ms");
-                        time = System.currentTimeMillis();
+//                        Log.e("MainActivity", "FeatureBoard->generateFeatures49:" + (System.currentTimeMillis() - time) + "ms");
+//                        time = System.currentTimeMillis();
                         byte[][] features48 = mFeatureBoard.generateFeatures48();
-                        Log.e("MainActivity", "FeatureBoard->generateFeatures48:" + (System.currentTimeMillis() - time) + "ms");
-                        time = System.currentTimeMillis();
+//                        Log.e("MainActivity", "FeatureBoard->generateFeatures48:" + (System.currentTimeMillis() - time) + "ms");
+//                        time = System.currentTimeMillis();
 
                         float[] values = mValueNetwork.getOutput(new byte[][][]{feature49},
                                 mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE);
-                        Log.e("MainActivity", "ValueNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
-                        time = System.currentTimeMillis();
+//                        Log.e("MainActivity", "ValueNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
+//                        time = System.currentTimeMillis();
                         float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
-                        Log.e("MainActivity", "PolicyNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
+//                        Log.e("MainActivity", "PolicyNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
                         Debug.printRate(policies[0]);
 
                         float maxRate = -1;

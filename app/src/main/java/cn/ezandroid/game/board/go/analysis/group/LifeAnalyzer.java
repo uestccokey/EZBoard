@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborAnalyzer;
 import cn.ezandroid.game.board.go.analysis.neighbor.NeighborType;
@@ -21,52 +20,44 @@ import cn.ezandroid.game.board.go.elements.string.GoStringSet;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * Determine if group is pass-alive using
- * Benson's algorithm for unconditional life.
- * see http://senseis.xmp.net/?BensonSAlgorithm
+ * 使用Benson's算法来确定一个棋群是否无条件活棋
+ * <p>
+ * http://senseis.xmp.net/?BensonSAlgorithm
  *
  * @author Barry Becker
  */
 public class LifeAnalyzer {
 
-    private IGoGroup group_;
-    private GoBoard board_;
+    private IGoGroup mGroup;
+    private GoBoard mBoard;
 
-    /** Keep track of living strings neighboring eyes. */
-    private Map<IGoEye, List<IGoString>> eyeStringNbrMap;
+    // 活眼邻接的棋串列表映射图
+    private Map<IGoEye, List<IGoString>> mEyeStringNbrMap;
 
-    /** Keep track of vital eyes neighboring living string. */
-    private Map<IGoString, GoEyeList> stringEyeNbrMap;
+    // 棋串邻接的关键眼位列表映射图
+    private Map<IGoString, GoEyeList> mStringEyeNbrMap;
 
-    private NeighborAnalyzer nbrAnalyzer_;
-    private GroupAnalyzerMap analyzerMap_;
+    private NeighborAnalyzer mNeighborAnalyzer;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /** called only by derived classes */
     protected LifeAnalyzer() {}
 
-    /**
-     * Constructor.
-     *
-     * @param group the group to analyze for unconditional life.
-     * @param board board on which the group exists.
-     */
     public LifeAnalyzer(IGoGroup group, GoBoard board, GroupAnalyzerMap analyzerMap) {
-        group_ = group;
-        board_ = board;
-        analyzerMap_ = analyzerMap;
-        nbrAnalyzer_ = new NeighborAnalyzer(board);
+        mGroup = group;
+        mBoard = board;
+        mAnalyzerMap = analyzerMap;
+        mNeighborAnalyzer = new NeighborAnalyzer(board);
     }
 
     /**
-     * Use Benson's algorithm (1977) to determine if a set of strings and eyes within a group
-     * is unconditionally alive.
+     * 使用Benson's算法来确定一个棋群是否无条件活棋
      *
-     * @return true if unconditionally alive
+     * @return
      */
     public boolean isUnconditionallyAlive() {
         initMaps();
 
-        GoEyeSet eyes = analyzerMap_.getAnalyzer(group_).getEyes(board_);
+        GoEyeSet eyes = mAnalyzerMap.getAnalyzer(mGroup).getEyes(mBoard);
         findNeighborStringSetsForEyes(eyes);
         createVitalEyeSets(eyes);
 
@@ -74,26 +65,17 @@ public class LifeAnalyzer {
     }
 
     private void initMaps() {
-        eyeStringNbrMap = new HashMap<>();
-        stringEyeNbrMap = new HashMap<>();
+        mEyeStringNbrMap = new HashMap<>();
+        mStringEyeNbrMap = new HashMap<>();
     }
 
-    /**
-     * first find the neighbor string sets for each true eye in the group.
-     */
     private void findNeighborStringSetsForEyes(GoEyeSet eyes) {
         for (IGoEye eye : eyes) {
             List<IGoString> stringNbrs = findNeighborStringsForEye(eye);
-            eyeStringNbrMap.put(eye, stringNbrs);
+            mEyeStringNbrMap.put(eye, stringNbrs);
         }
     }
 
-    /**
-     * Find the neighbor string sets for a specific eye in the group.
-     *
-     * @param eye eye to find neighboring strings of.
-     * @return living neighbor strings. May be empty, but never null.
-     */
     private List<IGoString> findNeighborStringsForEye(IGoEye eye) {
         List<IGoString> nbrStrings = new LinkedList<>();
         for (GoBoardPosition pos : eye.getMembers()) {
@@ -105,18 +87,17 @@ public class LifeAnalyzer {
     }
 
     /**
-     * Find the neighbor string sets for a specific empty point within an eye.
+     * 获取一个眼位中指定空白点的邻接棋串列表
      *
-     * @param eye        eye the eye space string we are currently analyzing.
-     * @param pos        empty position within eye.
-     * @param nbrStrings the list to add neighboring still living strings to.
+     * @param eye
+     * @param pos
+     * @param nbrStrings
      */
     private void findNeighborStringsForEyeSpace(IGoEye eye, GoBoardPosition pos, List<IGoString> nbrStrings) {
         GoBoardPositionSet nbrs =
-                nbrAnalyzer_.getNobiNeighbors(pos, eye.isOwnedByPlayer1(), NeighborType.FRIEND);
+                mNeighborAnalyzer.getNobiNeighbors(pos, eye.isOwnedByPlayer1(), NeighborType.FRIEND);
         for (GoBoardPosition nbr : nbrs) {
-
-            if (nbr.getString().getGroup() != group_) {
+            if (nbr.getString().getGroup() != mGroup) {
                 // this eye is not unconditionally alive (UA).
                 nbrStrings.clear();
                 return;
@@ -130,31 +111,30 @@ public class LifeAnalyzer {
         }
     }
 
-    /**
-     * Create the neighbor eye sets for each qualified string.
-     */
     private void createVitalEyeSets(GoEyeSet eyes) {
         for (IGoEye eye : eyes) {
             updateVitalEyesForStringNeighbors(eye);
         }
-        GameContext.log(3, "num strings with vital eye nbrs = " + stringEyeNbrMap.size());
+//        GameContext.log(3, "num strings with vital eye nbrs = " + mStringEyeNbrMap.size());
     }
 
     /**
-     * @param eye update the string neighbors of this eye
+     * 更新指定眼位的邻接棋串的关键眼位点
+     *
+     * @param eye
      */
     private void updateVitalEyesForStringNeighbors(IGoEye eye) {
-        for (IGoString str : eyeStringNbrMap.get(eye)) {
+        for (IGoString str : mEyeStringNbrMap.get(eye)) {
             // only add the eye if every unoccupied position in the eye is adjacent to the string
             GoEyeList vitalEyes;
-            if (stringEyeNbrMap.containsKey(str)) {
-                vitalEyes = stringEyeNbrMap.get(str);
+            if (mStringEyeNbrMap.containsKey(str)) {
+                vitalEyes = mStringEyeNbrMap.get(str);
             } else {
                 vitalEyes = new GoEyeList();
-                stringEyeNbrMap.put(str, vitalEyes);
+                mStringEyeNbrMap.put(str, vitalEyes);
             }
 
-            if (allUnocupiedAdjacentToString(eye, str)) {
+            if (allUnoccupiedAdjacentToString(eye, str)) {
                 eye.setUnconditionallyAlive(true);
                 vitalEyes.add(eye);
             }
@@ -162,13 +142,17 @@ public class LifeAnalyzer {
     }
 
     /**
-     * @return true if all the empty spaces in this eye are touching the specified string.
+     * 判断是否指定眼位的所有空点与指定棋串相邻
+     *
+     * @param eye
+     * @param string
+     * @return
      */
-    private boolean allUnocupiedAdjacentToString(IGoEye eye, IGoString string) {
+    private boolean allUnoccupiedAdjacentToString(IGoEye eye, IGoString string) {
         for (GoBoardPosition pos : eye.getMembers()) {
             if (pos.isUnoccupied()) {
                 GoBoardPositionSet nbrs =
-                        nbrAnalyzer_.getNobiNeighbors(pos, eye.isOwnedByPlayer1(), NeighborType.FRIEND);
+                        mNeighborAnalyzer.getNobiNeighbors(pos, eye.isOwnedByPlayer1(), NeighborType.FRIEND);
                 // verify that at least one of the nbrs is in this string
                 boolean thereIsaNbr = false;
                 for (GoBoardPosition nbr : nbrs) {
@@ -187,7 +171,11 @@ public class LifeAnalyzer {
     }
 
     /**
-     * @return true if any of the candidateStrings are unconditionally alive (i.e. pass alive).
+     * 判断棋群是否无条件活棋
+     * <p>
+     * 通过棋群中是否有无条件活棋的棋串来判断
+     *
+     * @return
      */
     private boolean determineUnconditionalLife() {
         GoStringSet livingStrings = findPassAliveStrings();
@@ -195,10 +183,12 @@ public class LifeAnalyzer {
     }
 
     /**
-     * @return the set of strings in the group that are unconditionally alive.
+     * 获取处于PassAlive状态的无条件活棋棋串集合
+     *
+     * @return
      */
     private GoStringSet findPassAliveStrings() {
-        GoStringSet candidateStrings = new GoStringSet(group_.getMembers());
+        GoStringSet candidateStrings = new GoStringSet(mGroup.getMembers());
         boolean done;
         do {
             initializeEyeLife();
@@ -214,19 +204,17 @@ public class LifeAnalyzer {
                     done = false; // something changed
                 }
             }
-
         } while (!(done || candidateStrings.isEmpty()));
         return candidateStrings;
     }
 
     /**
-     * For each eye in the group, determine if it is unconditionally alive by verifying that
-     * all its neighbors are unconditional life candidates still.
+     * 对棋群中的眼位，通过验证它的邻接棋串是否是无条件活棋来判定它是否是无条件活棋眼位
      */
     private void initializeEyeLife() {
-        for (IGoEye eye : analyzerMap_.getAnalyzer(group_).getEyes(board_)) {
+        for (IGoEye eye : mAnalyzerMap.getAnalyzer(mGroup).getEyes(mBoard)) {
             eye.setUnconditionallyAlive(true);
-            for (IGoString nbrStr : eyeStringNbrMap.get(eye)) {
+            for (IGoString nbrStr : mEyeStringNbrMap.get(eye)) {
                 if (!(nbrStr.isUnconditionallyAlive())) {
                     eye.setUnconditionallyAlive(false);
                 }
@@ -235,12 +223,14 @@ public class LifeAnalyzer {
     }
 
     /**
-     * @return the number of unconditionally alive adjacent eyes.
+     * 获取指定棋串无条件活棋的邻接眼位数量
+     *
+     * @param str
+     * @return
      */
     private int findNumLivingAdjacentEyes(IGoString str) {
         int numLivingAdjacentEyes = 0;
-
-        GoEyeList vitalEyeNbrs = stringEyeNbrMap.get(str);
+        GoEyeList vitalEyeNbrs = mStringEyeNbrMap.get(str);
         if (vitalEyeNbrs != null) {
             for (IGoEye eye : vitalEyeNbrs) {
                 if (eye.isUnconditionallyAlive()) {
