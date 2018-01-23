@@ -8,25 +8,19 @@ import cn.ezandroid.game.board.go.elements.position.GoBoardPosition;
 import cn.ezandroid.game.board.go.elements.position.GoBoardPositionSet;
 
 /**
- * Determine the absolute health of a group independent of the health of neighboring groups.
+ * 棋群的相对健康值分析器
  *
  * @author Barry Becker
  */
 class RelativeHealthCalculator {
 
-    /** The group of go stones that we are analyzing. */
-    private IGoGroup group_;
+    private IGoGroup mGroup;
 
-    private GroupAnalyzerMap analyzerMap_;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     *
-     * @param group the group to analyze
-     */
     public RelativeHealthCalculator(IGoGroup group, GroupAnalyzerMap analyzerMap) {
-        group_ = group;
-        analyzerMap_ = analyzerMap;
+        mGroup = group;
+        mAnalyzerMap = analyzerMap;
     }
 
     /**
@@ -53,14 +47,14 @@ class RelativeHealthCalculator {
     private float boostRelativeHealthBasedOnWeakNbr(GoBoard board, float absoluteHealth) {
         // the default if there is no weakest group.
         float relativeHealth = absoluteHealth;
-        GoBoardPositionSet groupStones = group_.getStones();
-        WeakestGroupFinder finder = new WeakestGroupFinder(board, analyzerMap_);
+        GoBoardPositionSet groupStones = mGroup.getStones();
+        WeakestGroupFinder finder = new WeakestGroupFinder(board, mAnalyzerMap);
         GoGroup weakestGroup = finder.findWeakestGroup(groupStones);
 
         if (weakestGroup != null) {
             double proportionWithEnemyNbrs = findProportionWithEnemyNbrs(groupStones);
 
-            double diff = absoluteHealth + analyzerMap_.getAnalyzer(weakestGroup).getAbsoluteHealth();
+            double diff = absoluteHealth + mAnalyzerMap.getAnalyzer(weakestGroup).getAbsoluteHealth();
             // @@ should use a weight to help determine how much to give a boost.
 
             // must be bounded by -1 and 1

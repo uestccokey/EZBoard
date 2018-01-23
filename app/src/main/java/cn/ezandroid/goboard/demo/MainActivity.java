@@ -266,8 +266,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        maxRate = (float) Math.sqrt(maxRate);
         for (int i = 0; i < policies[0].length; i++) {
-            policies[0][i] = policies[0][i] / maxRate;
+            policies[0][i] = (float) Math.sqrt(policies[0][i]) / maxRate;
         }
         Debug.printRate(policies[0]);
 

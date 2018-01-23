@@ -10,15 +10,13 @@ import cn.ezandroid.game.board.go.elements.group.IGoGroup;
 import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
- * Determine the absolute health of a group independent of the health of neighboring groups.
+ * 棋群的绝对健康值分析器
  *
  * @author Barry Becker
  */
-@SuppressWarnings("HardCodedStringLiteral")
 class AbsoluteHealthCalculator {
 
-    /** The group of go stones that we are analyzing. */
-    private IGoGroup group_;
+    private IGoGroup mGroup;
 
     /**
      * This is a number between -1 and 1 that indicates how likely the group is to live
@@ -37,31 +35,26 @@ class AbsoluteHealthCalculator {
     private int cachedNumStonesInGroup_;
 
     /** Maintains cache of this groups eyes. */
-    private GroupEyeCache eyeCache_;
+    private GroupEyeCache mEyeCache;
 
-    private GroupAnalyzerMap analyzerMap_;
+    private GroupAnalyzerMap mAnalyzerMap;
 
-    /**
-     * Constructor
-     *
-     * @param group the group to analyze
-     */
     public AbsoluteHealthCalculator(IGoGroup group, GroupAnalyzerMap analyzerMap) {
-        group_ = group;
-        analyzerMap_ = analyzerMap;
-        eyeCache_ = new GroupEyeCache(group, analyzerMap_);
+        mGroup = group;
+        mAnalyzerMap = analyzerMap;
+        mEyeCache = new GroupEyeCache(group, mAnalyzerMap);
     }
 
     /**
      * @return false if the group has changed (structurally) in any way.
      */
     public boolean isValid() {
-        return eyeCache_.isValid();
+        return mEyeCache.isValid();
     }
 
     /** for st the eyeCache to be cleared. */
     public void invalidate() {
-        eyeCache_.invalidate();
+        mEyeCache.invalidate();
     }
 
     /**
@@ -70,7 +63,7 @@ class AbsoluteHealthCalculator {
      * @return eye potential
      */
     public float getEyePotential() {
-        return eyeCache_.getEyePotential();
+        return mEyeCache.getEyePotential();
     }
 
     /**
@@ -91,28 +84,28 @@ class AbsoluteHealthCalculator {
      * @return the overall health of the group independent of nbr groups.
      */
     public float calculateAbsoluteHealth(GoBoard board) {
-        if (eyeCache_.isValid()) {
+        if (mEyeCache.isValid()) {
             GameContext.log(1, "cache valid. Returning health=" + absoluteHealth_);
             return absoluteHealth_;
         }
 
-        int numLiberties = group_.getNumLiberties(board);
+        int numLiberties = mGroup.getNumLiberties(board);
 
         // we multiply by a +/- sign depending on the side
-        float side = group_.isOwnedByPlayer1() ? 1.0f : -1.0f;
+        float side = mGroup.isOwnedByPlayer1() ? 1.0f : -1.0f;
 
         // first come up with some approximation for the health so update eyes can be done more accurately.
-        float numEyes = eyeCache_.calcNumEyes();
-        int numStones = group_.getNumStones();
-        LifeAnalyzer lifeAnalyzer = new LifeAnalyzer(group_, board, analyzerMap_);
+        float numEyes = mEyeCache.calcNumEyes();
+        int numStones = mGroup.getNumStones();
+        LifeAnalyzer lifeAnalyzer = new LifeAnalyzer(mGroup, board, mAnalyzerMap);
         EyeHealthEvaluator eyeEvaluator = new EyeHealthEvaluator(lifeAnalyzer);
 
         absoluteHealth_ = eyeEvaluator.determineHealth(side, numEyes, numLiberties, numStones);
 
-        eyeCache_.updateEyes(board);  // expensive
+        mEyeCache.updateEyes(board);  // expensive
 
-        float eyePotential = eyeCache_.getEyePotential();
-        float revisedNumEyes = eyeCache_.calcNumEyes();
+        float eyePotential = mEyeCache.getEyePotential();
+        float revisedNumEyes = mEyeCache.calcNumEyes();
         numEyes = Math.max(eyePotential, revisedNumEyes);
 
         // health based on eye shape - the most significant factor
@@ -132,10 +125,10 @@ class AbsoluteHealthCalculator {
      * @return set of eyes currently identified for this group.
      */
     public GoEyeSet getEyes(GoBoard board) {
-        if (!eyeCache_.isValid()) {
+        if (!mEyeCache.isValid()) {
             calculateAbsoluteHealth(board);
         }
-        return eyeCache_.getEyes(board);
+        return mEyeCache.getEyes(board);
     }
 
     /**
@@ -144,11 +137,11 @@ class AbsoluteHealthCalculator {
      * @return number of stones in the group.
      */
     public int getNumStones() {
-        if (eyeCache_.isValid()) {
+        if (mEyeCache.isValid()) {
             return cachedNumStonesInGroup_;
         }
         int numStones = 0;
-        for (IGoString str : group_.getMembers()) {
+        for (IGoString str : mGroup.getMembers()) {
             numStones += str.size();
         }
         cachedNumStonesInGroup_ = numStones;

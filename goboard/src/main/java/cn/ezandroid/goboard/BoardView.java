@@ -68,6 +68,7 @@ public class BoardView extends RelativeLayout {
      */
     public void reset() {
         mStoneViewMap.clear();
+        mHighlightIntersection = null;
         removeAllViews();
     }
 
