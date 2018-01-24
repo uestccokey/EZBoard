@@ -607,12 +607,42 @@ public class FeatureBoard implements Cloneable {
                 } else {
                     features[pos][FEATURE_START_49[BOARD_49] + 2] = 1; // 敌方棋子001
                 }
-                setOneHot49(features, pos, TURNS_SINCE_49, mHistoryFeature[pos]);
+                if (mHistoryFeature[pos] <= 8) {
+                    setOneHot49(features, pos, TURNS_SINCE_49, mHistoryFeature[pos]);
+                }
                 setOneHot49(features, pos, LIBERTIES_49, mLibertyFeature[pos] - 1);
             }
             features[pos][FEATURE_START_49[ONES_49]] = 1;
             pos++;
         }
         return features;
+    }
+
+    public static void printFeature(byte[] feature) {
+        System.err.println("Feature:");
+        for (int i = 0; i < 48; i++) {
+            for (int j = 0; j < FEATURE_START.length; j++) {
+                if (i == FEATURE_START[j]) {
+                    System.err.print(" ");
+                    break;
+                }
+            }
+            System.err.print(feature[i]);
+        }
+        System.err.println();
+    }
+
+    public static void printFeature49(byte[] feature) {
+        System.err.println("Feature49:");
+        for (int i = 0; i < 49; i++) {
+            for (int j = 0; j < FEATURE_START_49.length; j++) {
+                if (i == FEATURE_START_49[j]) {
+                    System.err.print(" ");
+                    break;
+                }
+            }
+            System.err.print(feature[i]);
+        }
+        System.err.println();
     }
 }
