@@ -15,7 +15,7 @@ public class Roc57Policy implements IPolicyNetwork {
     private static final int FEATURE_LENGTH = 48;
     private static final int BOARD_SIZE = 19;
     private static final String INPUT_NAME = "conv2d_1_input";
-    private static final String MODEL_FILE = "RocAlphaGo57.pb";
+    private static final String MODEL_FILE = "Roc57Policy.pb";
     private static final String OUTPUT_NAME = "activation_1/Softmax";
     private static String[] mOutputNames;
     private TensorFlowInferenceInterface mTensorFlow;

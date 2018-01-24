@@ -49,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView mDetailView;
 
     private IPolicyNetwork mPolicyNetwork;
+    private IPolicyNetwork mPolicyNetwork2;
     private IValueNetwork mValueNetwork;
+    private IValueNetwork mValueNetwork2;
     private FeatureBoard mFeatureBoard;
 
     private StoneColor mCurrentColor = StoneColor.BLACK;
@@ -63,14 +65,17 @@ public class MainActivity extends AppCompatActivity {
     private int mBlackScore;
     private int mWhiteScore;
     private float mBlackWinRatio = 0.5f;
+    private float mBlackWinRatio2 = 0.5f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPolicyNetwork = new Roc57Policy(this);
-        mValueNetwork = new AQValue(this);
+        mPolicyNetwork = new AQ211Policy(this);
+        mPolicyNetwork2 = new AQ203Policy(this);
+        mValueNetwork = new AQ211Value(this);
+        mValueNetwork2 = new AQ203Value(this);
         mFeatureBoard = new FeatureBoard();
 
         mBoardView = findViewById(R.id.board);
@@ -129,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         mBlackScore = 0;
         mWhiteScore = 0;
         mBlackWinRatio = 0.5f;
+        mBlackWinRatio2 = 0.5f;
 
         updateDetail();
     }
@@ -256,8 +262,9 @@ public class MainActivity extends AppCompatActivity {
         }
         mTerrainMapView.setTerrainMap(null);
 
-        byte[][] features48 = mFeatureBoard.generateFeatures48();
-        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
+//        byte[][] features48 = mFeatureBoard.generateFeatures48();
+        byte[][] features49 = mFeatureBoard.generateFeatures49();
+        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features49});
 
         float maxRate = -1;
         for (int i = 0; i < policies[0].length; i++) {
@@ -424,22 +431,26 @@ public class MainActivity extends AppCompatActivity {
                 mIsThinking = true;
                 new Thread() {
                     public void run() {
-//                        long time = System.currentTimeMillis();
+                        long time = System.currentTimeMillis();
 
-                        byte[][] feature49 = mFeatureBoard.generateFeatures49();
-//                        Log.e("MainActivity", "FeatureBoard->generateFeatures49:" + (System.currentTimeMillis() - time) + "ms");
-//                        time = System.currentTimeMillis();
-                        byte[][] features48 = mFeatureBoard.generateFeatures48();
+//                        byte[][] features48 = mFeatureBoard.generateFeatures48();
 //                        Log.e("MainActivity", "FeatureBoard->generateFeatures48:" + (System.currentTimeMillis() - time) + "ms");
 //                        time = System.currentTimeMillis();
+                        byte[][] features49 = mFeatureBoard.generateFeatures49();
+                        Log.e("MainActivity", "FeatureBoard->generateFeatures49:" + (System.currentTimeMillis() - time) + "ms");
+                        time = System.currentTimeMillis();
 
-                        float[] values = mValueNetwork.getOutput(new byte[][][]{feature49},
-                                mCurrentColor == StoneColor.BLACK ? AQValue.BLACK : AQValue.WHITE);
-//                        Log.e("MainActivity", "ValueNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
-//                        time = System.currentTimeMillis();
-                        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features48});
-//                        Log.e("MainActivity", "PolicyNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
+                        float[] values = mValueNetwork.getOutput(new byte[][][]{features49},
+                                mCurrentColor == StoneColor.BLACK ? AQ203Value.BLACK : AQ203Value.WHITE);
+                        float[] value2 = mValueNetwork2.getOutput(new byte[][][]{features49},
+                                mCurrentColor == StoneColor.BLACK ? AQ203Value.BLACK : AQ203Value.WHITE);
+                        Log.e("MainActivity", "ValueNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
+                        time = System.currentTimeMillis();
+                        float[][] policies = mPolicyNetwork.getOutput(new byte[][][]{features49});
+                        float[][] policies2 = mPolicyNetwork2.getOutput(new byte[][][]{features49});
+                        Log.e("MainActivity", "PolicyNetwork->getOutput:" + (System.currentTimeMillis() - time) + "ms");
                         Debug.printRate(policies[0]);
+                        Debug.printRate(policies2[0]);
 
                         float maxRate = -1;
                         int maxPos = 0;
@@ -453,9 +464,10 @@ public class MainActivity extends AppCompatActivity {
                         mIsThinking = false;
 
                         mBlackWinRatio = (1 - values[0]) / 2;
+                        mBlackWinRatio2 = (1 - value2[0]) / 2;
 
                         final int pos = maxPos;
-                        Log.e("MainActivity", "Value Rate:" + mBlackWinRatio);
+                        Log.e("MainActivity", "Value Rate:" + mBlackWinRatio + " " + mBlackWinRatio2);
                         Log.e("MainActivity", "Policy Rate:" + maxRate
                                 + " Choose:(" + pos % 19 + "," + pos / 19 + ")");
                         runOnUiThread(() -> {
@@ -470,6 +482,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDetail() {
-        mDetailView.setText("形势 黑:" + mBlackScore + " 白:" + mWhiteScore + "+7.5" + " 黑胜率:" + mBlackWinRatio);
+        mDetailView.setText("形势 黑:" + mBlackScore + " 白:" + mWhiteScore + "+7.5"
+                + " 黑胜率:" + mBlackWinRatio + " " + mBlackWinRatio2);
     }
 }
