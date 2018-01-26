@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,27 +9,29 @@ import android.util.AttributeSet;
 import android.view.View;
 
 /**
- * 热力图控件
+ * 形势图控件
  *
  * @author like
- * @date 2017-12-23
+ * @date 2018-01-01
  */
-public class HeatMapView extends View {
+public class TerrainMapView extends View {
 
     private int mSquareSize; // 格子尺寸
 
-    private Paint mHeatMapPaint;
+    private Paint mTerrainMapPaint;
 
     private int mBoardSize = 19; // 棋盘大小
 
-    private float[] mHeatMap;
+    private float[] mTerrainMap;
 
-    public HeatMapView(Context context) {
+    private float mThreshold = 0.35f; // 阈值
+
+    public TerrainMapView(Context context) {
         super(context);
         initHeatMap();
     }
 
-    public HeatMapView(Context context, @Nullable AttributeSet attrs) {
+    public TerrainMapView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         initHeatMap();
     }
@@ -48,8 +50,8 @@ public class HeatMapView extends View {
     }
 
     private void initHeatMap() {
-        mHeatMapPaint = new Paint();
-        mHeatMapPaint.setAntiAlias(true);
+        mTerrainMapPaint = new Paint();
+        mTerrainMapPaint.setAntiAlias(true);
     }
 
     /**
@@ -62,13 +64,13 @@ public class HeatMapView extends View {
     }
 
     /**
-     * 设置热力图
+     * 设置形势图
      *
-     * @param heatMap
+     * @param terrainMap
      */
-    public void setHeatMap(float[] heatMap) {
-        if (mHeatMap != heatMap) {
-            mHeatMap = heatMap;
+    public void setTerrainMap(float[] terrainMap) {
+        if (mTerrainMap != terrainMap) {
+            mTerrainMap = terrainMap;
             invalidate();
         }
     }
@@ -94,34 +96,65 @@ public class HeatMapView extends View {
         return mBoardSize;
     }
 
+    /**
+     * 设置阈值
+     *
+     * @param threshold
+     */
+    public void setThreshold(float threshold) {
+        mThreshold = threshold;
+    }
+
+    /**
+     * 获取阈值
+     *
+     * @return
+     */
+    public float getThreshold() {
+        return mThreshold;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        // 绘制热力图
-        drawHeatMap(canvas);
+        // 绘制形势图
+        drawTerrainMap(canvas);
     }
 
     /**
-     * 绘制热力图
+     * 绘制形势图
      *
      * @param canvas
      */
-    private void drawHeatMap(Canvas canvas) {
-        if (mHeatMap != null) {
-            mHeatMapPaint.setColor(Color.GREEN);
-            mHeatMapPaint.setStyle(Paint.Style.FILL);
+    private void drawTerrainMap(Canvas canvas) {
+        if (mTerrainMap != null) {
+            mTerrainMapPaint.setStyle(Paint.Style.FILL);
 
             canvas.translate(mSquareSize / 2, mSquareSize / 2);
 
-            for (int i = 0; i < mHeatMap.length; i++) {
-                mHeatMapPaint.setAlpha(Math.round(mHeatMap[i] * 192));
+            for (int i = 0; i < mTerrainMap.length; i++) {
+                float value = mTerrainMap[i];
+                if (value < -1) {
+                    value = -1;
+                } else if (value > 1) {
+                    value = 1;
+                }
+                if (value < -mThreshold) {
+                    mTerrainMapPaint.setColor(Color.BLUE);
+                } else if (value > mThreshold) {
+                    mTerrainMapPaint.setColor(Color.RED);
+                } else {
+                    continue;
+                }
+
+                mTerrainMapPaint.setAlpha(Math.round(Math.abs(value) * 192));
 
                 int left = Math.round((i % mBoardSize) * mSquareSize);
                 int top = Math.round((i / mBoardSize) * mSquareSize);
                 int right = Math.round((i % mBoardSize + 1) * mSquareSize);
                 int bottom = Math.round((i / mBoardSize + 1) * mSquareSize);
-                canvas.drawRect(left, top, right, bottom, mHeatMapPaint);
+                canvas.drawRect(left, top, right, bottom, mTerrainMapPaint);
             }
 
             canvas.translate(-mSquareSize / 2, -mSquareSize / 2);

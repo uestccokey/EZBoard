@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.core;
 
 import android.util.Pair;
 

@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.network;
 
 import android.content.Context;
 
@@ -29,6 +29,11 @@ public class AQ203Policy implements IPolicyNetwork {
     public AQ203Policy(Context context) {
         mTensorFlow = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
         mOutputNames = new String[]{OUTPUT_NAME};
+    }
+
+    @Override
+    public float[][] getOutput(FeatureBoard featureBoard) {
+        return getOutput(new byte[][][]{featureBoard.generateFeatures49()});
     }
 
     public float[][] getOutput(byte[][][] input) {

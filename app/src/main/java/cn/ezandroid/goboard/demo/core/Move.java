@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.core;
 
 import java.util.HashSet;
 import java.util.Set;

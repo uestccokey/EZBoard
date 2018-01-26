@@ -1,13 +1,11 @@
 /** Copyright by Barry G. Becker, 2000-2011. Licensed under MIT License: http://www.opensource.org/licenses/MIT */
 package cn.ezandroid.game.board.go.analysis.group;
 
-import cn.ezandroid.game.board.common.GameContext;
 import cn.ezandroid.game.board.go.GoBoard;
 import cn.ezandroid.game.board.go.analysis.group.eye.EyeHealthEvaluator;
 import cn.ezandroid.game.board.go.analysis.group.eye.GroupEyeCache;
 import cn.ezandroid.game.board.go.elements.eye.GoEyeSet;
 import cn.ezandroid.game.board.go.elements.group.IGoGroup;
-import cn.ezandroid.game.board.go.elements.string.IGoString;
 
 /**
  * 棋群的绝对健康值分析器
@@ -19,22 +17,16 @@ class AbsoluteHealthCalculator {
     private IGoGroup mGroup;
 
     /**
-     * This is a number between -1 and 1 that indicates how likely the group is to live
-     * independent of the health of the stones around it.
-     * all kinds of factors can contribute to the health of a group.
-     * Local search should be used to make this as accurate as possible.
-     * If the health is 1.0 then the group has at least 2 eyes and is unconditionally alive.
-     * If the health is -1.0 then there is no way to save the group even if you could
-     * play 2 times in a row.
-     * Unconditional life means the group cannot be killed no matter how many times the opponent plays.
-     * A score of near 0 indicates it is very uncertain whether the group will live or die.
+     * 为-1到1之间的数字.
+     * <p>
+     * 很多因素都会引导到一个棋群的健康值，通常应该使用搜索算法来使得这个值更加精确
+     * 当值为1时，说明这个棋群至少有两个眼，是无条件活棋状态
+     * 当值为-1时，说明这个棋群即使连走两步也无法活棋
+     * 接近0的分数表示，不是非常确定这个棋群是死还是活
      */
-    private float absoluteHealth_ = 0;
+    private float mAbsoluteHealth = 0;
 
-    /** Number of stones in the group. */
-    private int cachedNumStonesInGroup_;
-
-    /** Maintains cache of this groups eyes. */
+    /** 棋群的眼位缓存. */
     private GroupEyeCache mEyeCache;
 
     private GroupAnalyzerMap mAnalyzerMap;
@@ -46,47 +38,45 @@ class AbsoluteHealthCalculator {
     }
 
     /**
-     * @return false if the group has changed (structurally) in any way.
+     * 眼位缓存是否有效，当棋群有改变时，眼位缓存无效
+     *
+     * @return
      */
     public boolean isValid() {
         return mEyeCache.isValid();
     }
 
-    /** for st the eyeCache to be cleared. */
+    /**
+     * 清除眼位缓存
+     */
     public void invalidate() {
         mEyeCache.invalidate();
     }
 
     /**
-     * used only for test.
+     * 活棋眼位的潜在价值
      *
-     * @return eye potential
+     * @return
      */
     public float getEyePotential() {
         return mEyeCache.getEyePotential();
     }
 
     /**
-     * Calculate the absolute health of a group.
-     * All the stones in the group have the same health rating because the
-     * group lives or dies as a unit.
-     * (not entirely true - strings live or die as unit, but there is a relationship).
-     * Good health of a black group is positive; white, negative.
-     * The health is a function of the number of eyes (their type and status), liberties, and
-     * the health of surrounding groups. If the health of an opponent bordering group
-     * is in worse shape than our own then we get a boost since we can probably
-     * kill that group first. See RelativeHealthCalculator.calculateRelativeHealth.
-     * A perfect 1 (or -1) indicates unconditional life (or death).
-     * This means that the group cannot be killed (or given life) no matter
-     * how many times the opponent plays (see Dave Benson 1977).
+     * 计算棋群的绝对健康值
+     * <p>
+     * 所有棋群里的棋子拥有相同的健康值，因为棋群通常一起生活死（不一定会这样，因为棋串才是一定一起生或死，但是有关系的）
+     * 对黑棋来说好的健康值是正值，对白棋来说好的健康值是负值
+     * 绝对健康值由眼位数量（包括类型和状态）及气数决定
+     * <p>
      * http://senseis.xmp.net/?BensonsAlgorithm
      *
-     * @return the overall health of the group independent of nbr groups.
+     * @return 与周围棋群无关的绝对健康值
      */
     public float calculateAbsoluteHealth(GoBoard board) {
         if (mEyeCache.isValid()) {
-            GameContext.log(1, "cache valid. Returning health=" + absoluteHealth_);
-            return absoluteHealth_;
+//            GameContext.log(1, "cache valid. Returning health=" + mAbsoluteHealth);
+            return mAbsoluteHealth;
         }
 
         int numLiberties = mGroup.getNumLiberties(board);
@@ -100,7 +90,7 @@ class AbsoluteHealthCalculator {
         LifeAnalyzer lifeAnalyzer = new LifeAnalyzer(mGroup, board, mAnalyzerMap);
         EyeHealthEvaluator eyeEvaluator = new EyeHealthEvaluator(lifeAnalyzer);
 
-        absoluteHealth_ = eyeEvaluator.determineHealth(side, numEyes, numLiberties, numStones);
+        mAbsoluteHealth = eyeEvaluator.determineHealth(side, numEyes, numLiberties, numStones);
 
         mEyeCache.updateEyes(board);  // expensive
 
@@ -112,39 +102,24 @@ class AbsoluteHealthCalculator {
         float health = eyeEvaluator.determineHealth(side, numEyes, numLiberties, numStones);
 
         // No bonus at all for false eyes
-        absoluteHealth_ = health;
-        if (Math.abs(absoluteHealth_) > 1.0) {
-            GameContext.log(0, "Warning: health exceeded 1.0: " + " health=" + health + " numEyes=" + numEyes);
-            absoluteHealth_ = side;
+        mAbsoluteHealth = health;
+        if (Math.abs(mAbsoluteHealth) > 1.0) {
+//            GameContext.log(0, "Warning: health exceeded 1.0: " + " health=" + health + " numEyes=" + numEyes);
+            mAbsoluteHealth = side;
         }
 
-        return absoluteHealth_;
+        return mAbsoluteHealth;
     }
 
     /**
-     * @return set of eyes currently identified for this group.
+     * 获取这个棋群的眼位集合
+     *
+     * @return
      */
     public GoEyeSet getEyes(GoBoard board) {
         if (!mEyeCache.isValid()) {
             calculateAbsoluteHealth(board);
         }
         return mEyeCache.getEyes(board);
-    }
-
-    /**
-     * Calculate the number of stones in the group.
-     *
-     * @return number of stones in the group.
-     */
-    public int getNumStones() {
-        if (mEyeCache.isValid()) {
-            return cachedNumStonesInGroup_;
-        }
-        int numStones = 0;
-        for (IGoString str : mGroup.getMembers()) {
-            numStones += str.size();
-        }
-        cachedNumStonesInGroup_ = numStones;
-        return numStones;
     }
 }

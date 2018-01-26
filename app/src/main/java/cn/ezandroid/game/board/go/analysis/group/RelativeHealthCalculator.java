@@ -24,13 +24,12 @@ class RelativeHealthCalculator {
     }
 
     /**
-     * Calculate the relative health of a group.
-     * This method must be called only after calculateAbsoluteHealth has be done for all groups.
-     * Good health is positive for a black group.
-     * This measure of the group's health should be much more accurate than the absolute health
-     * because it takes into account the relative health of neighboring groups.
-     * If the health of an opponent bordering group is in worse shape
-     * than our own then we get a boost since we can probably kill that group first.
+     * 计算棋群的相对健康值
+     * <p>
+     * 这个方法调用前，需要确保所有棋群已经计算过绝对健康值
+     * 相对健康值会考虑棋群周围敌方棋群的相对强度，如果敌方棋群比己方棋群更弱，则己方棋群分数会得到提升
+     * <p>
+     * http://senseis.xmp.net/?BensonsAlgorithm
      *
      * @return the overall health of the group.
      */
@@ -38,12 +37,6 @@ class RelativeHealthCalculator {
         return boostRelativeHealthBasedOnWeakNbr(board, absoluteHealth);
     }
 
-    /**
-     * If there is a weakest group, then boost ourselves relative to it.
-     * it may be a positive or negative boost to our health depending on its relative strength.
-     *
-     * @return relative health
-     */
     private float boostRelativeHealthBasedOnWeakNbr(GoBoard board, float absoluteHealth) {
         // the default if there is no weakest group.
         float relativeHealth = absoluteHealth;
@@ -66,13 +59,13 @@ class RelativeHealthCalculator {
     }
 
     /**
-     * What proportion of the groups stones are close to enemy groups?
-     * this gives us an indication of how surrounded we are.
-     * If we are very surrounded then we give a big boost for being stronger or weaker than a nbr.
-     * If we are not very surrounded then we don't give much of a boost because there are other
-     * ways to make life (i.e. run out/away).
+     * 查找棋群棋子接近敌对棋群的比例，这将告诉我们棋群是否已经被包围
+     * <p>
+     * 如果被包围，将会得到一个大的提升
+     * 如果没被包围，将会得到一个小的提升，因为被包围的棋子可以通过其他方式进行逃跑
      *
-     * @return proportion of our group stones with enemy neighbors.
+     * @param groupStones
+     * @return
      */
     private double findProportionWithEnemyNbrs(GoBoardPositionSet groupStones) {
         int numWithEnemyNbrs = 0;

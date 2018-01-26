@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.network;
 
 /**
  * 价值网络接口
@@ -8,5 +8,5 @@ package cn.ezandroid.goboard.demo;
  */
 public interface IValueNetwork {
 
-    float[] getOutput(byte[][][] input, int player);
+    float[] getOutput(FeatureBoard featureBoard, int player);
 }

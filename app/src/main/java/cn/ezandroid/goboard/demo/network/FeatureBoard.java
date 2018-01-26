@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.network;
 
 import android.util.Pair;
 import android.util.SparseArray;
@@ -14,6 +14,10 @@ import java.util.Stack;
 import cn.ezandroid.goboard.Intersection;
 import cn.ezandroid.goboard.Stone;
 import cn.ezandroid.goboard.StoneColor;
+import cn.ezandroid.goboard.demo.core.Chain;
+import cn.ezandroid.goboard.demo.core.Game;
+import cn.ezandroid.goboard.demo.core.Move;
+import cn.ezandroid.goboard.demo.util.Debug;
 
 /**
  * 特征棋盘，支持AlphaGo的48特征及AQ的49特征两种

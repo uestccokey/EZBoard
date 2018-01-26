@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.util;
 
 /**
  * 形势分析 采用简单的影响力算法，不考虑死活，对某个空白点影响力高过阈值时，则该点属于某方。

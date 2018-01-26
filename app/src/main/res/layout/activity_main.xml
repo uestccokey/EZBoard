@@ -8,12 +8,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <cn.ezandroid.goboard.demo.HeatMapView
+    <cn.ezandroid.goboard.demo.view.HeatMapView
         android:id="@+id/heat_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <cn.ezandroid.goboard.demo.TerrainMapView
+    <cn.ezandroid.goboard.demo.view.TerrainMapView
         android:id="@+id/terrain_map"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

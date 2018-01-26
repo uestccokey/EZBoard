@@ -1,4 +1,6 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.util;
+
+import cn.ezandroid.goboard.demo.network.FeatureBoard;
 
 /**
  * Debug

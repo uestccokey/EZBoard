@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.network;
 
 import android.content.Context;
 
@@ -32,6 +32,11 @@ public class AQ211Value implements IValueNetwork {
     public AQ211Value(Context context) {
         mTensorFlow = new TensorFlowInferenceInterface(context.getAssets(), MODEL_FILE);
         mOutputNames = new String[]{OUTPUT_NAME};
+    }
+
+    @Override
+    public float[] getOutput(FeatureBoard featureBoard, int player) {
+        return getOutput(new byte[][][]{featureBoard.generateFeatures49()}, player);
     }
 
     public float[] getOutput(byte[][][] input, int player) {

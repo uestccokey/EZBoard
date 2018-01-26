@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard.demo;
+package cn.ezandroid.goboard.demo.network;
 
 /**
  * 策略网络接口
@@ -8,5 +8,5 @@ package cn.ezandroid.goboard.demo;
  */
 public interface IPolicyNetwork {
 
-    float[][] getOutput(byte[][][] input);
+    float[][] getOutput(FeatureBoard featureBoard);
 }
