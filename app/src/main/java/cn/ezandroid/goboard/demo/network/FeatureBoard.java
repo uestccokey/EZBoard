@@ -279,7 +279,7 @@ public class FeatureBoard implements Cloneable {
 
             updateFeature();
 
-            Debug.printBoard(mBoardFeature);
+//            Debug.printBoard(mBoardFeature);
         }
         return pair;
     }
@@ -430,7 +430,7 @@ public class FeatureBoard implements Cloneable {
 
         updateFeature();
 
-        Debug.printBoard(mBoardFeature);
+//        Debug.printBoard(mBoardFeature);
         return true;
     }
 

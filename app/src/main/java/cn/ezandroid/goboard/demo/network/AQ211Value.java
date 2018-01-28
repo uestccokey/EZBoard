@@ -39,6 +39,7 @@ public class AQ211Value implements IValueNetwork {
         return getOutput(new byte[][][]{featureBoard.generateFeatures49()}, player);
     }
 
+    @Override
     public float[] getOutput(byte[][][] input, int player) {
         float[] in = new float[input.length * input[0].length * input[0][0].length];
         float[] output = new float[input.length];

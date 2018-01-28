@@ -10,6 +10,20 @@ import cn.ezandroid.goboard.demo.network.FeatureBoard;
  */
 public class Debug {
 
+    private static final String BOARD_LETTERS = "ABCDEFGHJKLMNOPQRSTUVWXYZ"; // no 'I'
+
+    public static String pos2str(int pos) {
+        int x = pos % 19;
+        int y = pos / 19;
+        if (x == -1 && y == -1) {
+            return "pass";
+        } else if (x == -3 && y == -3) {
+            return "resign";
+        } else {
+            return String.valueOf(BOARD_LETTERS.charAt(x)) + (19 - y);
+        }
+    }
+
     public static void printBoard(byte[] board) {
         System.err.println("Board:");
         System.err.print("|-");

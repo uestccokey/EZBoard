@@ -9,4 +9,6 @@ package cn.ezandroid.goboard.demo.network;
 public interface IValueNetwork {
 
     float[] getOutput(FeatureBoard featureBoard, int player);
+
+    float[] getOutput(byte[][][] input, int player);
 }

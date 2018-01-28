@@ -36,6 +36,7 @@ public class AQ211Policy implements IPolicyNetwork {
         return getOutput(new byte[][][]{featureBoard.generateFeatures49()});
     }
 
+    @Override
     public float[][] getOutput(byte[][][] input) {
 //        Log.e("AQPolicy", Thread.currentThread().getName() + " getOutput enter");
         float[] in = new float[input.length * input[0].length * input[0][0].length];

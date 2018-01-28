@@ -9,4 +9,6 @@ package cn.ezandroid.goboard.demo.network;
 public interface IPolicyNetwork {
 
     float[][] getOutput(FeatureBoard featureBoard);
+
+    float[][] getOutput(byte[][][] input);
 }
