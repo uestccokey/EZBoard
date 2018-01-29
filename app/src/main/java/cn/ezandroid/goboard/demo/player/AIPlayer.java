@@ -1,42 +1,42 @@
 package cn.ezandroid.goboard.demo.player;
 
 import android.util.Log;
-import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import cn.ezandroid.goboard.Intersection;
 import cn.ezandroid.goboard.Stone;
 import cn.ezandroid.goboard.StoneColor;
-import cn.ezandroid.goboard.demo.core.Chain;
 import cn.ezandroid.goboard.demo.network.AQ211Value;
 import cn.ezandroid.goboard.demo.network.FeatureBoard;
 import cn.ezandroid.goboard.demo.network.IPolicyNetwork;
 import cn.ezandroid.goboard.demo.network.IValueNetwork;
+import cn.ezandroid.goboard.demo.player.strategy.Line;
+import cn.ezandroid.goboard.demo.player.strategy.LineExtender;
+import cn.ezandroid.goboard.demo.player.strategy.Node;
 import cn.ezandroid.goboard.demo.util.Debug;
 
 /**
  * AIPlayer
  *
  * @author like
- * @date 2018-01-26
+ * @date 2018-01-28
  */
 public class AIPlayer implements IPlayer {
-
-    private float mMinSumChooseThreshold = 0.98f; // 所有待选位置概率之和
-
-    private float mMinChooseThreshold = 0.02f; // 最低待选位置概率阈值，落子概率低于此值的位置不考虑
 
     private IPolicyNetwork mPolicyNetwork;
 
     private IValueNetwork mValueNetwork;
+
+    private int mMaxDepth = 4;
+
+    private int mMaxWidth = 3;
 
     private FeatureBoard mFeatureBoard;
 
@@ -51,97 +51,118 @@ public class AIPlayer implements IPlayer {
         mFeatureBoard = featureBoard;
     }
 
-    public void setMinSumChooseThreshold(float minSumChooseThreshold) {
-        mMinSumChooseThreshold = minSumChooseThreshold;
-    }
-
-    public void setMinChooseThreshold(float minChooseThreshold) {
-        mMinChooseThreshold = minChooseThreshold;
-    }
-
     public float[][] getPolicies() {
         return mPolicyNetwork.getOutput(mFeatureBoard);
     }
 
+    public void setMaxDepth(int maxDepth) {
+        mMaxDepth = maxDepth;
+    }
+
+    public void setMaxWidth(int maxWidth) {
+        mMaxWidth = maxWidth;
+    }
+
     @Override
     public Stone genMove(boolean player1) {
-        Log.e("AIPlayer", player1 + " 手数:" + (mFeatureBoard.getCurrentMoveNumber() + 1));
+        long time = System.currentTimeMillis();
         float[][] policies = getPolicies();
         Debug.printRate(policies[0]);
 
-        List<Pair<Integer, Float>> all = new ArrayList<>();
+        // 将策略网络获取到的落子概率数组转换为节点列表
+        List<Node> all = new ArrayList<>();
         for (int i = 0; i < policies[0].length; i++) {
-            all.add(new Pair<>(i, policies[0][i]));
+            Node node = new Node();
+            node.pos = i;
+            node.policy = policies[0][i];
+            node.color = player1 ? FeatureBoard.BLACK : FeatureBoard.WHITE;
+            all.add(node);
         }
 
+        // 从大到小排序节点列表
         Collections.sort(all, (o1, o2) -> {
-            if (o1.second > o2.second) {
+            if (o1.policy > o2.policy) {
                 return -1;
-            } else if (o1.second < o2.second) {
+            } else if (o1.policy < o2.policy) {
                 return 1;
             }
             return 0;
         });
 
-        List<Pair<Integer, Float>> alternative = new ArrayList<>();
-        float sumRate = 0;
-        for (Pair<Integer, Float> pair : all) {
-            float rate = pair.second;
-            if (rate > mMinChooseThreshold) {
-                alternative.add(pair);
-                sumRate += rate;
-            }
-            if (sumRate > mMinSumChooseThreshold) {
-                break;
+        // 当最佳策略节点落子概率大于0.95时，通常表示只此一手，直接落子，节约时间
+        Node bestPolicyNode = all.get(0);
+        if (bestPolicyNode.policy > 0.95f) {
+            Stone stone = new Stone();
+            stone.color = player1 ? StoneColor.BLACK : StoneColor.WHITE;
+            stone.intersection = new Intersection(bestPolicyNode.pos % 19, bestPolicyNode.pos / 19);
+            return stone;
+        }
+
+        // 查找所有符合条件的备选节点
+        List<Node> alternative = new ArrayList<>();
+        for (Node node : all) {
+            float policy = node.policy;
+            if (policy > 0.05f && alternative.size() < mMaxWidth) {
+                alternative.add(node);
             }
         }
 
-        Pair<Integer, Float> choosePair = null;
-
-        long time = System.currentTimeMillis();
-        List<Callable<String>> valueTasks = new ArrayList<>();
-        final byte[][][] featuresArray49 = new byte[alternative.size()][][];
-        for (int i = 0; i < alternative.size(); i++) {
-            final Pair<Integer, Float> pair = alternative.get(i);
-            final int index = i;
-            valueTasks.add(() -> {
-                Set<Chain> captured = new HashSet<>();
-                FeatureBoard clone = mFeatureBoard.clone();
-                clone.playMove(pair.first % 19, pair.first / 19,
-                        player1 ? FeatureBoard.BLACK : FeatureBoard.WHITE, captured);
-
-                featuresArray49[index] = clone.generateFeatures49();
-                return null;
-            });
+        // 遍历备选节点生成落子链
+        List<Line> lines = new ArrayList<>();
+        for (Node node : alternative) {
+            Line line = new Line();
+            line.addNode(node);
+            lines.add(line);
         }
+
+        // 每个落子链进行并行扩展，直到全部结束
+        List<LineExtender> lineExtenders = new ArrayList<>();
+        for (Line line : lines) {
+            try {
+                lineExtenders.add(new LineExtender(mFeatureBoard.clone(), line, mPolicyNetwork, mMaxDepth));
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        byte[][][] featuresArray49 = new byte[lineExtenders.size()][][];
         try {
-            mValueExecutor.invokeAll(valueTasks);
-        } catch (InterruptedException e) {
+            List<Future<FeatureBoard>> results = mValueExecutor.invokeAll(lineExtenders);
+            for (int i = 0; i < results.size(); i++) {
+                FeatureBoard board = results.get(i).get();
+                featuresArray49[i] = board.generateFeatures49();
+            }
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
-        Log.e("AIPlayer", player1 + " 获取价值网络特征 数量:" + alternative.size() + " 耗时:" + (System.currentTimeMillis() - time));
-
-        time = System.currentTimeMillis();
         float[] values = mValueNetwork.getOutput(featuresArray49, player1 ? AQ211Value.WHITE : AQ211Value.BLACK);
-        Log.e("AIPlayer", player1 + " 进行价值网络评估 耗时:" + (System.currentTimeMillis() - time));
 
-        float maxScore = -1;
-        for (int i = 0; i < alternative.size(); i++) {
-            final Pair<Integer, Float> pair = alternative.get(i);
-            float score = (1 - values[i]) / 2 + pair.second / 8;
-            if (maxScore < score) {
-                maxScore = score;
-                choosePair = pair;
+        Line bestLine = null;
+        float bestValue = -1;
+        for (int i = 0; i < values.length; i++) {
+            float score = (1 - values[i]) / 2;
+            Line line = lines.get(i);
+            line.setScore(score);
+            if (bestValue < score) {
+                bestValue = score;
+                bestLine = line;
             }
-            Log.e("AIPlayer", player1 + " " + Debug.pos2str(pair.first)
-                    + " 胜率:" + (1 - values[i]) / 2 + " 概率:" + pair.second + " 分数:" + score);
         }
 
-        Log.e("AIPlayer", player1 + " 最终的选择:" + Debug.pos2str(choosePair.first));
+        for (Line line : lines) {
+            Log.e("AIPlayer", line.toString());
+        }
+
+        Node bestNode = bestLine.getNode(0);
+        Log.e("AIPlayer", "最终选择:" + Debug.pos2str(bestNode.pos)
+                + " 价值:" + bestLine.getScore()
+                + " 颜色:" + bestNode.getPlayer()
+                + " 手数:" + (mFeatureBoard.getCurrentMoveNumber() + 1)
+                + " 用时:" + (System.currentTimeMillis() - time));
 
         Stone stone = new Stone();
         stone.color = player1 ? StoneColor.BLACK : StoneColor.WHITE;
-        stone.intersection = new Intersection(choosePair.first % 19, choosePair.first / 19);
+        stone.intersection = new Intersection(bestNode.pos % 19, bestNode.pos / 19);
         return stone;
     }
 }

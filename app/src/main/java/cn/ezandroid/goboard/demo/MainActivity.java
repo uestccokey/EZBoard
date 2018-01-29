@@ -3,7 +3,10 @@ package cn.ezandroid.goboard.demo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.TextView;
@@ -32,13 +35,12 @@ import cn.ezandroid.goboard.Stone;
 import cn.ezandroid.goboard.StoneColor;
 import cn.ezandroid.goboard.demo.core.Chain;
 import cn.ezandroid.goboard.demo.core.Move;
+import cn.ezandroid.goboard.demo.network.AQ203Policy;
 import cn.ezandroid.goboard.demo.network.AQ211Policy;
 import cn.ezandroid.goboard.demo.network.AQ211Value;
 import cn.ezandroid.goboard.demo.network.FeatureBoard;
 import cn.ezandroid.goboard.demo.network.IValueNetwork;
-import cn.ezandroid.goboard.demo.network.Roc57Policy;
 import cn.ezandroid.goboard.demo.player.AIPlayer;
-import cn.ezandroid.goboard.demo.player.HumanPlayer;
 import cn.ezandroid.goboard.demo.util.Debug;
 import cn.ezandroid.goboard.demo.util.TerrainAnalyze;
 import cn.ezandroid.goboard.demo.view.HeatMapView;
@@ -75,12 +77,13 @@ public class MainActivity extends AppCompatActivity {
     private int mWhiteScore;
     private float mBlackWinRatio = 0.5f;
 
-    private HumanPlayer mPlayer1;
-    //    private AIPlayer mPlayer1;
+    //    private HumanPlayer mPlayer1;
+    private AIPlayer mPlayer1;
     private AIPlayer mPlayer2;
 
+    private AQ203Policy mAQ203Policy;
     private AQ211Policy mAQ211Policy;
-    private Roc57Policy mRoc57Policy;
+//    private Roc57Policy mRoc57Policy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,27 +92,28 @@ public class MainActivity extends AppCompatActivity {
 
         mFeatureBoard = new FeatureBoard();
         mValueNetwork = new AQ211Value(this);
+        mAQ203Policy = new AQ203Policy(this);
         mAQ211Policy = new AQ211Policy(this);
-        mRoc57Policy = new Roc57Policy(this);
+//        mRoc57Policy = new Roc57Policy(this);
 
-        mPlayer1 = new HumanPlayer();
-//        mPlayer1 = new AIPlayer(mRoc57Policy, mValueNetwork);
-        mPlayer2 = new AIPlayer(mAQ211Policy, mValueNetwork);
+//        mPlayer1 = new HumanPlayer();
+        mPlayer1 = new AIPlayer(mAQ211Policy, mValueNetwork);
+        mPlayer2 = new AIPlayer(mAQ203Policy, mValueNetwork);
 
         mBoardView = findViewById(R.id.board);
-        mBoardView.setOnTouchListener((v, event) -> {
-            Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
-            if (intersection != null) {
-                Intersection highlight = mBoardView.getHighlightIntersection();
-                if (intersection.equals(highlight) && !mFeatureBoard.taken(intersection)) {
-                    mPlayer1.setIntersection(intersection);
-                    putStone(mPlayer1.genMove(true), true);
-                } else {
-                    mBoardView.setHighlightIntersection(intersection);
-                }
-            }
-            return false;
-        });
+//        mBoardView.setOnTouchListener((v, event) -> {
+//            Intersection intersection = mBoardView.getNearestIntersection(event.getX(), event.getY());
+//            if (intersection != null) {
+//                Intersection highlight = mBoardView.getHighlightIntersection();
+//                if (intersection.equals(highlight) && !mFeatureBoard.taken(intersection)) {
+//                    mPlayer1.setIntersection(intersection);
+//                    putStone(mPlayer1.genMove(true), true);
+//                } else {
+//                    mBoardView.setHighlightIntersection(intersection);
+//                }
+//            }
+//            return false;
+//        });
 
         mHeatMapView = findViewById(R.id.heat_map);
 
@@ -156,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
 
         updateDetail();
 
-//        botVSBot();
+        botVSBot();
     }
 
     private void undo() {
@@ -413,110 +417,110 @@ public class MainActivity extends AppCompatActivity {
         System.err.print("|");
         System.err.println();
     }
-//
-//    private static final int PLAYER1_MOVE = 1;
-//    private static final int PLAYER2_MOVE = 2;
-//
-//    private Handler mHandler = new Handler(new Handler.Callback() {
-//        @Override
-//        public boolean handleMessage(Message msg) {
-//            switch (msg.what) {
-//                case PLAYER1_MOVE:
-//                    new Thread() {
-//                        @Override
-//                        public void run() {
-//                            mPlayer1.setFeatureBoard(mFeatureBoard);
-//                            Stone player1Stone = mPlayer1.genMove(true);
-//                            runOnUiThread(() -> {
-//                                putStone(player1Stone);
-//                                if (isEnd()) {
-//                                    printEnd();
-//                                } else {
-//                                    mHandler.sendEmptyMessage(PLAYER2_MOVE);
-//                                }
-//                            });
-//                        }
-//                    }.start();
-//                    break;
-//                case PLAYER2_MOVE:
-//                    new Thread() {
-//                        @Override
-//                        public void run() {
-//                            mPlayer2.setFeatureBoard(mFeatureBoard);
-//                            Stone player2Stone = mPlayer2.genMove(false);
-//
-//                            float[] values = mValueNetwork.getOutput(mFeatureBoard, AQ211Value.WHITE);
-//                            mBlackWinRatio = (1 - values[0]) / 2;
-//
-//                            runOnUiThread(() -> {
-//                                updateDetail();
-//
-//                                putStone(player2Stone);
-//                                if (isEnd()) {
-//                                    printEnd();
-//                                } else {
-//                                    mHandler.sendEmptyMessage(PLAYER1_MOVE);
-//                                }
-//                            });
-//                        }
-//                    }.start();
-//                    break;
-//            }
-//            return false;
-//        }
-//    });
-//
-//    private boolean isEnd() {
-//        int number = mFeatureBoard.getCurrentMoveNumber();
-//        if (mBlackWinRatio < 0.05 || mBlackWinRatio > 0.95 || number > 361 * 2) {
-//            return true;
-//        }
-//        return false;
-//    }
-//
-//    private void printEnd() {
-//        if (mBlackWinRatio < 0.5) {
-//            Log.e("MainActivity", "白胜");
-//        } else if (mBlackWinRatio > 0.5) {
-//            Log.e("MainActivity", "黑胜");
-//        } else {
-//            Log.e("MainActivity", "平局");
-//        }
-//    }
-//
-//    private void botVSBot() {
-//        mHandler.sendEmptyMessage(PLAYER1_MOVE);
-//    }
-//
-//    private void putStone(Stone stone) {
-//        Intersection intersection = stone.intersection;
-//
-//        mTerrainMapView.setTerrainMap(null);
-//        mHeatMapView.setHeatMap(null);
-//
-//        Set<Chain> captured = new HashSet<>();
-//        boolean add = mFeatureBoard.playMove(intersection.x, intersection.y,
-//                stone.color == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE, captured);
-//        if (add) {
-//            stone.number = mFeatureBoard.getCurrentMoveNumber();
-//
-//            GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1)
-//                    , 0, new GoStone(stone.color == StoneColor.BLACK));
-//            mGoBoard.makeMove(goMove);
-////            Log.e("MainActivity", mGoBoard.getGroups().toString());
-//
-//            mBoardView.setHighlightIntersection(null);
-//            for (Chain chain : captured) {
-//                for (Stone stone1 : chain.getStones()) {
-//                    mBoardView.removeStone(stone1);
-//                }
-//            }
-//            mBoardView.addStone(stone);
-//            mBoardView.setHighlightStone(stone);
-//
-//            mCurrentColor = mCurrentColor.getOther();
-//        }
-//    }
+
+    private static final int PLAYER1_MOVE = 1;
+    private static final int PLAYER2_MOVE = 2;
+
+    private Handler mHandler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message msg) {
+            switch (msg.what) {
+                case PLAYER1_MOVE:
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            mPlayer1.setFeatureBoard(mFeatureBoard);
+                            Stone player1Stone = mPlayer1.genMove(true);
+                            runOnUiThread(() -> {
+                                putStone(player1Stone);
+                                if (isEnd()) {
+                                    printEnd();
+                                } else {
+                                    mHandler.sendEmptyMessage(PLAYER2_MOVE);
+                                }
+                            });
+                        }
+                    }.start();
+                    break;
+                case PLAYER2_MOVE:
+                    new Thread() {
+                        @Override
+                        public void run() {
+                            mPlayer2.setFeatureBoard(mFeatureBoard);
+                            Stone player2Stone = mPlayer2.genMove(false);
+
+                            float[] values = mValueNetwork.getOutput(mFeatureBoard, AQ211Value.WHITE);
+                            mBlackWinRatio = (1 - values[0]) / 2;
+
+                            runOnUiThread(() -> {
+                                updateDetail();
+
+                                putStone(player2Stone);
+                                if (isEnd()) {
+                                    printEnd();
+                                } else {
+                                    mHandler.sendEmptyMessage(PLAYER1_MOVE);
+                                }
+                            });
+                        }
+                    }.start();
+                    break;
+            }
+            return false;
+        }
+    });
+
+    private boolean isEnd() {
+        int number = mFeatureBoard.getCurrentMoveNumber();
+        if (mBlackWinRatio < 0.05 || mBlackWinRatio > 0.95 || number > 361 * 2) {
+            return true;
+        }
+        return false;
+    }
+
+    private void printEnd() {
+        if (mBlackWinRatio < 0.5) {
+            Log.e("MainActivity", "白胜");
+        } else if (mBlackWinRatio > 0.5) {
+            Log.e("MainActivity", "黑胜");
+        } else {
+            Log.e("MainActivity", "平局");
+        }
+    }
+
+    private void botVSBot() {
+        mHandler.sendEmptyMessage(PLAYER1_MOVE);
+    }
+
+    private void putStone(Stone stone) {
+        Intersection intersection = stone.intersection;
+
+        mTerrainMapView.setTerrainMap(null);
+        mHeatMapView.setHeatMap(null);
+
+        Set<Chain> captured = new HashSet<>();
+        boolean add = mFeatureBoard.playMove(intersection.x, intersection.y,
+                stone.color == StoneColor.BLACK ? FeatureBoard.BLACK : FeatureBoard.WHITE, captured);
+        if (add) {
+            stone.number = mFeatureBoard.getCurrentMoveNumber();
+
+            GoMove goMove = new GoMove(new IntLocation(intersection.y + 1, intersection.x + 1)
+                    , 0, new GoStone(stone.color == StoneColor.BLACK));
+            mGoBoard.makeMove(goMove);
+//            Log.e("MainActivity", mGoBoard.getGroups().toString());
+
+            mBoardView.setHighlightIntersection(null);
+            for (Chain chain : captured) {
+                for (Stone stone1 : chain.getStones()) {
+                    mBoardView.removeStone(stone1);
+                }
+            }
+            mBoardView.addStone(stone);
+            mBoardView.setHighlightStone(stone);
+
+            mCurrentColor = mCurrentColor.getOther();
+        }
+    }
 
     private void putStone(Stone stone, boolean user) {
         if (mIsThinking) {
