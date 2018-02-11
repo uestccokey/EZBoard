@@ -73,6 +73,18 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
+     * 设置格子大小
+     *
+     * @param squareSize
+     */
+    public void setSquareSize(int squareSize) {
+        if (mSquareSize != squareSize) {
+            mSquareSize = squareSize;
+            invalidate();
+        }
+    }
+
+    /**
      * 获取格子大小
      *
      * @return
