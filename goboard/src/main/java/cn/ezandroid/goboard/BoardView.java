@@ -33,6 +33,8 @@ public class BoardView extends RelativeLayout {
 
     private Intersection mHighlightIntersection;
 
+    private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+
     public BoardView(Context context) {
         super(context);
         initBoard();
@@ -53,7 +55,7 @@ public class BoardView extends RelativeLayout {
         heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(minSize, MeasureSpec.EXACTLY);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        mSquareSize = Math.round(minSize / (mBoardSize + 1));
+        mSquareSize = Math.round(minSize * 1f / (mBoardSize + 1));
     }
 
     private void initBoard() {
@@ -70,6 +72,29 @@ public class BoardView extends RelativeLayout {
         mStoneViewMap.clear();
         mHighlightIntersection = null;
         removeAllViews();
+    }
+
+    /**
+     * 设置是否绘制棋子手数
+     *
+     * @param drawNumber
+     */
+    public void setDrawNumber(boolean drawNumber) {
+        if (mIsDrawNumber != drawNumber) {
+            mIsDrawNumber = drawNumber;
+            for (StoneView view : mStoneViewMap.values()) {
+                view.setDrawNumber(mIsDrawNumber);
+            }
+        }
+    }
+
+    /**
+     * 获取是否绘制棋子手数
+     *
+     * @return
+     */
+    public boolean isDrawNumber() {
+        return mIsDrawNumber;
     }
 
     /**
@@ -187,25 +212,29 @@ public class BoardView extends RelativeLayout {
      * 添加棋子
      *
      * @param stone
+     * @return
      */
-    public void addStone(Stone stone) {
+    public StoneView addStone(Stone stone) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSquareSize, mSquareSize);
         StoneView stoneView = new StoneView(getContext());
         stoneView.setStone(stone);
+        stoneView.setDrawNumber(mIsDrawNumber);
         params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
         params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
         stoneView.setLayoutParams(params);
         addView(stoneView);
 
         mStoneViewMap.put(stone, stoneView);
+        return stoneView;
     }
 
     /**
      * 删除棋子
      *
      * @param stone
+     * @return
      */
-    public void removeStone(Stone stone) {
+    public StoneView removeStone(Stone stone) {
         StoneView stoneView = mStoneViewMap.get(stone);
         if (stoneView != null) {
             // 棋子消失动画
@@ -220,6 +249,7 @@ public class BoardView extends RelativeLayout {
             });
             animator.start();
         }
+        return stoneView;
     }
 
     /**
