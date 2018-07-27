@@ -1,4 +1,4 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.lib.board;
 
 /**
  * 棋子颜色枚举

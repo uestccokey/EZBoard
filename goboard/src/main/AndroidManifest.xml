@@ -1,3 +1,1 @@
-<manifest package="cn.ezandroid.goboard">
-
-</manifest>
+<manifest package="cn.ezandroid.lib.board" />

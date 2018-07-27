@@ -1,6 +1,7 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.lib.board;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,11 +21,13 @@ public class StoneView extends TextView {
 
     private Stone mStone;
 
-    private int mStoneSpace = 4; // 棋子间距
+    private int mStoneSpace = 6; // 棋子间距
 
     private boolean mIsHighlight; // 棋子是否高亮
 
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+
+    private Bitmap mStoneBitmap; // 棋子样式
 
     public StoneView(Context context) {
         super(context);
@@ -39,6 +42,16 @@ public class StoneView extends TextView {
     private void initStone() {
         this.mStonePaint = new Paint();
         this.mStonePaint.setAntiAlias(true);
+    }
+
+    /**
+     * 设置棋子样式
+     *
+     * @param bitmap
+     */
+    public void setStoneBitmap(Bitmap bitmap) {
+        mStoneBitmap = bitmap;
+        invalidate();
     }
 
     /**
@@ -142,19 +155,26 @@ public class StoneView extends TextView {
      * @param canvas
      */
     private void drawStone(Canvas canvas) {
-        if (mStone.color == StoneColor.BLACK) {
-            mStonePaint.setColor(Color.BLACK);
-            mStonePaint.setStyle(Paint.Style.FILL);
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace, mStonePaint);
+        if (mStoneBitmap != null && !mStoneBitmap.isRecycled()) {
+            canvas.drawBitmap(mStoneBitmap,
+                    new Rect(0, 0, mStoneBitmap.getWidth(), mStoneBitmap.getHeight()),
+                    new Rect(mStoneSpace / 2, mStoneSpace / 2, getWidth() - mStoneSpace / 2, getHeight() - mStoneSpace / 2),
+                    mStonePaint);
         } else {
-            mStonePaint.setColor(Color.WHITE);
-            mStonePaint.setStyle(Paint.Style.FILL);
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace, mStonePaint);
+            if (mStone.color == StoneColor.BLACK) {
+                mStonePaint.setColor(Color.BLACK);
+                mStonePaint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
+            } else {
+                mStonePaint.setColor(Color.WHITE);
+                mStonePaint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
 
-            mStonePaint.setColor(Color.BLACK);
-            mStonePaint.setStyle(Paint.Style.STROKE);
-            mStonePaint.setStrokeWidth(3);
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace, mStonePaint);
+                mStonePaint.setColor(Color.BLACK);
+                mStonePaint.setStyle(Paint.Style.STROKE);
+                mStonePaint.setStrokeWidth(2);
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
+            }
         }
     }
 

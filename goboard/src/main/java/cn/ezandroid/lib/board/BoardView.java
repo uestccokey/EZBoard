@@ -1,12 +1,13 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.lib.board;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
@@ -27,6 +28,8 @@ public class BoardView extends RelativeLayout {
 
     private int mBoardSize = 19; // 棋盘大小
 
+    private int mStoneSpace = 6; // 棋子间距
+
     private boolean mIsShowCoordinate = true; // 是否显示坐标
 
     private Map<Stone, StoneView> mStoneViewMap = new HashMap<>(); // StoneView映射图，用来根据Stone快速查找对应的StoneView
@@ -34,6 +37,14 @@ public class BoardView extends RelativeLayout {
     private Intersection mHighlightIntersection;
 
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+
+    private Bitmap mBoardBitmap; // 棋盘样式
+
+    private Bitmap mBlackStoneBitmap; // 黑子样式
+    private Bitmap mWhiteStoneBitmap; // 白子样式
+
+    private Bitmap mBlackStoneShadowBitmap; // 黑子阴影图
+    private Bitmap mWhiteStoneShadowBitmap; // 白子阴影图
 
     public BoardView(Context context) {
         super(context);
@@ -72,6 +83,87 @@ public class BoardView extends RelativeLayout {
         mStoneViewMap.clear();
         mHighlightIntersection = null;
         removeAllViews();
+    }
+
+    /**
+     * 设置棋盘样式
+     *
+     * @param bitmap
+     */
+    public void setBoardBitmap(Bitmap bitmap) {
+        mBoardBitmap = bitmap;
+        invalidate();
+    }
+
+    /**
+     * 设置黑子样式
+     *
+     * @param blackStoneBitmap
+     */
+    public void setBlackStoneBitmap(Bitmap blackStoneBitmap) {
+        mBlackStoneBitmap = blackStoneBitmap;
+        for (StoneView view : mStoneViewMap.values()) {
+            if (view.getStone().color == StoneColor.BLACK) {
+                view.setStoneBitmap(mBlackStoneBitmap);
+            }
+        }
+        invalidate();
+    }
+
+    /**
+     * 设置白子样式
+     *
+     * @param whiteStoneBitmap
+     */
+    public void setWhiteStoneBitmap(Bitmap whiteStoneBitmap) {
+        mWhiteStoneBitmap = whiteStoneBitmap;
+        for (StoneView view : mStoneViewMap.values()) {
+            if (view.getStone().color == StoneColor.WHITE) {
+                view.setStoneBitmap(mWhiteStoneBitmap);
+            }
+        }
+        invalidate();
+    }
+
+    /**
+     * 设置黑子阴影图
+     *
+     * @param stoneShadowBitmap
+     */
+    public void setBlackStoneShadowBitmap(Bitmap stoneShadowBitmap) {
+        mBlackStoneShadowBitmap = stoneShadowBitmap;
+        invalidate();
+    }
+
+    /**
+     * 设置白子阴影图
+     *
+     * @param stoneShadowBitmap
+     */
+    public void setWhiteStoneShadowBitmap(Bitmap stoneShadowBitmap) {
+        mWhiteStoneShadowBitmap = stoneShadowBitmap;
+        invalidate();
+    }
+
+    /**
+     * 设置棋子间距
+     *
+     * @param stoneSpace
+     */
+    public void setStoneSpace(int stoneSpace) {
+        if (mStoneSpace != stoneSpace) {
+            mStoneSpace = stoneSpace;
+            invalidate();
+        }
+    }
+
+    /**
+     * 获取棋子间距
+     *
+     * @return
+     */
+    public int getStoneSpace() {
+        return mStoneSpace;
     }
 
     /**
@@ -215,17 +307,21 @@ public class BoardView extends RelativeLayout {
      * @return
      */
     public StoneView addStone(Stone stone) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(mSquareSize, mSquareSize);
-        StoneView stoneView = new StoneView(getContext());
-        stoneView.setStone(stone);
-        stoneView.setDrawNumber(mIsDrawNumber);
-        params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
-        params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
-        stoneView.setLayoutParams(params);
-        addView(stoneView);
+        if (!mStoneViewMap.containsKey(stone)) {
+            LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
+            StoneView stoneView = new StoneView(getContext());
+            stoneView.setStone(stone);
+            stoneView.setStoneBitmap(stone.color == StoneColor.BLACK ? mBlackStoneBitmap : mWhiteStoneBitmap);
+            stoneView.setDrawNumber(mIsDrawNumber);
+            stoneView.setStoneSpace(mStoneSpace);
+            params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
+            params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
+            stoneView.setLayoutParams(params);
+            addView(stoneView);
 
-        mStoneViewMap.put(stone, stoneView);
-        return stoneView;
+            mStoneViewMap.put(stone, stoneView);
+        }
+        return mStoneViewMap.get(stone);
     }
 
     /**
@@ -235,19 +331,33 @@ public class BoardView extends RelativeLayout {
      * @return
      */
     public StoneView removeStone(Stone stone) {
+        return removeStone(stone, false);
+    }
+
+    /**
+     * 删除棋子
+     *
+     * @param stone
+     * @param animate
+     * @return
+     */
+    public StoneView removeStone(Stone stone, boolean animate) {
         StoneView stoneView = mStoneViewMap.get(stone);
         if (stoneView != null) {
-            // 棋子消失动画
-            ObjectAnimator animator = ObjectAnimator.ofFloat(stoneView, "alpha", stoneView.getAlpha(), 0f);
-            animator.setDuration(200);
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation, boolean isReverse) {
-                    removeView(stoneView);
-                    mStoneViewMap.remove(stone);
-                }
-            });
-            animator.start();
+            mStoneViewMap.remove(stone);
+            if (animate) {
+                // 棋子消失动画
+                stoneView.animate().alpha(0f);
+                stoneView.animate().setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        removeView(stoneView);
+                    }
+                });
+            } else {
+                removeView(stoneView);
+            }
         }
         return stoneView;
     }
@@ -276,6 +386,9 @@ public class BoardView extends RelativeLayout {
         // 绘制棋盘
         drawBoard(canvas);
 
+        // 绘制棋子阴影
+        drawStoneShadow(canvas);
+
         // 绘制高亮交叉点
         drawHighlightIntersection(canvas);
     }
@@ -287,13 +400,18 @@ public class BoardView extends RelativeLayout {
      */
     private void drawBoard(Canvas canvas) {
         int coordinateTextSize = mSquareSize / 2;
-
-        mBoardPaint.setColor(Color.WHITE);
-        mBoardPaint.setStyle(Paint.Style.FILL);
         mBoardPaint.setTextSize(coordinateTextSize);
+        mBoardPaint.setStyle(Paint.Style.FILL);
 
-        // 清屏
-        canvas.drawRect(0, 0, getWidth(), getHeight(), mBoardPaint);
+        if (mBoardBitmap != null && !mBoardBitmap.isRecycled()) {
+            canvas.drawBitmap(mBoardBitmap,
+                    new Rect(0, 0, mBoardBitmap.getWidth(), mBoardBitmap.getHeight()),
+                    new Rect(0, 0, getWidth(), getHeight()),
+                    mBoardPaint);
+        } else {
+            mBoardPaint.setColor(Color.WHITE);
+            canvas.drawRect(0, 0, getWidth(), getHeight(), mBoardPaint);
+        }
 
         mBoardPaint.setColor(Color.BLACK);
 
@@ -315,11 +433,31 @@ public class BoardView extends RelativeLayout {
                 width = mBoardPaint.measureText(abscissa);
                 canvas.drawText(abscissa, i * mSquareSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
             }
+            for (int i = 0; i < mBoardSize; i++) {
+                char cc = (char) (c + i);
+                String abscissa;
+                float width;
+                if (cc >= 'I') {
+                    abscissa = "" + (char) (cc + 1);
+                } else {
+                    abscissa = "" + cc;
+                }
+                width = mBoardPaint.measureText(abscissa);
+                canvas.drawText(abscissa, i * mSquareSize - width / 2, mBoardSize * mSquareSize - coordinateTextSize / 2, mBoardPaint);
+            }
+
             // 纵坐标
             for (int i = 0; i < mBoardSize; i++) {
                 String ordinate = "" + (i + 1);
                 float width = mBoardPaint.measureText(ordinate);
-                canvas.drawText(ordinate, -mSquareSize / 2 - width / 2, (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+                canvas.drawText(ordinate, -mSquareSize / 2 - width / 2,
+                        (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+            }
+            for (int i = 0; i < mBoardSize; i++) {
+                String ordinate = "" + (i + 1);
+                float width = mBoardPaint.measureText(ordinate);
+                canvas.drawText(ordinate, mBoardSize * mSquareSize - mSquareSize / 2 - width / 2,
+                        (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
             }
         }
 
@@ -342,17 +480,17 @@ public class BoardView extends RelativeLayout {
                 switch (mBoardSize) {
                     case 9:
                         if ((i == 2 || i == 6) && (j == 2 || j == 6) || (i == 4 && j == 4)) {
-                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, mSquareSize / 8, mBoardPaint);
                         }
                         break;
                     case 13:
                         if ((i == 3 || i == 9) && (j == 3 || j == 9) || (i == 6 && j == 6)) {
-                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, mSquareSize / 8, mBoardPaint);
                         }
                         break;
                     case 19:
                         if ((i == 3 || i == 9 || i == 15) && (j == 3 || j == 9 || j == 15)) {
-                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, 8, mBoardPaint);
+                            canvas.drawCircle(i * mSquareSize, j * mSquareSize, mSquareSize / 8, mBoardPaint);
                         }
                         break;
                 }
@@ -360,6 +498,37 @@ public class BoardView extends RelativeLayout {
         }
 
         canvas.translate(-mSquareSize, -mSquareSize);
+    }
+
+    /**
+     * 绘制棋子阴影
+     *
+     * @param canvas
+     */
+    private void drawStoneShadow(Canvas canvas) {
+        for (StoneView view : mStoneViewMap.values()) {
+            Bitmap shadowBitmap = null;
+            if (view.getStone().color == StoneColor.BLACK) {
+                if (mBlackStoneShadowBitmap != null && !mBlackStoneShadowBitmap.isRecycled()) {
+                    shadowBitmap = mBlackStoneShadowBitmap;
+                }
+            } else {
+                if (mWhiteStoneShadowBitmap != null && !mWhiteStoneShadowBitmap.isRecycled()) {
+                    shadowBitmap = mWhiteStoneShadowBitmap;
+                }
+            }
+            if (shadowBitmap != null && !shadowBitmap.isRecycled()) {
+                int shadowOffsetX = Math.round((mSquareSize - mStoneSpace) / 3f);
+                int shadowOffsetY = Math.round((mSquareSize - mStoneSpace) / 3f);
+                canvas.drawBitmap(shadowBitmap,
+                        new Rect(0, 0, shadowBitmap.getWidth(), shadowBitmap.getHeight()),
+                        new Rect(view.getLeft() - Math.round(shadowOffsetX * 2 / 5f),
+                                view.getTop() - Math.round(shadowOffsetY / 5f),
+                                view.getRight() + Math.round(shadowOffsetX * 3 / 5f),
+                                view.getBottom() + Math.round(shadowOffsetY * 4 / 5f)),
+                        mBoardPaint);
+            }
+        }
     }
 
     /**

@@ -3,8 +3,8 @@ package cn.ezandroid.goboard.demo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import cn.ezandroid.goboard.BoardView;
-import cn.ezandroid.goboard.Intersection;
+import cn.ezandroid.lib.board.BoardView;
+import cn.ezandroid.lib.board.Intersection;
 
 public class MainActivity extends AppCompatActivity {
 

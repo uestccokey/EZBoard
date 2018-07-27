@@ -1,4 +1,6 @@
-package cn.ezandroid.goboard;
+package cn.ezandroid.lib.board;
+
+import java.io.Serializable;
 
 /**
  * 交叉点模型
@@ -6,7 +8,9 @@ package cn.ezandroid.goboard;
  * @author like
  * @date 2017-12-20
  */
-public class Intersection implements Cloneable {
+public class Intersection implements Cloneable, Serializable {
+
+    public static final long serialVersionUID = 42L;
 
     public int x;
     public int y;
