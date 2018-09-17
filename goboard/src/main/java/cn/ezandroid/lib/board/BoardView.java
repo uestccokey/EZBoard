@@ -36,6 +36,8 @@ public class BoardView extends RelativeLayout {
 
     private Intersection mHighlightIntersection;
 
+    private boolean mIsShowHighlightLine = true;
+
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
 
     private Bitmap mBoardBitmap; // 棋盘样式
@@ -58,14 +60,44 @@ public class BoardView extends RelativeLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(getDefaultSize(0, widthMeasureSpec), getDefaultSize(0, heightMeasureSpec));
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+
+        int heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        if (widthMeasureSpec == 0) {
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(heightSpecSize, MeasureSpec.AT_MOST);
+
+            widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
+            widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
+        }
+
+        if (heightMeasureSpec == 0) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(widthSpecSize, MeasureSpec.AT_MOST);
+
+            heightSpecMode = MeasureSpec.getMode(heightMeasureSpec);
+            heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+        }
+
+        if (widthSpecMode == MeasureSpec.AT_MOST && heightSpecMode == MeasureSpec.AT_MOST) {
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = getResources().getDisplayMetrics().heightPixels;
+            int min = Math.min(width, height);
+            setMeasuredDimension(min, min);
+        } else if (widthSpecMode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(heightSpecSize, heightSpecSize);
+        } else if (heightSpecMode == MeasureSpec.AT_MOST) {
+            setMeasuredDimension(widthSpecSize, widthSpecSize);
+        } else {
+            int min = Math.min(widthSpecSize, heightSpecSize);
+            setMeasuredDimension(min, min);
+        }
 
         int childWidthSize = getMeasuredWidth();
         int childHeightSize = getMeasuredHeight();
         int minSize = Math.min(childWidthSize, childHeightSize);
-        heightMeasureSpec = widthMeasureSpec = MeasureSpec.makeMeasureSpec(minSize, MeasureSpec.EXACTLY);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-
         mSquareSize = Math.round(minSize * 1f / (mBoardSize + 1));
     }
 
@@ -92,7 +124,7 @@ public class BoardView extends RelativeLayout {
      */
     public void setBoardBitmap(Bitmap bitmap) {
         mBoardBitmap = bitmap;
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -107,7 +139,7 @@ public class BoardView extends RelativeLayout {
                 view.setStoneBitmap(mBlackStoneBitmap);
             }
         }
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -122,7 +154,7 @@ public class BoardView extends RelativeLayout {
                 view.setStoneBitmap(mWhiteStoneBitmap);
             }
         }
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -132,7 +164,7 @@ public class BoardView extends RelativeLayout {
      */
     public void setBlackStoneShadowBitmap(Bitmap stoneShadowBitmap) {
         mBlackStoneShadowBitmap = stoneShadowBitmap;
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -142,7 +174,7 @@ public class BoardView extends RelativeLayout {
      */
     public void setWhiteStoneShadowBitmap(Bitmap stoneShadowBitmap) {
         mWhiteStoneShadowBitmap = stoneShadowBitmap;
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -153,7 +185,7 @@ public class BoardView extends RelativeLayout {
     public void setStoneSpace(int stoneSpace) {
         if (mStoneSpace != stoneSpace) {
             mStoneSpace = stoneSpace;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -197,7 +229,7 @@ public class BoardView extends RelativeLayout {
     public void setSquareSize(int squareSize) {
         if (mSquareSize != squareSize) {
             mSquareSize = squareSize;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -218,7 +250,7 @@ public class BoardView extends RelativeLayout {
     public void setBoardSize(int boardSize) {
         if (mBoardSize != boardSize) {
             mBoardSize = boardSize;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -239,7 +271,7 @@ public class BoardView extends RelativeLayout {
     public void setShowCoordinate(boolean isShowCoordinate) {
         if (mIsShowCoordinate != isShowCoordinate) {
             mIsShowCoordinate = isShowCoordinate;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -288,7 +320,7 @@ public class BoardView extends RelativeLayout {
      */
     public void setHighlightIntersection(Intersection intersection) {
         mHighlightIntersection = intersection;
-        invalidate();
+        postInvalidate();
     }
 
     /**
@@ -298,6 +330,24 @@ public class BoardView extends RelativeLayout {
      */
     public Intersection getHighlightIntersection() {
         return mHighlightIntersection;
+    }
+
+    /**
+     * 设置显示高亮辅助线
+     *
+     * @param showHighlightLine
+     */
+    public void setShowHighlightLine(boolean showHighlightLine) {
+        mIsShowHighlightLine = showHighlightLine;
+    }
+
+    /**
+     * 是否显示高亮辅助线
+     *
+     * @return
+     */
+    public boolean isShowHighlightLine() {
+        return mIsShowHighlightLine;
     }
 
     /**
@@ -380,14 +430,14 @@ public class BoardView extends RelativeLayout {
     }
 
     @Override
-    public void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
+    public void draw(Canvas canvas) {
         // 绘制棋盘
         drawBoard(canvas);
 
         // 绘制棋子阴影
         drawStoneShadow(canvas);
+
+        super.draw(canvas);
 
         // 绘制高亮交叉点
         drawHighlightIntersection(canvas);
@@ -549,6 +599,17 @@ public class BoardView extends RelativeLayout {
             int right = Math.round((mHighlightIntersection.x + 0.5f) * mSquareSize);
             int bottom = Math.round((mHighlightIntersection.y + 0.5f) * mSquareSize);
             canvas.drawRect(left, top, right, bottom, mBoardPaint);
+
+            if (mIsShowHighlightLine) {
+                canvas.drawLine(0, mHighlightIntersection.y * mSquareSize, left,
+                        mHighlightIntersection.y * mSquareSize, mBoardPaint);
+                canvas.drawLine(right, mHighlightIntersection.y * mSquareSize, mSquareSize * (mBoardSize - 1),
+                        mHighlightIntersection.y * mSquareSize, mBoardPaint);
+                canvas.drawLine(mHighlightIntersection.x * mSquareSize, 0, mHighlightIntersection.x * mSquareSize,
+                        top, mBoardPaint);
+                canvas.drawLine(mHighlightIntersection.x * mSquareSize, bottom, mHighlightIntersection.x * mSquareSize,
+                        mSquareSize * (mBoardSize - 1), mBoardPaint);
+            }
 
             canvas.translate(-mSquareSize, -mSquareSize);
         }
