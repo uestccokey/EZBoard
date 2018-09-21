@@ -197,7 +197,7 @@ public class StoneView extends TextView {
      * @param canvas
      */
     private void drawNumber(Canvas canvas) {
-        if (mIsHighlight || !mIsDrawNumber) {
+        if (mIsHighlight || !mIsDrawNumber || mStone.number <= 0) {
             return;
         }
         float textSize;
