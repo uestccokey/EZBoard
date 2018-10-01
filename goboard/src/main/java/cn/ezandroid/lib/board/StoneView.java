@@ -1,13 +1,18 @@
 package cn.ezandroid.lib.board;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
+
+import cn.ezandroid.lib.board.theme.GoTheme;
+
+import static cn.ezandroid.lib.board.theme.GoTheme.INVALID_VALUE;
 
 /**
  * 棋子显示控件
@@ -27,7 +32,8 @@ public class StoneView extends TextView {
 
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
 
-    private Bitmap mStoneBitmap; // 棋子样式
+    private GoTheme.StoneTheme mStoneTheme; // 棋子主题样式
+    private GoTheme.MarkTheme mMarkTheme; // 标记主题样式
 
     public StoneView(Context context) {
         super(context);
@@ -40,18 +46,33 @@ public class StoneView extends TextView {
     }
 
     private void initStone() {
-        this.mStonePaint = new Paint();
-        this.mStonePaint.setAntiAlias(true);
+        mStonePaint = new Paint();
+        mStonePaint.setAntiAlias(true);
+        mStonePaint.setFilterBitmap(true);
     }
 
     /**
-     * 设置棋子样式
+     * 设置棋子主题
      *
-     * @param bitmap
+     * @param stoneTheme
      */
-    public void setStoneBitmap(Bitmap bitmap) {
-        mStoneBitmap = bitmap;
-        invalidate();
+    public void setStoneTheme(GoTheme.StoneTheme stoneTheme) {
+        if (mStoneTheme != stoneTheme) {
+            mStoneTheme = stoneTheme;
+            postInvalidate();
+        }
+    }
+
+    /**
+     * 设置标记主题
+     *
+     * @param markTheme
+     */
+    public void setMarkTheme(GoTheme.MarkTheme markTheme) {
+        if (mMarkTheme != markTheme) {
+            mMarkTheme = markTheme;
+            postInvalidate();
+        }
     }
 
     /**
@@ -62,7 +83,7 @@ public class StoneView extends TextView {
     public void setDrawNumber(boolean drawNumber) {
         if (mIsDrawNumber != drawNumber) {
             mIsDrawNumber = drawNumber;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -83,7 +104,7 @@ public class StoneView extends TextView {
     public void setHighlight(boolean highlight) {
         if (mIsHighlight != highlight) {
             mIsHighlight = highlight;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -104,7 +125,7 @@ public class StoneView extends TextView {
     public void setStoneSpace(int stoneSpace) {
         if (mStoneSpace != stoneSpace) {
             mStoneSpace = stoneSpace;
-            invalidate();
+            postInvalidate();
         }
     }
 
@@ -155,26 +176,25 @@ public class StoneView extends TextView {
      * @param canvas
      */
     private void drawStone(Canvas canvas) {
-        if (mStoneBitmap != null && !mStoneBitmap.isRecycled()) {
-            canvas.drawBitmap(mStoneBitmap,
-                    new Rect(0, 0, mStoneBitmap.getWidth(), mStoneBitmap.getHeight()),
-                    new Rect(mStoneSpace / 2, mStoneSpace / 2, getWidth() - mStoneSpace / 2, getHeight() - mStoneSpace / 2),
-                    mStonePaint);
+        // 绘制棋子
+        Drawable drawable = mStoneTheme.getRandomTexture();
+        if (drawable instanceof ColorDrawable) {
+            // 纯色棋子
+            mStonePaint.setColor(((ColorDrawable) drawable).getColor());
+            mStonePaint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
         } else {
-            if (mStone.color == StoneColor.BLACK) {
-                mStonePaint.setColor(Color.BLACK);
-                mStonePaint.setStyle(Paint.Style.FILL);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
-            } else {
-                mStonePaint.setColor(Color.WHITE);
-                mStonePaint.setStyle(Paint.Style.FILL);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
+            // 图片棋子等
+            drawable.setBounds(0, 0, getWidth(), getHeight());
+            drawable.draw(canvas);
+        }
 
-                mStonePaint.setColor(Color.BLACK);
-                mStonePaint.setStyle(Paint.Style.STROKE);
-                mStonePaint.setStrokeWidth(2);
-                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
-            }
+        // 绘制棋子边框
+        if (mStoneTheme.getBorderColor() != INVALID_VALUE) {
+            mStonePaint.setColor(mStoneTheme.getBorderColor());
+            mStonePaint.setStyle(Paint.Style.STROKE);
+            mStonePaint.setStrokeWidth(mStoneTheme.mBorderWidth);
+            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
         }
     }
 
@@ -185,7 +205,7 @@ public class StoneView extends TextView {
      */
     private void drawHighlight(Canvas canvas) {
         if (mIsHighlight) {
-            mStonePaint.setColor(Color.RED);
+            mStonePaint.setColor(mMarkTheme.getHighLightColor());
             mStonePaint.setStyle(Paint.Style.FILL);
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 6, mStonePaint);
         }

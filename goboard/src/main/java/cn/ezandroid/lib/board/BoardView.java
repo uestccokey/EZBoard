@@ -4,15 +4,20 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import cn.ezandroid.lib.board.theme.GoTheme;
+import cn.ezandroid.lib.board.theme.MonochromeTheme;
 
 /**
  * 棋盘显示控件
@@ -36,17 +41,13 @@ public class BoardView extends RelativeLayout {
 
     private Intersection mHighlightIntersection;
 
-    private boolean mIsShowHighlightLine = true;
+    private boolean mIsShowHighlightCoordinates = true;
 
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
 
-    private Bitmap mBoardBitmap; // 棋盘样式
+    private GoTheme mGoTheme;
 
-    private Bitmap mBlackStoneBitmap; // 黑子样式
-    private Bitmap mWhiteStoneBitmap; // 白子样式
-
-    private Bitmap mBlackStoneShadowBitmap; // 黑子阴影图
-    private Bitmap mWhiteStoneShadowBitmap; // 白子阴影图
+    private Bitmap mShadowBitmap; // 阴影图
 
     public BoardView(Context context) {
         super(context);
@@ -104,8 +105,13 @@ public class BoardView extends RelativeLayout {
     private void initBoard() {
         mBoardPaint = new Paint();
         mBoardPaint.setAntiAlias(true);
+        mBoardPaint.setFilterBitmap(true);
 
         setWillNotDraw(false);
+
+        GoTheme.DrawableCache drawableCache = new GoTheme.DrawableCache(getContext(), (int) (Runtime.getRuntime().maxMemory() / 32));
+        mGoTheme = new MonochromeTheme(drawableCache); // 默认使用极简主题
+        mShadowBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.shadow);
     }
 
     /**
@@ -118,63 +124,32 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
-     * 设置棋盘样式
+     * 设置主题样式
      *
-     * @param bitmap
+     * @param goTheme
      */
-    public void setBoardBitmap(Bitmap bitmap) {
-        mBoardBitmap = bitmap;
-        postInvalidate();
-    }
-
-    /**
-     * 设置黑子样式
-     *
-     * @param blackStoneBitmap
-     */
-    public void setBlackStoneBitmap(Bitmap blackStoneBitmap) {
-        mBlackStoneBitmap = blackStoneBitmap;
-        for (StoneView view : mStoneViewMap.values()) {
-            if (view.getStone().color == StoneColor.BLACK) {
-                view.setStoneBitmap(mBlackStoneBitmap);
+    public void setGoTheme(GoTheme goTheme) {
+        if (mGoTheme != goTheme) {
+            mGoTheme = goTheme;
+            for (StoneView view : mStoneViewMap.values()) {
+                if (view.getStone().color == StoneColor.BLACK) {
+                    view.setStoneTheme(mGoTheme.mBlackStoneTheme);
+                } else {
+                    view.setStoneTheme(mGoTheme.mWhiteStoneTheme);
+                }
+                view.setMarkTheme(mGoTheme.mMarkTheme);
             }
+            postInvalidate();
         }
-        postInvalidate();
     }
 
     /**
-     * 设置白子样式
+     * 获取主题样式
      *
-     * @param whiteStoneBitmap
+     * @return
      */
-    public void setWhiteStoneBitmap(Bitmap whiteStoneBitmap) {
-        mWhiteStoneBitmap = whiteStoneBitmap;
-        for (StoneView view : mStoneViewMap.values()) {
-            if (view.getStone().color == StoneColor.WHITE) {
-                view.setStoneBitmap(mWhiteStoneBitmap);
-            }
-        }
-        postInvalidate();
-    }
-
-    /**
-     * 设置黑子阴影图
-     *
-     * @param stoneShadowBitmap
-     */
-    public void setBlackStoneShadowBitmap(Bitmap stoneShadowBitmap) {
-        mBlackStoneShadowBitmap = stoneShadowBitmap;
-        postInvalidate();
-    }
-
-    /**
-     * 设置白子阴影图
-     *
-     * @param stoneShadowBitmap
-     */
-    public void setWhiteStoneShadowBitmap(Bitmap stoneShadowBitmap) {
-        mWhiteStoneShadowBitmap = stoneShadowBitmap;
-        postInvalidate();
+    public GoTheme getGoTheme() {
+        return mGoTheme;
     }
 
     /**
@@ -333,21 +308,21 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
-     * 设置显示高亮辅助线
+     * 设置显示高亮坐标
      *
-     * @param showHighlightLine
+     * @param showHighlightCoordinates
      */
-    public void setShowHighlightLine(boolean showHighlightLine) {
-        mIsShowHighlightLine = showHighlightLine;
+    public void setShowHighlightCoordinates(boolean showHighlightCoordinates) {
+        mIsShowHighlightCoordinates = showHighlightCoordinates;
     }
 
     /**
-     * 是否显示高亮辅助线
+     * 是否显示高亮坐标
      *
      * @return
      */
-    public boolean isShowHighlightLine() {
-        return mIsShowHighlightLine;
+    public boolean isShowHighlightCoordinates() {
+        return mIsShowHighlightCoordinates;
     }
 
     /**
@@ -361,7 +336,8 @@ public class BoardView extends RelativeLayout {
             LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
             StoneView stoneView = new StoneView(getContext());
             stoneView.setStone(stone);
-            stoneView.setStoneBitmap(stone.color == StoneColor.BLACK ? mBlackStoneBitmap : mWhiteStoneBitmap);
+            stoneView.setStoneTheme(stone.color == StoneColor.BLACK ? mGoTheme.mBlackStoneTheme : mGoTheme.mWhiteStoneTheme);
+            stoneView.setMarkTheme(mGoTheme.mMarkTheme);
             stoneView.setDrawNumber(mIsDrawNumber);
             stoneView.setStoneSpace(mStoneSpace);
             params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
@@ -443,6 +419,52 @@ public class BoardView extends RelativeLayout {
         drawHighlightIntersection(canvas);
     }
 
+    private void drawTopCoordinate(Canvas canvas, int i) {
+        int coordinateTextSize = mSquareSize / 2;
+        char c = 'A';
+        char cc = (char) (c + i);
+        String abscissa;
+        float width;
+        if (cc >= 'I') {
+            abscissa = "" + (char) (cc + 1);
+        } else {
+            abscissa = "" + cc;
+        }
+        width = mBoardPaint.measureText(abscissa);
+        canvas.drawText(abscissa, i * mSquareSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
+    }
+
+    private void drawBottomCoordinate(Canvas canvas, int i) {
+        int coordinateTextSize = mSquareSize / 2;
+        char c = 'A';
+        char cc = (char) (c + i);
+        String abscissa;
+        float width;
+        if (cc >= 'I') {
+            abscissa = "" + (char) (cc + 1);
+        } else {
+            abscissa = "" + cc;
+        }
+        width = mBoardPaint.measureText(abscissa);
+        canvas.drawText(abscissa, i * mSquareSize - width / 2, mBoardSize * mSquareSize - coordinateTextSize / 2, mBoardPaint);
+    }
+
+    private void drawLeftCoordinate(Canvas canvas, int i) {
+        int coordinateTextSize = mSquareSize / 2;
+        String ordinate = "" + (i + 1);
+        float width = mBoardPaint.measureText(ordinate);
+        canvas.drawText(ordinate, -mSquareSize / 2 - width / 2,
+                (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+    }
+
+    private void drawRightCoordinate(Canvas canvas, int i) {
+        int coordinateTextSize = mSquareSize / 2;
+        String ordinate = "" + (i + 1);
+        float width = mBoardPaint.measureText(ordinate);
+        canvas.drawText(ordinate, mBoardSize * mSquareSize - mSquareSize / 2 - width / 2,
+                (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+    }
+
     /**
      * 绘制棋盘
      *
@@ -453,78 +475,58 @@ public class BoardView extends RelativeLayout {
         mBoardPaint.setTextSize(coordinateTextSize);
         mBoardPaint.setStyle(Paint.Style.FILL);
 
-        if (mBoardBitmap != null && !mBoardBitmap.isRecycled()) {
-            canvas.drawBitmap(mBoardBitmap,
-                    new Rect(0, 0, mBoardBitmap.getWidth(), mBoardBitmap.getHeight()),
-                    new Rect(0, 0, getWidth(), getHeight()),
-                    mBoardPaint);
-        } else {
-            mBoardPaint.setColor(Color.WHITE);
-            canvas.drawRect(0, 0, getWidth(), getHeight(), mBoardPaint);
-        }
-
-        mBoardPaint.setColor(Color.BLACK);
+        Drawable drawable = mGoTheme.mBoardTheme.getBackground();
+        drawable.setBounds(0, 0, getWidth(), getHeight());
+        drawable.draw(canvas);
 
         canvas.translate(mSquareSize, mSquareSize);
 
         // 1，绘制棋盘坐标
         if (mIsShowCoordinate) {
+            mBoardPaint.setColor(mGoTheme.mBoardTheme.getBorderColor());
             // 横坐标
-            char c = 'A';
             for (int i = 0; i < mBoardSize; i++) {
-                char cc = (char) (c + i);
-                String abscissa;
-                float width;
-                if (cc >= 'I') {
-                    abscissa = "" + (char) (cc + 1);
-                } else {
-                    abscissa = "" + cc;
-                }
-                width = mBoardPaint.measureText(abscissa);
-                canvas.drawText(abscissa, i * mSquareSize - width / 2, -coordinateTextSize / 2, mBoardPaint);
+                drawTopCoordinate(canvas, i);
             }
             for (int i = 0; i < mBoardSize; i++) {
-                char cc = (char) (c + i);
-                String abscissa;
-                float width;
-                if (cc >= 'I') {
-                    abscissa = "" + (char) (cc + 1);
-                } else {
-                    abscissa = "" + cc;
-                }
-                width = mBoardPaint.measureText(abscissa);
-                canvas.drawText(abscissa, i * mSquareSize - width / 2, mBoardSize * mSquareSize - coordinateTextSize / 2, mBoardPaint);
+                drawBottomCoordinate(canvas, i);
             }
 
             // 纵坐标
             for (int i = 0; i < mBoardSize; i++) {
-                String ordinate = "" + (i + 1);
-                float width = mBoardPaint.measureText(ordinate);
-                canvas.drawText(ordinate, -mSquareSize / 2 - width / 2,
-                        (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+                drawLeftCoordinate(canvas, i);
             }
             for (int i = 0; i < mBoardSize; i++) {
-                String ordinate = "" + (i + 1);
-                float width = mBoardPaint.measureText(ordinate);
-                canvas.drawText(ordinate, mBoardSize * mSquareSize - mSquareSize / 2 - width / 2,
-                        (mBoardSize - i - 1) * mSquareSize + coordinateTextSize / 2, mBoardPaint);
+                drawRightCoordinate(canvas, i);
             }
+        }
+
+        // 绘制高亮坐标
+        if (mIsShowHighlightCoordinates && mHighlightIntersection != null) {
+            mBoardPaint.setColor(Color.RED);
+            // 横坐标
+            drawTopCoordinate(canvas, mHighlightIntersection.x);
+            drawBottomCoordinate(canvas, mHighlightIntersection.x);
+            // 纵坐标
+            drawLeftCoordinate(canvas, mBoardSize - mHighlightIntersection.y - 1);
+            drawRightCoordinate(canvas, mBoardSize - mHighlightIntersection.y - 1);
         }
 
         // 2，绘制棋盘线
         for (int i = 0; i < mBoardSize; i++) {
             if (i == 0 || i == mBoardSize - 1) {
-                mBoardPaint.setStrokeWidth(3.0f);
+                mBoardPaint.setColor(mGoTheme.mBoardTheme.getBorderColor());
+                mBoardPaint.setStrokeWidth(mGoTheme.mBoardTheme.mBorderWidth);
             } else {
-                mBoardPaint.setStrokeWidth(1.5f);
+                mBoardPaint.setColor(mGoTheme.mBoardTheme.getLineColor());
+                mBoardPaint.setStrokeWidth(mGoTheme.mBoardTheme.mLineWidth);
             }
-            canvas.drawLine(0, i * mSquareSize, mSquareSize * (mBoardSize - 1),
-                    i * mSquareSize, mBoardPaint);
-            canvas.drawLine(i * mSquareSize, 0, i * mSquareSize,
-                    mSquareSize * (mBoardSize - 1), mBoardPaint);
+            canvas.drawLine(0, i * mSquareSize, mSquareSize * (mBoardSize - 1), i * mSquareSize, mBoardPaint);
+            canvas.drawLine(i * mSquareSize, 0, i * mSquareSize, mSquareSize * (mBoardSize - 1), mBoardPaint);
         }
 
         // 3，绘制星位
+        mBoardPaint.setColor(mGoTheme.mBoardTheme.getLineColor());
         for (int i = 0; i < mBoardSize; i++) {
             for (int j = 0; j < mBoardSize; j++) {
                 switch (mBoardSize) {
@@ -556,22 +558,15 @@ public class BoardView extends RelativeLayout {
      * @param canvas
      */
     private void drawStoneShadow(Canvas canvas) {
+        if (!mGoTheme.mBoardTheme.mStoneShadowOn) {
+            return;
+        }
         for (StoneView view : mStoneViewMap.values()) {
-            Bitmap shadowBitmap = null;
-            if (view.getStone().color == StoneColor.BLACK) {
-                if (mBlackStoneShadowBitmap != null && !mBlackStoneShadowBitmap.isRecycled()) {
-                    shadowBitmap = mBlackStoneShadowBitmap;
-                }
-            } else {
-                if (mWhiteStoneShadowBitmap != null && !mWhiteStoneShadowBitmap.isRecycled()) {
-                    shadowBitmap = mWhiteStoneShadowBitmap;
-                }
-            }
-            if (shadowBitmap != null && !shadowBitmap.isRecycled()) {
+            if (mShadowBitmap != null && !mShadowBitmap.isRecycled()) {
                 int shadowOffsetX = Math.round((mSquareSize - mStoneSpace) / 3f);
                 int shadowOffsetY = Math.round((mSquareSize - mStoneSpace) / 3f);
-                canvas.drawBitmap(shadowBitmap,
-                        new Rect(0, 0, shadowBitmap.getWidth(), shadowBitmap.getHeight()),
+                canvas.drawBitmap(mShadowBitmap,
+                        new Rect(0, 0, mShadowBitmap.getWidth(), mShadowBitmap.getHeight()),
                         new Rect(view.getLeft() - Math.round(shadowOffsetX * 2 / 5f),
                                 view.getTop() - Math.round(shadowOffsetY / 5f),
                                 view.getRight() + Math.round(shadowOffsetX * 3 / 5f),
@@ -599,17 +594,6 @@ public class BoardView extends RelativeLayout {
             int right = Math.round((mHighlightIntersection.x + 0.5f) * mSquareSize);
             int bottom = Math.round((mHighlightIntersection.y + 0.5f) * mSquareSize);
             canvas.drawRect(left, top, right, bottom, mBoardPaint);
-
-            if (mIsShowHighlightLine) {
-                canvas.drawLine(0, mHighlightIntersection.y * mSquareSize, left,
-                        mHighlightIntersection.y * mSquareSize, mBoardPaint);
-                canvas.drawLine(right, mHighlightIntersection.y * mSquareSize, mSquareSize * (mBoardSize - 1),
-                        mHighlightIntersection.y * mSquareSize, mBoardPaint);
-                canvas.drawLine(mHighlightIntersection.x * mSquareSize, 0, mHighlightIntersection.x * mSquareSize,
-                        top, mBoardPaint);
-                canvas.drawLine(mHighlightIntersection.x * mSquareSize, bottom, mHighlightIntersection.x * mSquareSize,
-                        mSquareSize * (mBoardSize - 1), mBoardPaint);
-            }
 
             canvas.translate(-mSquareSize, -mSquareSize);
         }
