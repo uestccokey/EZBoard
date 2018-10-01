@@ -57,5 +57,5 @@ dependencies {
 
 //    implementation 'org.tensorflow:tensorflow-android:1.10.0'
 
-    implementation project(':goboard')
+    implementation project(':ezboard')
 }
