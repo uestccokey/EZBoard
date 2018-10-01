@@ -33,5 +33,5 @@ publish {
     artifactId = 'GoBoard' // 项目名称
     publishVersion = rootProject.ext.sdkVersionName // 版本号
     desc = '' // 描述
-    website = 'https://github.com/uestccokey/GoBoard'// 网站
+    website = 'https://github.com/uestccokey/EZBoard'// 网站
 }
