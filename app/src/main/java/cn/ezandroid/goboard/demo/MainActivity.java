@@ -9,6 +9,7 @@ import cn.ezandroid.lib.board.BoardView;
 import cn.ezandroid.lib.board.Intersection;
 import cn.ezandroid.lib.board.Stone;
 import cn.ezandroid.lib.board.StoneColor;
+import cn.ezandroid.lib.board.sound.SoundManager;
 import cn.ezandroid.lib.board.theme.GoTheme;
 import cn.ezandroid.lib.board.theme.WoodTheme;
 
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
                             mBoardView.addStone(stone);
                             mBoardView.setHighlightIntersection(null);
                             mIsCurrentBlack = !mIsCurrentBlack;
+
+                            SoundManager.getInstance().playSound(MainActivity.this, mBoardView.getGoTheme().mSoundEffect.mMove);
                             return false;
                         } else {
                             mBoardView.setHighlightIntersection(nearest);

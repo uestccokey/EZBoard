@@ -109,9 +109,14 @@ public class BoardView extends RelativeLayout {
 
         setWillNotDraw(false);
 
-        GoTheme.DrawableCache drawableCache = new GoTheme.DrawableCache(getContext(), (int) (Runtime.getRuntime().maxMemory() / 32));
-        mGoTheme = new MonochromeTheme(drawableCache); // 默认使用极简主题
         mShadowBitmap = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.shadow);
+    }
+
+    private void checkGoTheme() {
+        if (mGoTheme == null) {
+            GoTheme.DrawableCache drawableCache = new GoTheme.DrawableCache(getContext(), (int) (Runtime.getRuntime().maxMemory() / 32));
+            mGoTheme = new MonochromeTheme(drawableCache); // 默认使用极简主题
+        }
     }
 
     /**
@@ -333,6 +338,7 @@ public class BoardView extends RelativeLayout {
      */
     public StoneView addStone(Stone stone) {
         if (!mStoneViewMap.containsKey(stone)) {
+            checkGoTheme();
             LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
             StoneView stoneView = new StoneView(getContext());
             stoneView.setStone(stone);
@@ -471,6 +477,7 @@ public class BoardView extends RelativeLayout {
      * @param canvas
      */
     private void drawBoard(Canvas canvas) {
+        checkGoTheme();
         int coordinateTextSize = mSquareSize / 2;
         mBoardPaint.setTextSize(coordinateTextSize);
         mBoardPaint.setStyle(Paint.Style.FILL);
