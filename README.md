@@ -1,4 +1,4 @@
-# GoBoard
+# EZBoard
 
 A simple and beautiful go board display library.(一个简单美观的围棋棋盘显示库。)
 
