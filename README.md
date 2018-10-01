@@ -9,9 +9,9 @@ A simple and beautiful go board display library.(一个简单美观的围棋棋�
 #### Gradle
 ``` gradle
 dependencies {
-    compile 'cn.ezandroid:GoBoard:1.0.0' // Gradle version < 3.0
+    compile 'cn.ezandroid:GoBoard:{Latest version}' // Gradle version < 3.0
     // or
-    implementation 'cn.ezandroid:GoBoard:1.0.0' // Gradle version >= 3.0
+    implementation 'cn.ezandroid:GoBoard:{Latest version}' // Gradle version >= 3.0
 }
 ```
 
