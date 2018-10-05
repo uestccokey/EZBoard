@@ -100,6 +100,17 @@ public class BoardView extends RelativeLayout {
         int childHeightSize = getMeasuredHeight();
         int minSize = Math.min(childWidthSize, childHeightSize);
         mSquareSize = Math.round(minSize * 1f / (mBoardSize + 1));
+
+        for (StoneView view : mStoneViewMap.values()) {
+            Stone stone = view.getStone();
+
+            LayoutParams params = (LayoutParams) view.getLayoutParams();
+            params.width = mSquareSize;
+            params.height = mSquareSize;
+            params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
+            params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
+            view.setLayoutParams(params);
+        }
     }
 
     private void initBoard() {
@@ -339,13 +350,15 @@ public class BoardView extends RelativeLayout {
     public StoneView addStone(Stone stone) {
         if (!mStoneViewMap.containsKey(stone)) {
             checkGoTheme();
-            LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
+
             StoneView stoneView = new StoneView(getContext());
             stoneView.setStone(stone);
             stoneView.setStoneTheme(stone.color == StoneColor.BLACK ? mGoTheme.mBlackStoneTheme : mGoTheme.mWhiteStoneTheme);
             stoneView.setMarkTheme(mGoTheme.mMarkTheme);
             stoneView.setDrawNumber(mIsDrawNumber);
             stoneView.setStoneSpace(mStoneSpace);
+
+            LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
             params.leftMargin = Math.round((stone.intersection.x + 0.5f) * mSquareSize);
             params.topMargin = Math.round((stone.intersection.y + 0.5f) * mSquareSize);
             stoneView.setLayoutParams(params);
