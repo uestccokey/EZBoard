@@ -13,7 +13,9 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.ezandroid.lib.board.theme.GoTheme;
@@ -43,11 +45,31 @@ public class BoardView extends RelativeLayout {
 
     private boolean mIsShowHighlightCoordinates = true;
 
-    private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+    public static final int DRAW_NUMBER_STYLE_DISABLE = 0;
+    public static final int DRAW_NUMBER_STYLE_LAST = 1;
+    public static final int DRAW_NUMBER_STYLE_ALL = 2;
+
+    private int mDrawNumberStyle = DRAW_NUMBER_STYLE_DISABLE;
 
     private GoTheme mGoTheme;
 
     private Bitmap mShadowBitmap; // 阴影图
+
+    private List<OnBoardChangeListener> mBoardChangeListeners = new ArrayList<>();
+
+    public interface OnBoardChangeListener {
+
+        void onBoardChanged();
+    }
+
+    private List<OnHighlightStateChangeListener> mHighlightStateChangeListeners = new ArrayList<>();
+
+    public interface OnHighlightStateChangeListener {
+
+        void onHighlightIntersectionChanged();
+
+        void onHighlightStoneChanged();
+    }
 
     public BoardView(Context context) {
         super(context);
@@ -57,6 +79,26 @@ public class BoardView extends RelativeLayout {
     public BoardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initBoard();
+    }
+
+    public void addOnBoardChangeListener(OnBoardChangeListener listener) {
+        if (!mBoardChangeListeners.contains(listener)) {
+            mBoardChangeListeners.add(listener);
+        }
+    }
+
+    public void removeOnBoardChangeListener(OnBoardChangeListener listener) {
+        mBoardChangeListeners.remove(listener);
+    }
+
+    public void addOnHighlightStateChangeListener(OnHighlightStateChangeListener listener) {
+        if (!mHighlightStateChangeListeners.contains(listener)) {
+            mHighlightStateChangeListeners.add(listener);
+        }
+    }
+
+    public void removeOnHighlightStateChangeListener(OnHighlightStateChangeListener listener) {
+        mHighlightStateChangeListeners.remove(listener);
     }
 
     @Override
@@ -130,6 +172,30 @@ public class BoardView extends RelativeLayout {
         }
     }
 
+    private void notifyBoardChanged() {
+        for (OnBoardChangeListener listener : mBoardChangeListeners) {
+            if (listener != null) {
+                listener.onBoardChanged();
+            }
+        }
+    }
+
+    private void notifyHighlightIntersectionChanged() {
+        for (OnHighlightStateChangeListener listener : mHighlightStateChangeListeners) {
+            if (listener != null) {
+                listener.onHighlightIntersectionChanged();
+            }
+        }
+    }
+
+    private void notifyHighlightStoneChanged() {
+        for (OnHighlightStateChangeListener listener : mHighlightStateChangeListeners) {
+            if (listener != null) {
+                listener.onHighlightStoneChanged();
+            }
+        }
+    }
+
     /**
      * 重置棋盘
      */
@@ -137,6 +203,8 @@ public class BoardView extends RelativeLayout {
         mStoneViewMap.clear();
         mHighlightIntersection = null;
         removeAllViews();
+
+        notifyBoardChanged();
     }
 
     /**
@@ -190,26 +258,50 @@ public class BoardView extends RelativeLayout {
     }
 
     /**
-     * 设置是否绘制棋子手数
+     * 设置棋子手数显示方式
      *
-     * @param drawNumber
+     * @param drawNumberShow
      */
-    public void setDrawNumber(boolean drawNumber) {
-        if (mIsDrawNumber != drawNumber) {
-            mIsDrawNumber = drawNumber;
-            for (StoneView view : mStoneViewMap.values()) {
-                view.setDrawNumber(mIsDrawNumber);
+    public void setDrawNumberStyle(int drawNumberShow) {
+        if (mDrawNumberStyle != drawNumberShow) {
+            mDrawNumberStyle = drawNumberShow;
+            switch (drawNumberShow) {
+                case DRAW_NUMBER_STYLE_DISABLE:
+                    for (StoneView view : mStoneViewMap.values()) {
+                        view.setDrawNumber(false);
+                    }
+                    break;
+                case DRAW_NUMBER_STYLE_LAST:
+                    int lastNumber = -1;
+                    StoneView lastView = null;
+                    for (StoneView view : mStoneViewMap.values()) {
+                        int number = view.getStone().number;
+                        if (number > lastNumber) {
+                            lastNumber = number;
+                            lastView = view;
+                        }
+                        view.setDrawNumber(false);
+                    }
+                    if (lastView != null) {
+                        lastView.setDrawNumber(true);
+                    }
+                    break;
+                case DRAW_NUMBER_STYLE_ALL:
+                    for (StoneView view : mStoneViewMap.values()) {
+                        view.setDrawNumber(true);
+                    }
+                    break;
             }
         }
     }
 
     /**
-     * 获取是否绘制棋子手数
+     * 获取棋子手数显示方式
      *
      * @return
      */
-    public boolean isDrawNumber() {
-        return mIsDrawNumber;
+    public int getDrawNumberStyle() {
+        return mDrawNumberStyle;
     }
 
     /**
@@ -288,6 +380,7 @@ public class BoardView extends RelativeLayout {
                 view.setHighlight(false);
             }
         }
+        notifyHighlightStoneChanged();
     }
 
     /**
@@ -312,6 +405,7 @@ public class BoardView extends RelativeLayout {
     public void setHighlightIntersection(Intersection intersection) {
         mHighlightIntersection = intersection;
         postInvalidate();
+        notifyHighlightIntersectionChanged();
     }
 
     /**
@@ -355,7 +449,6 @@ public class BoardView extends RelativeLayout {
             stoneView.setStone(stone);
             stoneView.setStoneTheme(stone.color == StoneColor.BLACK ? mGoTheme.mBlackStoneTheme : mGoTheme.mWhiteStoneTheme);
             stoneView.setMarkTheme(mGoTheme.mMarkTheme);
-            stoneView.setDrawNumber(mIsDrawNumber);
             stoneView.setStoneSpace(mStoneSpace);
 
             LayoutParams params = new LayoutParams(mSquareSize, mSquareSize);
@@ -365,6 +458,32 @@ public class BoardView extends RelativeLayout {
             addView(stoneView);
 
             mStoneViewMap.put(stone, stoneView);
+
+            switch (mDrawNumberStyle) {
+                case DRAW_NUMBER_STYLE_DISABLE:
+                    stoneView.setDrawNumber(false);
+                    break;
+                case DRAW_NUMBER_STYLE_LAST:
+                    int lastNumber = -1;
+                    StoneView lastView = null;
+                    for (StoneView view : mStoneViewMap.values()) {
+                        int number = view.getStone().number;
+                        if (number > lastNumber) {
+                            lastNumber = number;
+                            lastView = view;
+                        }
+                        view.setDrawNumber(false);
+                    }
+                    if (lastView != null) {
+                        lastView.setDrawNumber(true);
+                    }
+                    break;
+                case DRAW_NUMBER_STYLE_ALL:
+                    stoneView.setDrawNumber(true);
+                    break;
+            }
+
+            notifyBoardChanged();
         }
         return mStoneViewMap.get(stone);
     }
@@ -403,6 +522,24 @@ public class BoardView extends RelativeLayout {
             } else {
                 removeView(stoneView);
             }
+
+            if (mDrawNumberStyle == DRAW_NUMBER_STYLE_LAST) {
+                int lastNumber = -1;
+                StoneView lastView = null;
+                for (StoneView view : mStoneViewMap.values()) {
+                    int number = view.getStone().number;
+                    if (number > lastNumber) {
+                        lastNumber = number;
+                        lastView = view;
+                    }
+                    view.setDrawNumber(false);
+                }
+                if (lastView != null) {
+                    lastView.setDrawNumber(true);
+                }
+            }
+
+            notifyBoardChanged();
         }
         return stoneView;
     }

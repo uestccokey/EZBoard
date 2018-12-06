@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,11 +27,13 @@ public class StoneView extends TextView {
 
     private Stone mStone;
 
-    private int mStoneSpace = 6; // 棋子间距
+    private int mStoneSpace = 4; // 棋子间距
 
     private boolean mIsHighlight; // 棋子是否高亮
 
     private boolean mIsDrawNumber = true; // 是否绘制棋子手数
+
+    private int mDrawNumber; // 要绘制的棋子手数，优先于Stone.number
 
     private GoTheme.StoneTheme mStoneTheme; // 棋子主题样式
     private GoTheme.MarkTheme mMarkTheme; // 标记主题样式
@@ -94,6 +97,24 @@ public class StoneView extends TextView {
      */
     public boolean isDrawNumber() {
         return mIsDrawNumber;
+    }
+
+    /**
+     * 设置要绘制的棋子手数
+     *
+     * @param drawNumber
+     */
+    public void setDrawNumber(int drawNumber) {
+        mDrawNumber = drawNumber;
+    }
+
+    /**
+     * 获取要绘制的棋子手数
+     *
+     * @return
+     */
+    public int getDrawNumber() {
+        return mDrawNumber;
     }
 
     /**
@@ -165,9 +186,6 @@ public class StoneView extends TextView {
 
         // 绘制手数
         drawNumber(canvas);
-
-        // 绘制高亮状态
-        drawHighlight(canvas);
     }
 
     /**
@@ -185,7 +203,7 @@ public class StoneView extends TextView {
             canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 2 - mStoneSpace / 2, mStonePaint);
         } else {
             // 图片棋子等
-            drawable.setBounds(0, 0, getWidth(), getHeight());
+            drawable.setBounds(mStoneSpace / 2, mStoneSpace / 2, getWidth() - mStoneSpace / 2, getHeight() - mStoneSpace / 2);
             drawable.draw(canvas);
         }
 
@@ -199,31 +217,25 @@ public class StoneView extends TextView {
     }
 
     /**
-     * 绘制高亮状态
-     *
-     * @param canvas
-     */
-    private void drawHighlight(Canvas canvas) {
-        if (mIsHighlight) {
-            mStonePaint.setColor(mMarkTheme.getHighLightColor());
-            mStonePaint.setStyle(Paint.Style.FILL);
-            canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 6, mStonePaint);
-        }
-    }
-
-    /**
      * 绘制手数
      *
      * @param canvas
      */
     private void drawNumber(Canvas canvas) {
-        if (mIsHighlight || !mIsDrawNumber || mStone.number <= 0) {
+        int drawNumber = mDrawNumber > 0 ? mDrawNumber : mStone.number;
+        if (!mIsDrawNumber || drawNumber <= 0) {
+            // 不显示手数时，高亮使用红点标记
+            if (mIsHighlight) {
+                mStonePaint.setColor(mMarkTheme.getHighLightColor());
+                mStonePaint.setStyle(Paint.Style.FILL);
+                canvas.drawCircle(getWidth() / 2, getHeight() / 2, getWidth() / 6, mStonePaint);
+            }
             return;
         }
         float textSize;
-        if (mStone.number < 10) {
+        if (drawNumber < 10) {
             textSize = getWidth() / 1.5f;
-        } else if (mStone.number < 100) {
+        } else if (drawNumber < 100) {
             textSize = getWidth() / 2f;
         } else {
             textSize = getWidth() / 2.5f;
@@ -231,7 +243,7 @@ public class StoneView extends TextView {
         mStonePaint.setStyle(Paint.Style.FILL);
         mStonePaint.setTextSize(textSize);
         mStonePaint.setStrokeWidth(0);
-        String number = String.valueOf(mStone.number);
+        String number = String.valueOf(drawNumber);
         float width = mStonePaint.measureText(number);
         Rect bounds = new Rect();
         mStonePaint.getTextBounds(number, 0, number.length(), bounds);
@@ -241,6 +253,20 @@ public class StoneView extends TextView {
         } else {
             mStonePaint.setColor(Color.BLACK);
             canvas.drawText(number, (getWidth() - width) / 2f, (getHeight() + bounds.height()) / 2f, mStonePaint);
+        }
+        // 显示手数时，高亮使用三角标记
+        if (mIsHighlight) {
+            if (mStone.color == StoneColor.BLACK) {
+                mStonePaint.setColor(Color.RED);
+            } else {
+                mStonePaint.setColor(Color.BLUE);
+            }
+            Path path = new Path();
+            path.moveTo(getWidth() / 24f, getHeight() / 24f);
+            path.lineTo(getWidth() / 3f, getHeight() / 24f);
+            path.lineTo(getWidth() / 24f, getHeight() / 3f);
+            path.close();
+            canvas.drawPath(path, mStonePaint);
         }
     }
 }
